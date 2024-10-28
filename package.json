@@ -1,0 +1,22 @@
+{
+  "name": "exprest-server",
+  "version": "0.0.1",
+  "description": "Exprest - A rest(ish) framework for node.js and express",
+  "main": "build/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "build-watch": "tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prod-build": "tsc --sourceMap false --declarationMap false --declaration false"
+  },
+  "author": "Erek Gokturk",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@egokt/exprest-shared": "^0.0.1"
+  }
+}
