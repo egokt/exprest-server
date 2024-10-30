@@ -1,7 +1,8 @@
 import { SuccessfulEntityResponse, SuccessfulEntityResponseWithOtherData } from '@egokt/exprest-shared';
 import express from 'express';
 import { authenticatedResourceRequestHandlerHelper, unauthenticatedResourceRequestHandlerHelper } from './request-handler-helpers.js';
-import { entityResponse, errorResponse } from '../helpers/response-helpers.js';
+import { errorResponse } from '../helpers/error-response.js';
+import { entityResponse } from '../helpers/entity-response.js';
 
 export function authenticatedResourceDeleteSingletonRequestHandlerFactory<
     USER, ENTITY extends Object, FRONT_END_ENTITY extends Object, SANITIZED_PARAMS, CONTEXT extends Object = {}, OTHER_DATA extends Object | null = null

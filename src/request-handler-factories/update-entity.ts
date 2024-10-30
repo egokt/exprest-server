@@ -1,7 +1,8 @@
 import { SuccessfulEntityResponse, SuccessfulEntityResponseWithOtherData } from '@egokt/exprest-shared';
 import express from 'express';
 import { authenticatedEntityRequestHandlerHelper, unauthenticatedEntityRequestHandlerHelper } from './request-handler-helpers.js';
-import { entityResponse, errorResponse } from '../helpers/response-helpers.js';
+import { errorResponse } from '../helpers/error-response.js';
+import { entityResponse } from '../helpers/entity-response.js';
 
 export function authenticatedEntityUpdateRequestHandlerFactory<
     ID, USER, ENTITY extends Object, FRONT_END_ENTITY extends Object, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT extends Object = {}, OTHER_DATA extends Object | null = null

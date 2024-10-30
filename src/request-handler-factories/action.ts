@@ -1,7 +1,8 @@
 import { SuccessfulActionResponse } from '@egokt/exprest-shared';
 import express from 'express';
 import { authenticatedResourceRequestHandlerHelper, unauthenticatedResourceRequestHandlerHelper } from './request-handler-helpers.js';
-import { actionResponse, errorResponse } from '../helpers/response-helpers.js';
+import { errorResponse } from '../helpers/error-response.js';
+import { actionResponse } from '../helpers/action-response.js';
 
 type SanitizeParamsFunctionProps<USER, CONTEXT> = {
     unsanitizedParams: {[key in string]?: string},

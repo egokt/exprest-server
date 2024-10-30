@@ -1,0 +1,10 @@
+// This file is for the compilation tests that compile ts files in tests/data/code
+{
+  "extends": "./tsconfig.json",
+  "include": ["src", "tests/data/code"],
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig to read more about this file */
+    "noEmit": true,                                   /* Disable emitting files from a compilation. */
+    "rootDir": ".",                                   /* Specify the root folder within your source files. */
+  }
+}

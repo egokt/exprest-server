@@ -1,5 +1,5 @@
 import express from 'express';
-import { errorResponse } from '../helpers/response-helpers.js';
+import { errorResponse } from '../helpers/error-response.js';
 
 export function getUserFromRequest<USER>(req: express.Request & {user?: USER}): USER | null {
     if (req.user) {

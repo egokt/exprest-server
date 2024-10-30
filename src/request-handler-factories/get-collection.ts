@@ -1,7 +1,7 @@
 import express from "express";
 import { authenticatedResourceRequestHandlerHelper, unauthenticatedResourceRequestHandlerHelper } from "./request-handler-helpers.js";
-import { collectionResponse } from "../helpers/response-helpers.js";
 import { SuccessfulCollectionResponse, SuccessfulCollectionResponseWithOtherData } from "@egokt/exprest-shared";
+import { collectionResponse } from "../helpers/collection-response.js";
 
 /**
  * Get handler factory for get at the resource level (e.g. get-all)
