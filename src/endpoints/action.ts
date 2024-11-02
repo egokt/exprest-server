@@ -1,17 +1,22 @@
-import { SuccessfulActionResponse } from "@egokt/exprest-shared";
 import { Endpoint } from "./endpoint.js";
-import { RequestHandler } from "./request-handler.js";
+import { ActionRequestHandlerFunction } from "../request-handler-factories/action.js";
 
-export interface AddActionToRouter<RESULT extends Object | null, PARAMS extends {[key: string]: true} | null = null> {
-    (router: import('express').Router, requestHandler: RequestHandler<RESULT extends null ? null : SuccessfulActionResponse<RESULT>, PARAMS>): void;
-}
+type ActionEndpointConstructorProps<RESPONSE_BODY = {}, QUERY_PARAMS = {}> = 
+    ConstructorParameters<typeof Endpoint>[0]
+        & { requestHandler: ActionRequestHandlerFunction<RESPONSE_BODY, QUERY_PARAMS>};
 
-export class ActionEndpoint<ResponseBodyType extends Object | null> extends Endpoint {
-    // constructor(param: ConstructorParameters<typeof Endpoint>[0]) {
-    //     super(param);
-    // }
+export class ActionEndpoint<RESPONSE_BODY extends Object | null = null, QUERY_PARAMS = {}> extends Endpoint {
+    private requestHandler: ActionRequestHandlerFunction<RESPONSE_BODY, QUERY_PARAMS>;
 
-    addToRouter: AddActionToRouter<ResponseBodyType> = (router, requestHandler) => {
-        router.post(this.routerMountRelativePath[0] === "/" ? this.routerMountRelativePath : `/${this.routerMountRelativePath}`, requestHandler);
+    constructor(param: ActionEndpointConstructorProps<RESPONSE_BODY, QUERY_PARAMS>) {
+        super(param);
+        this.requestHandler = param.requestHandler;
+    }
+
+    addToRouter(router: import('express').Router, routerMountRelativePath?: string): void {
+        router.post(
+            routerMountRelativePath || this.routerMountRelativePath,
+            this.requestHandler
+        );
     }
 }

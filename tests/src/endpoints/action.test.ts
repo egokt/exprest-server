@@ -20,9 +20,9 @@ describe("Action endpoint", () => {
 });
 
 function testHelper(path: string, expectedPath: string = path) {
-    const actionEndpoint = new ActionEndpoint({ routerMountRelativePath: path });
+    const requestHandler = jest.fn();
+    const actionEndpoint = new ActionEndpoint({ routerMountRelativePath: path, requestHandler });
     const router = { post: jest.fn(), } as unknown as express.Router;
-    const routerDefinition = jest.fn();
-    actionEndpoint.addToRouter(router, routerDefinition);
-    expect(router.post).toHaveBeenCalledWith(expectedPath, routerDefinition);
+    actionEndpoint.addToRouter(router);
+    expect(router.post).toHaveBeenCalledWith(expectedPath, requestHandler);
 }

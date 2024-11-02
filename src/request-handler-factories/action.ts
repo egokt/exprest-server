@@ -80,7 +80,7 @@ type ActionRequestHandlerFactoryWithAuthProps<
         ActionPostExecutionFunctionWithAuth<USER, ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
 };
 
-type ActionRequestHandlerFunction<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS> =
+export type ActionRequestHandlerFunction<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS> =
     (
         req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>,
         res: express.Response<
