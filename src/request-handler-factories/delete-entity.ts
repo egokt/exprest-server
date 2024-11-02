@@ -6,13 +6,13 @@ import { entityResponse } from '../helpers/entity-response.js';
 import { CreateContextWithAuthFunction, CreateContextWoAuthFunction, SanitizeIdFunction, SanitizeParamsWithAuthWithIdFunction, SanitizeParamsWoAuthWithIdFunction } from './types.js';
 
 export function authenticatedEntityDeleteRequestHandlerFactory<
-    ID,
     USER,
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
     CONTEXT extends Object = {},
-    OTHER_DATA extends Object | null = null
+    OTHER_DATA extends Object | null = null,
+    ID = number
 > (
     {
         idParamName = 'id',
@@ -73,12 +73,12 @@ export function authenticatedEntityDeleteRequestHandlerFactory<
 }
 
 export function unauthenticatedEntityDeleteRequestHandlerFactory<
-    ID,
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
     CONTEXT extends Object = {},
-    OTHER_DATA extends Object | null = null
+    OTHER_DATA extends Object | null = null,
+    ID = number
 > (
     {
         idParamName = 'id',
