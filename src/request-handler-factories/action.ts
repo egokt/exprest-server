@@ -103,13 +103,14 @@ export function authenticatedActionRequestHandlerFactory<
         postExecutionFunction = undefined,
     }: ActionRequestHandlerFactoryWithAuthProps<USER, ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>
 ): ActionRequestHandlerFunction<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS> {
-    return authenticatedResourceRequestHandlerHelper({
+    return authenticatedResourceRequestHandlerHelper(
+        {
             contextCreateFunction, sanitizeParamsFunction, postExecutionFunction
         },
         async ({req, res, user, context, params}) =>
             unauthenticatedInnerFunction<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>({
-                sanitizeBodyFunction: (param0) => sanitizeBodyFunction({...param0, user}),
-                actionFunction: (param0) => actionFunction({...param0, user}),
+                sanitizeBodyFunction: async (param0) => await sanitizeBodyFunction({...param0, user}),
+                actionFunction: async (param0) => await actionFunction({...param0, user}),
                 ...(postExecutionFunction
                     ? {postExecutionFunction: (param0) => postExecutionFunction({...param0, user})}
                     : {}),

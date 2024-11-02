@@ -86,14 +86,15 @@ function authenticatedRequestHandlerHelperBase<USER, SANITIZED_PARAMS extends {[
         }
 
         // wrap the unathenticated helper
-        unauthenticatedRequestHandlerHelperBase<SANITIZED_PARAMS, CONTEXT>({
-            contextCreateFunction: (param0) => contextCreateFunction({user, ...param0}),
-            ...(postExecutionFunction
-                ? { postExecutionFunction: (param0) => postExecutionFunction({user, ...param0}) }
-                : {}),
-        }, async ({req, res, context}) => {
-            innerFunction({req, res, user, context});
-        });
+        await unauthenticatedRequestHandlerHelperBase<SANITIZED_PARAMS, CONTEXT>(
+            {
+                contextCreateFunction: async (param0) => await contextCreateFunction({user, ...param0}),
+                ...(postExecutionFunction
+                    ? { postExecutionFunction: (param0) => postExecutionFunction({user, ...param0}) }
+                    : {}),
+            },
+            async ({req, res, context}) => await innerFunction({req, res, user, context})
+        )(req, res);
     }
 }
 
@@ -136,7 +137,7 @@ export function authenticatedResourceRequestHandlerHelper<USER, SANITIZED_PARAMS
         async ({req, res, user, context}) =>
             requestHandlerHelperInnerFunctionBuilder<SANITIZED_PARAMS, CONTEXT>(
                 {
-                    sanitizeParamsFunction: (param0) => sanitizeParamsFunction({user, ...param0}),
+                    sanitizeParamsFunction: async (param0) => await sanitizeParamsFunction({user, ...param0}),
                     ...(postExecutionFunction
                         ? { postExecutionFunction: (param0) => postExecutionFunction({user, ...param0}) }
                         : {}
@@ -182,7 +183,7 @@ function requestHandlerHelperInnerFunctionBuilder<SANITIZED_PARAMS extends {[key
             return;
         }
 
-        innerFunction({req, res, context, params});
+        await innerFunction({req, res, context, params});
     }
 }
 
@@ -209,13 +210,13 @@ export function authenticatedEntityRequestHandlerHelper<ID, USER, SANITIZED_PARA
                 {
                     idParamName,
                     sanitizeIdFunction,
-                    sanitizeParamsFunction: (param0) => sanitizeParamsFunction({user, ...param0}),
+                    sanitizeParamsFunction: async (param0) => await sanitizeParamsFunction({user, ...param0}),
                     ...(postExecutionFunction
                         ? { postExecutionFunction: (param0) => postExecutionFunction({user, ...param0}) }
                         : {}
                     )
                 },
-                (param0) => innerFunction({user, ...param0})
+                async (param0) => await innerFunction({user, ...param0})
             )({req, res, context})
     )
 }
@@ -276,10 +277,10 @@ function entityRequestHandlerHelperInnerFunctionBuilder<ID, SANITIZED_PARAMS ext
 
         requestHandlerHelperInnerFunctionBuilder<SANITIZED_PARAMS, CONTEXT>(
             {
-                sanitizeParamsFunction: (param0) => sanitizeParamsFunction({submittedEntityId, ...param0}),
+                sanitizeParamsFunction: async (param0) => await sanitizeParamsFunction({submittedEntityId, ...param0}),
                 postExecutionFunction,
             },
-            (param0) => innerFunction({submittedEntityId, ...param0})
+            async (param0) => await innerFunction({submittedEntityId, ...param0})
         )({req, res, context});
     }
 }
