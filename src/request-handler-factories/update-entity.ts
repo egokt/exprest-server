@@ -15,14 +15,14 @@ import {
 } from './types.js';
 
 export function authenticatedEntityUpdateRequestHandlerFactory<
-    ID,
     USER,
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
     SANITIZED_BODY,
     CONTEXT extends Object = {},
-    OTHER_DATA extends Object | null = null
+    OTHER_DATA extends Object | null = null,
+    ID = number,
 > (
     {
         idParamName = 'id',
@@ -93,13 +93,13 @@ export function authenticatedEntityUpdateRequestHandlerFactory<
 }
 
 export function unauthenticatedEntityUpdateRequestHandlerFactory<
-    ID,
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
     SANITIZED_BODY extends Object,
     CONTEXT extends Object = {},
-    OTHER_DATA extends Object | null = null
+    OTHER_DATA extends Object | null = null,
+    ID = number,
 > (
     {
         idParamName = 'id',
