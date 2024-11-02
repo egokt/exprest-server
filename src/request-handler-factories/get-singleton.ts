@@ -1,10 +1,24 @@
 import { SuccessfulEntityResponse, SuccessfulEntityResponseWithOtherData } from '@egokt/exprest-shared';
 import express from 'express';
-import { authenticatedResourceRequestHandlerHelper, unauthenticatedResourceRequestHandlerHelper } from './request-handler-helpers.js';
+import {
+    authenticatedResourceRequestHandlerHelper,
+    unauthenticatedResourceRequestHandlerHelper
+} from './request-handler-helpers.js';
 import { entityResponse } from '../helpers/entity-response.js';
+import {
+    CreateContextWithAuthFunction,
+    CreateContextWoAuthFunction,
+    SanitizeParamsWithAuthFunction,
+    SanitizeParamsWoAuthFunction
+} from './types.js';
 
 export function authenticatedResourceGetSingletonRequestHandler<
-    USER, ENTITY extends Object, FRONT_END_ENTITY extends Object, SANITIZED_PARAMS extends {[key: string]: string}, CONTEXT extends Object = {}, OTHER_DATA extends Object | null = null
+    USER,
+    ENTITY extends Object,
+    FRONT_END_ENTITY extends Object,
+    SANITIZED_PARAMS extends {[key: string]: string},
+    CONTEXT extends Object = {},
+    OTHER_DATA extends Object | null = null
 > (
     {
         contextCreateFunction,
@@ -14,8 +28,8 @@ export function authenticatedResourceGetSingletonRequestHandler<
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
     }: {
-        contextCreateFunction: (param0: {user: USER}) => CONTEXT | Promise<CONTEXT>,
-        sanitizeParamsFunction: (param0: {unsanitizedParams: {[key in string]?: string}, user: USER, context: CONTEXT}) => Promise<[Array<string>, null] | [null, SANITIZED_PARAMS]> | [Array<string>, null] | [null, SANITIZED_PARAMS],
+        contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
+        sanitizeParamsFunction: SanitizeParamsWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS>,
         retrieveEntityFunction: (param0: {user: USER, context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<ENTITY> | ENTITY,
         convertToFrontEndEntityFunction: (param0: {entity: ENTITY, user: USER, context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<FRONT_END_ENTITY> | FRONT_END_ENTITY,
         otherDataValueOrFunction?: OTHER_DATA | ((param0: {user: USER, context: CONTEXT, entity: ENTITY, params: SANITIZED_PARAMS}) => OTHER_DATA extends null ? (Promise<void> | void) : (Promise<OTHER_DATA> | OTHER_DATA)),
@@ -42,7 +56,11 @@ export function authenticatedResourceGetSingletonRequestHandler<
 }
 
 export function unauthenticatedResourceGetSingletonRequestHandler<
-    ENTITY extends Object, FRONT_END_ENTITY extends Object, SANITIZED_PARAMS extends {[key: string]: string}, CONTEXT extends Object = {}, OTHER_DATA extends Object | null = null
+    ENTITY extends Object,
+    FRONT_END_ENTITY extends Object,
+    SANITIZED_PARAMS extends {[key: string]: string},
+    CONTEXT extends Object = {},
+    OTHER_DATA extends Object | null = null
 > (
     {
         contextCreateFunction,
@@ -52,8 +70,8 @@ export function unauthenticatedResourceGetSingletonRequestHandler<
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
     }: {
-        contextCreateFunction: (param0: {}) => CONTEXT | Promise<CONTEXT>,
-        sanitizeParamsFunction: (param0: {unsanitizedParams: {[key in string]?: string}, context: CONTEXT}) => Promise<[Array<string>, null] | [null, SANITIZED_PARAMS]> | [Array<string>, null] | [null, SANITIZED_PARAMS],
+        contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
+        sanitizeParamsFunction: SanitizeParamsWoAuthFunction<CONTEXT, SANITIZED_PARAMS>,
         retrieveEntityFunction: (param0: {context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<ENTITY> | ENTITY,
         convertToFrontEndEntityFunction: (param0: {entity: ENTITY, context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<FRONT_END_ENTITY> | FRONT_END_ENTITY,
         otherDataValueOrFunction?: OTHER_DATA | ((param0: {context: CONTEXT, entity: ENTITY, params: SANITIZED_PARAMS}) => OTHER_DATA extends null ? (Promise<void> | void) : (Promise<OTHER_DATA> | OTHER_DATA)),

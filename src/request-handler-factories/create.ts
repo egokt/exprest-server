@@ -1,11 +1,20 @@
 import { SuccessfulEntityResponse, SuccessfulEntityResponseWithOtherData } from '@egokt/exprest-shared';
 import express from 'express';
-import { authenticatedResourceRequestHandlerHelper, unauthenticatedResourceRequestHandlerHelper } from './request-handler-helpers.js';
+import {
+    authenticatedResourceRequestHandlerHelper,
+    unauthenticatedResourceRequestHandlerHelper
+} from './request-handler-helpers.js';
 import { errorResponse } from '../helpers/error-response.js';
 import { entityResponse } from '../helpers/entity-response.js';
+import { CreateContextWithAuthFunction, CreateContextWoAuthFunction, SanitizeBodyWithAuthFunction, SanitizeBodyWoAuthFunction, SanitizeParamsWithAuthFunction, SanitizeParamsWoAuthFunction } from './types.js';
 
 export function unauthenticatedResourceCreateSingletonRequestHandlerFactory<
-    ENTITY extends Object, FRONT_END_ENTITY extends Object, SANITIZED_PARAMS extends {[key: string]: string}, SANITIZED_BODY, CONTEXT extends Object = {}, OTHER_DATA extends Object | null = null
+    ENTITY extends Object,
+    FRONT_END_ENTITY extends Object,
+    SANITIZED_PARAMS extends {[key: string]: string},
+    SANITIZED_BODY,
+    CONTEXT extends Object = {},
+    OTHER_DATA extends Object | null = null
 > (
     {
         contextCreateFunction,
@@ -17,9 +26,9 @@ export function unauthenticatedResourceCreateSingletonRequestHandlerFactory<
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
     }: {
-        contextCreateFunction: (param0: {}) => CONTEXT | Promise<CONTEXT>,
-        sanitizeParamsFunction: (param0: {unsanitizedParams: {[key in string]?: string}, context: CONTEXT}) => Promise<[Array<string>, null] | [null, SANITIZED_PARAMS]> | [Array<string>, null] | [null, SANITIZED_PARAMS],
-        sanitizeBodyFunction: (param0: {unsanitizedBody: {[key in string]?: string}, context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<[Array<string>, null] | [null, SANITIZED_BODY]> | [Array<string>, null] | [null, SANITIZED_BODY],
+        contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
+        sanitizeParamsFunction: SanitizeParamsWoAuthFunction<CONTEXT, SANITIZED_PARAMS>,
+        sanitizeBodyFunction: SanitizeBodyWoAuthFunction<CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
         determineAuthorityToCreateFunction?: (param0: {context: CONTEXT, params: SANITIZED_PARAMS, body: SANITIZED_BODY}) => Promise<[Array<string>, boolean]> | [Array<string>, boolean],
         createEntityFunction: (param0: {context: CONTEXT, params: SANITIZED_PARAMS, body: SANITIZED_BODY}) => Promise<ENTITY | null> | ENTITY | null,
         convertToFrontEndEntityFunction?: (param0: {entity: ENTITY, context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<FRONT_END_ENTITY> | FRONT_END_ENTITY,
@@ -71,7 +80,13 @@ export function unauthenticatedResourceCreateSingletonRequestHandlerFactory<
 } 
 
 export function authenticatedResourceCreateSingletonRequestHandlerFactory<
-    USER, ENTITY extends Object, FRONT_END_ENTITY extends Object, SANITIZED_PARAMS extends {[key: string]: string}, SANITIZED_BODY, CONTEXT extends Object = {}, OTHER_DATA extends Object | null = null
+    USER,
+    ENTITY extends Object,
+    FRONT_END_ENTITY extends Object,
+    SANITIZED_PARAMS extends {[key: string]: string},
+    SANITIZED_BODY,
+    CONTEXT extends Object = {},
+    OTHER_DATA extends Object | null = null
 > (
     {
         contextCreateFunction,
@@ -83,9 +98,9 @@ export function authenticatedResourceCreateSingletonRequestHandlerFactory<
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
     }: {
-        contextCreateFunction: (param0: {user: USER}) => CONTEXT | Promise<CONTEXT>,
-        sanitizeParamsFunction: (param0: {unsanitizedParams: {[key in string]?: string}, user: USER, context: CONTEXT}) => Promise<[Array<string>, null] | [null, SANITIZED_PARAMS]> | [Array<string>, null] | [null, SANITIZED_PARAMS],
-        sanitizeBodyFunction: (param0: {unsanitizedBody: {[key in string]?: string}, user: USER, context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<[Array<string>, null] | [null, SANITIZED_BODY]> | [Array<string>, null] | [null, SANITIZED_BODY],
+        contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
+        sanitizeParamsFunction: SanitizeParamsWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS>,
+        sanitizeBodyFunction: SanitizeBodyWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
         determineAuthorityToCreateFunction?: (param0: {user: USER, context: CONTEXT, params: SANITIZED_PARAMS, body: SANITIZED_BODY}) => Promise<[Array<string>, boolean]> | [Array<string>, boolean],
         createEntityFunction: (param0: {user: USER, context: CONTEXT, params: SANITIZED_PARAMS, body: SANITIZED_BODY}) => Promise<ENTITY | null> | ENTITY | null,
         convertToFrontEndEntityFunction?: (param0: {entity: ENTITY, user: USER, context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<FRONT_END_ENTITY> | FRONT_END_ENTITY,

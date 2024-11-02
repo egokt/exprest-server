@@ -101,7 +101,8 @@ export function authenticatedActionRequestHandlerFactory<
         sanitizeBodyFunction,
         actionFunction,
         postExecutionFunction = undefined,
-    }: ActionRequestHandlerFactoryWithAuthProps<USER, ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>
+    }: ActionRequestHandlerFactoryWithAuthProps<
+        USER, ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>
 ): ActionRequestHandlerFunction<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS> {
     return authenticatedResourceRequestHandlerHelper(
         {
@@ -156,7 +157,8 @@ function unauthenticatedInnerFunction<
 }: {
     sanitizeBodyFunction: SanitizeBodyWoAuthFunction<CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
     actionFunction: ActionFunctionWoAuth<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-    postExecutionFunction?: ActionPostExecutionFunctionWoAuth<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
+    postExecutionFunction?:
+        ActionPostExecutionFunctionWoAuth<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
 }): RequestHandlerInnerFunctionWoAuth<SANITIZED_PARAMS, CONTEXT> {
     return async ({req, res, context, params}) => {
         const [bodyErrors, body] = await sanitizeBodyFunction({unsanitizedBody: req.body, context, params});

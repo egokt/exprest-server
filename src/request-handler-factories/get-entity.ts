@@ -1,10 +1,26 @@
 import { SuccessfulEntityResponse, SuccessfulEntityResponseWithOtherData } from '@egokt/exprest-shared';
 import express from 'express';
-import { authenticatedEntityRequestHandlerHelper, unauthenticatedEntityRequestHandlerHelper } from './request-handler-helpers.js';
+import {
+    authenticatedEntityRequestHandlerHelper,
+    unauthenticatedEntityRequestHandlerHelper
+} from './request-handler-helpers.js';
 import { entityResponse } from '../helpers/entity-response.js';
+import {
+    CreateContextWithAuthFunction,
+    CreateContextWoAuthFunction,
+    SanitizeIdFunction,
+    SanitizeParamsWithAuthWithIdFunction,
+    SanitizeParamsWoAuthWithIdFunction
+} from './types.js';
 
 export function authenticatedEntityGetRequestHandlerFactory<
-    ID, USER, ENTITY extends Object, FRONT_END_ENTITY extends Object, SANITIZED_PARAMS extends {[key: string]: string}, CONTEXT extends Object = {}, OTHER_DATA extends Object | null = null
+    ID,
+    USER,
+    ENTITY extends Object,
+    FRONT_END_ENTITY extends Object,
+    SANITIZED_PARAMS extends {[key: string]: string},
+    CONTEXT extends Object = {},
+    OTHER_DATA extends Object | null = null
 > (
     {
         idParamName = 'id',
@@ -17,9 +33,9 @@ export function authenticatedEntityGetRequestHandlerFactory<
         postExecutionFunction = undefined,
     }: {
         idParamName?: string,
-        contextCreateFunction: (param0: {user: USER}) => CONTEXT | Promise<CONTEXT>,
-        sanitizeIdFunction: (param0: {idParam: string}) => [Array<string>, null] | [null, ID],
-        sanitizeParamsFunction: (param0: {unsanitizedParams: {[key in string]?: string}, user: USER, submittedEntityId: ID, context: CONTEXT}) => Promise<[Array<string>, null] | [null, SANITIZED_PARAMS]> | [Array<string>, null] | [null, SANITIZED_PARAMS],
+        contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
+        sanitizeIdFunction: SanitizeIdFunction<ID>,
+        sanitizeParamsFunction: SanitizeParamsWithAuthWithIdFunction<ID, USER, CONTEXT, SANITIZED_PARAMS>,
         retrieveEntityFunction: (param0: {user: USER, context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS}) => Promise<ENTITY> | ENTITY,
         convertToFrontEndEntityFunction: (param0: {entity: ENTITY, user: USER, context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS}) => Promise<FRONT_END_ENTITY> | FRONT_END_ENTITY,
         otherDataValueOrFunction?: OTHER_DATA | ((param0: {user: USER, context: CONTEXT, entity: ENTITY, submittedEntityId: ID, params: SANITIZED_PARAMS}) => OTHER_DATA extends null ? (Promise<void> | void) : (Promise<OTHER_DATA> | OTHER_DATA)),
@@ -46,7 +62,12 @@ export function authenticatedEntityGetRequestHandlerFactory<
 }
 
 export function unauthenticatedEntityGetRequestHandlerFactory<
-    ID, ENTITY extends Object, FRONT_END_ENTITY extends Object, SANITIZED_PARAMS extends {[key: string]: string}, CONTEXT extends Object = {}, OTHER_DATA extends Object | null = null
+    ID,
+    ENTITY extends Object,
+    FRONT_END_ENTITY extends Object,
+    SANITIZED_PARAMS extends {[key: string]: string},
+    CONTEXT extends Object = {},
+    OTHER_DATA extends Object | null = null
 > (
     {
         idParamName = 'id',
@@ -59,9 +80,9 @@ export function unauthenticatedEntityGetRequestHandlerFactory<
         postExecutionFunction = undefined,
     }: {
         idParamName?: string,
-        contextCreateFunction: (param0: {}) => CONTEXT | Promise<CONTEXT>,
-        sanitizeIdFunction: (param0: {idParam: string}) => [Array<string>, null] | [null, ID],
-        sanitizeParamsFunction: (param0: {unsanitizedParams: {[key in string]?: string}, submittedEntityId: ID, context: CONTEXT}) => Promise<[Array<string>, null] | [null, SANITIZED_PARAMS]> | [Array<string>, null] | [null, SANITIZED_PARAMS],
+        contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
+        sanitizeIdFunction: SanitizeIdFunction<ID>,
+        sanitizeParamsFunction: SanitizeParamsWoAuthWithIdFunction<ID, CONTEXT, SANITIZED_PARAMS>,
         retrieveEntityFunction: (param0: {context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS}) => Promise<ENTITY> | ENTITY,
         convertToFrontEndEntityFunction: (param0: {entity: ENTITY, context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS}) => Promise<FRONT_END_ENTITY> | FRONT_END_ENTITY,
         otherDataValueOrFunction?: OTHER_DATA | ((param0: {context: CONTEXT, entity: ENTITY, submittedEntityId: ID, params: SANITIZED_PARAMS}) => OTHER_DATA extends null ? (Promise<void> | void) : (Promise<OTHER_DATA> | OTHER_DATA)),
