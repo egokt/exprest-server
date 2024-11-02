@@ -74,7 +74,7 @@ export function unauthenticatedResourceGetCollectionRequestHandler<
  *
  */
 export function authenticatedResourceGetCollectionRequestHandler<
-    USER, ENTITY extends Object, FRONT_END_ENTITY extends Object, SANITIZED_PARAMS, CONTEXT extends Object = {}, OTHER_DATA extends Object | null = null
+    USER, ENTITY extends Object, FRONT_END_ENTITY extends Object, SANITIZED_PARAMS extends {[key: string]: string}, CONTEXT extends Object = {}, OTHER_DATA extends Object | null = null
 > (
     {
         contextCreateFunction,
@@ -91,7 +91,7 @@ export function authenticatedResourceGetCollectionRequestHandler<
         otherDataValueOrFunction?: OTHER_DATA | ((param0: {user: USER, context: CONTEXT, entities: Array<ENTITY>, params: SANITIZED_PARAMS}) => OTHER_DATA extends null ? (Promise<void> | void) : (Promise<OTHER_DATA> | OTHER_DATA)),
         postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, user: USER, entities?: Array<ENTITY>, params?: SANITIZED_PARAMS, context: CONTEXT, feEntities?: Array<FRONT_END_ENTITY>}) => void | Promise<void>,
     }
-): (req: express.Request, res: express.Response<OTHER_DATA extends never ? SuccessfulCollectionResponse<ENTITY> : SuccessfulCollectionResponseWithOtherData<ENTITY, OTHER_DATA>>) => Promise<void> {
+): (req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>, res: express.Response<OTHER_DATA extends never ? SuccessfulCollectionResponse<ENTITY> : SuccessfulCollectionResponseWithOtherData<ENTITY, OTHER_DATA>>) => Promise<void> {
     return authenticatedResourceRequestHandlerHelper({
         contextCreateFunction, sanitizeParamsFunction, postExecutionFunction
     }, async ({res, user, context, params}) => {

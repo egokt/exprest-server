@@ -4,7 +4,7 @@ import { authenticatedResourceRequestHandlerHelper, unauthenticatedResourceReque
 import { entityResponse } from '../helpers/entity-response.js';
 
 export function authenticatedResourceGetSingletonRequestHandler<
-    USER, ENTITY extends Object, FRONT_END_ENTITY extends Object, SANITIZED_PARAMS, CONTEXT extends Object = {}, OTHER_DATA extends Object | null = null
+    USER, ENTITY extends Object, FRONT_END_ENTITY extends Object, SANITIZED_PARAMS extends {[key: string]: string}, CONTEXT extends Object = {}, OTHER_DATA extends Object | null = null
 > (
     {
         contextCreateFunction,
@@ -21,7 +21,7 @@ export function authenticatedResourceGetSingletonRequestHandler<
         otherDataValueOrFunction?: OTHER_DATA | ((param0: {user: USER, context: CONTEXT, entity: ENTITY, params: SANITIZED_PARAMS}) => OTHER_DATA extends null ? (Promise<void> | void) : (Promise<OTHER_DATA> | OTHER_DATA)),
         postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, user: USER, entity?: ENTITY, params?: SANITIZED_PARAMS, context: CONTEXT, feEntity?: FRONT_END_ENTITY}) => void | Promise<void>,
     }
-): (req: express.Request, res: express.Response<OTHER_DATA extends never ? SuccessfulEntityResponse<FRONT_END_ENTITY> : SuccessfulEntityResponseWithOtherData<FRONT_END_ENTITY, OTHER_DATA>>) => Promise<void> {
+): (req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>, res: express.Response<OTHER_DATA extends never ? SuccessfulEntityResponse<FRONT_END_ENTITY> : SuccessfulEntityResponseWithOtherData<FRONT_END_ENTITY, OTHER_DATA>>) => Promise<void> {
     return authenticatedResourceRequestHandlerHelper(
         { contextCreateFunction, sanitizeParamsFunction, postExecutionFunction },
         async ({res, user, context, params}) => {

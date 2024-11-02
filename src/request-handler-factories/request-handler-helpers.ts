@@ -1,7 +1,20 @@
 import express from 'express';
 import { errorResponse } from '../helpers/error-response.js';
+import {
+    CreateContextWithAuthFunction,
+    CreateContextWoAuthFunction,
+    PostExecutionFunctionWithAuthWoBody,
+    PostExecutionFunctionWithAuthWoBodyWithId,
+    PostExecutionFunctionWoAuthWoBody,
+    PostExecutionFunctionWoAuthWoBodyWithId,
+    SanitizeIdFunction,
+    SanitizeParamsWithAuthFunction,
+    SanitizeParamsWithAuthWithIdFunction,
+    SanitizeParamsWoAuthFunction,
+    SanitizeParamsWoAuthWithIdFunction
+} from './types.js';
 
-export function getUserFromRequest<USER>(req: express.Request & {user?: USER}): USER | null {
+export function getUserFromRequest<USER>(req: express.Request<any> & {user?: USER}): USER | null {
     if (req.user) {
         return req.user;
     } else {
@@ -9,17 +22,61 @@ export function getUserFromRequest<USER>(req: express.Request & {user?: USER}): 
     }
 }
 
-function authenticatedRequestHandlerHelperBase<ID, USER, SANITIZED_PARAMS, CONTEXT>(
+type RequestHandlerHelperBaseWithAuthProps<USER, SANITIZED_PARAMS, CONTEXT> = {
+    contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
+    postExecutionFunction?: PostExecutionFunctionWithAuthWoBody<USER, SANITIZED_PARAMS, CONTEXT>,
+};
+type RequestHandlerHelperBaseWoAuthProps<SANITIZED_PARAMS, CONTEXT> = {
+    contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
+    postExecutionFunction?: PostExecutionFunctionWoAuthWoBody<SANITIZED_PARAMS, CONTEXT>,
+};
+
+type RequestHandlerBaseInnerFunctionWoAuthProps<SANITIZED_PARAMS, CONTEXT> = {
+    req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>,
+    res: express.Response,
+    context: CONTEXT,
+};
+type RequestHandlerBaseInnerFunctionWoAuth<SANITIZED_PARAMS, CONTEXT> =
+    (param0: RequestHandlerBaseInnerFunctionWoAuthProps<SANITIZED_PARAMS, CONTEXT>) => Promise<void>;
+
+type RequestHandlerInnerFunctionWoAuthProps<SANITIZED_PARAMS, CONTEXT> = 
+    RequestHandlerBaseInnerFunctionWoAuthProps<SANITIZED_PARAMS, CONTEXT> & { params: SANITIZED_PARAMS, };
+export type RequestHandlerInnerFunctionWoAuth<SANITIZED_PARAMS, CONTEXT> =
+    (param0: RequestHandlerInnerFunctionWoAuthProps<SANITIZED_PARAMS, CONTEXT>) => Promise<void>;
+
+type EntityRequestHandlerInnerFunctionWoAuthProps<ID, SANITIZED_PARAMS, CONTEXT> =
+    RequestHandlerInnerFunctionWoAuthProps<SANITIZED_PARAMS, CONTEXT> & { submittedEntityId: ID, };
+type EntityRequestHandlerInnerFunctionWoAuth<ID, SANITIZED_PARAMS, CONTEXT> =
+    (param0: EntityRequestHandlerInnerFunctionWoAuthProps<ID, SANITIZED_PARAMS, CONTEXT>) => Promise<void>;
+
+type RequestHandlerBaseInnerFunctionWithAuthProps<USER, SANITIZED_PARAMS, CONTEXT> =
+    RequestHandlerBaseInnerFunctionWoAuthProps<SANITIZED_PARAMS, CONTEXT> & { user: USER, };
+type RequestHandlerBaseInnerFunctionWithAuth<USER, SANITIZED_PARAMS, CONTEXT> =
+    (param0: RequestHandlerBaseInnerFunctionWithAuthProps<USER, SANITIZED_PARAMS, CONTEXT>) => Promise<void>;
+
+type RequestHandlerInnerFunctionWithAuthProps<USER, SANITIZED_PARAMS, CONTEXT> = 
+    RequestHandlerInnerFunctionWoAuthProps<SANITIZED_PARAMS, CONTEXT> & { user: USER, };
+type RequestHandlerInnerFunctionWithAuth<USER, SANITIZED_PARAMS, CONTEXT> =
+    (param0: RequestHandlerInnerFunctionWithAuthProps<USER, SANITIZED_PARAMS, CONTEXT>) => Promise<void>;
+
+type EntityRequestHandlerInnerFunctionWithAuthProps<ID, USER, SANITIZED_PARAMS, CONTEXT> =
+    EntityRequestHandlerInnerFunctionWoAuthProps<ID, SANITIZED_PARAMS, CONTEXT> & { user: USER, };
+type EntityRequestHandlerInnerFunctionWithAuth<ID, USER, SANITIZED_PARAMS, CONTEXT> =
+    (param0: EntityRequestHandlerInnerFunctionWithAuthProps<ID, USER, SANITIZED_PARAMS, CONTEXT>) => Promise<void>;
+
+type RequestHandlerFunctionWithAuthReturnType<SANITIZED_PARAMS> =
+    (req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>, res: express.Response) => Promise<void>;
+type RequestHandlerFunctionWoAuthReturnType<SANITIZED_PARAMS> =
+    (req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>, res: express.Response) => Promise<void>;
+
+function authenticatedRequestHandlerHelperBase<USER, SANITIZED_PARAMS extends {[key: string]: string}, CONTEXT>(
     {
         contextCreateFunction,
         postExecutionFunction,
-    } : {
-        contextCreateFunction: (param0: {user: USER}) => CONTEXT | Promise<CONTEXT>,
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, user: USER, submittedEntityId?: ID, params?: SANITIZED_PARAMS, context: CONTEXT}) => void | Promise<void>,
-    },
-    innerFunction: (param0: {req: express.Request, res: express.Response, user: USER, context: CONTEXT}) => Promise<void>
-) {
-    return async (req: express.Request, res: express.Response) => {
+    } : RequestHandlerHelperBaseWithAuthProps<USER, SANITIZED_PARAMS, CONTEXT>,
+    innerFunction: RequestHandlerBaseInnerFunctionWithAuth<USER, SANITIZED_PARAMS, CONTEXT>,
+): RequestHandlerFunctionWithAuthReturnType<SANITIZED_PARAMS> {
+    return async (req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>, res: express.Response) => {
         const user = getUserFromRequest<USER>(req);
         if (!user) {
             res.status(401).send();
@@ -28,28 +85,25 @@ function authenticatedRequestHandlerHelperBase<ID, USER, SANITIZED_PARAMS, CONTE
             return;
         }
 
-        const context = await contextCreateFunction({user});
-
-        try {
-            await innerFunction({req, res, user, context});
-        } catch (err) {
-            console.error("Returning 500 due to error" + (err instanceof Error ? `: ${err.stack}` : ""));
-            res.status(500).send();
-            postExecutionFunction && postExecutionFunction({status: 500, isSuccessful: false, user, context});
-        }
+        // wrap the unathenticated helper
+        unauthenticatedRequestHandlerHelperBase<SANITIZED_PARAMS, CONTEXT>({
+            contextCreateFunction: (param0) => contextCreateFunction({user, ...param0}),
+            ...(postExecutionFunction
+                ? { postExecutionFunction: (param0) => postExecutionFunction({user, ...param0}) }
+                : {}),
+        }, async ({req, res, context}) => {
+            innerFunction({req, res, user, context});
+        });
     }
 }
 
-function unauthenticatedRequestHandlerHelperBase<ID, SANITIZED_PARAMS extends {[key: string]: string}, CONTEXT>(
+function unauthenticatedRequestHandlerHelperBase<SANITIZED_PARAMS extends {[key: string]: string}, CONTEXT>(
     {
         contextCreateFunction,
         postExecutionFunction,
-    } : {
-        contextCreateFunction: (param0: {}) => CONTEXT | Promise<CONTEXT>,
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, submittedEntityId?: ID, params?: SANITIZED_PARAMS, context: CONTEXT}) => void | Promise<void>,
-    },
-    innerFunction: (param0: {req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>, res: express.Response, context: CONTEXT}) => Promise<void>
-) {
+    } : RequestHandlerHelperBaseWoAuthProps<SANITIZED_PARAMS, CONTEXT>,
+    innerFunction: RequestHandlerBaseInnerFunctionWoAuth<SANITIZED_PARAMS, CONTEXT>,
+): RequestHandlerFunctionWoAuthReturnType<SANITIZED_PARAMS> {
     return async (req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>, res: express.Response) => {
         const context = await contextCreateFunction({});
 
@@ -63,30 +117,33 @@ function unauthenticatedRequestHandlerHelperBase<ID, SANITIZED_PARAMS extends {[
     }
 }
 
-export function authenticatedResourceRequestHandlerHelper<USER, SANITIZED_PARAMS, CONTEXT>(
+
+
+export function authenticatedResourceRequestHandlerHelper<USER, SANITIZED_PARAMS extends {[key: string]: string}, CONTEXT>(
     {
         contextCreateFunction,
         sanitizeParamsFunction,
         postExecutionFunction,
     } : {
-        contextCreateFunction: (param0: {user: USER}) => CONTEXT | Promise<CONTEXT>,
-        sanitizeParamsFunction: (param0: {unsanitizedParams: {[key in string]?: string}, user: USER, context: CONTEXT}) => Promise<[Array<string>, null] | [null, SANITIZED_PARAMS]> | [Array<string>, null] | [null, SANITIZED_PARAMS],
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, user: USER, params?: SANITIZED_PARAMS, context: CONTEXT}) => void | Promise<void>,
+        contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
+        sanitizeParamsFunction: SanitizeParamsWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS>,
+        postExecutionFunction?: PostExecutionFunctionWithAuthWoBody<USER, SANITIZED_PARAMS, CONTEXT>,
     },
-    innerFunction: (param0: {req: express.Request, res: express.Response, user: USER, context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<void>
+    innerFunction: RequestHandlerInnerFunctionWithAuth<USER, SANITIZED_PARAMS, CONTEXT>,
 ) {
     return authenticatedRequestHandlerHelperBase(
         { contextCreateFunction, postExecutionFunction },
-        async ({req, res, user, context}) => {
-            const [paramsErrors, params] = await sanitizeParamsFunction({unsanitizedParams: req.params, user, context});
-            if (paramsErrors !== null) {
-                res.status(400).json(errorResponse(paramsErrors));
-                postExecutionFunction && postExecutionFunction({status: 400, isSuccessful: false, user, context});
-                return;
-            }
-
-            innerFunction({req, res, user, context, params});
-        }
+        async ({req, res, user, context}) =>
+            requestHandlerHelperInnerFunctionBuilder<SANITIZED_PARAMS, CONTEXT>(
+                {
+                    sanitizeParamsFunction: (param0) => sanitizeParamsFunction({user, ...param0}),
+                    ...(postExecutionFunction
+                        ? { postExecutionFunction: (param0) => postExecutionFunction({user, ...param0}) }
+                        : {}
+                    )
+                },
+                (param0) => innerFunction({user, ...param0})
+            )({req, res, context})
     );
 }
 
@@ -96,28 +153,40 @@ export function unauthenticatedResourceRequestHandlerHelper<SANITIZED_PARAMS ext
         sanitizeParamsFunction,
         postExecutionFunction,
     } : {
-        contextCreateFunction: (param0: {}) => CONTEXT | Promise<CONTEXT>,
-        sanitizeParamsFunction: (param0: {unsanitizedParams: {[key in string]?: string}, context: CONTEXT}) => Promise<[Array<string>, null] | [null, SANITIZED_PARAMS]> | [Array<string>, null] | [null, SANITIZED_PARAMS],
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, params?: SANITIZED_PARAMS, context: CONTEXT}) => void | Promise<void>,
+        contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
+        sanitizeParamsFunction: SanitizeParamsWoAuthFunction<CONTEXT, SANITIZED_PARAMS>,
+        postExecutionFunction?: PostExecutionFunctionWoAuthWoBody<SANITIZED_PARAMS, CONTEXT>,
     },
-    innerFunction: (param0: {req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>, res: express.Response, context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<void>
+    innerFunction: RequestHandlerInnerFunctionWoAuth<SANITIZED_PARAMS, CONTEXT>,
 ) {
     return unauthenticatedRequestHandlerHelperBase(
         { contextCreateFunction, postExecutionFunction },
-        async ({req, res, context}) => {
-            const [paramsErrors, params] = await sanitizeParamsFunction({unsanitizedParams: req.params, context});
-            if (paramsErrors !== null) {
-                res.status(400).json(errorResponse(paramsErrors));
-                postExecutionFunction && postExecutionFunction({status: 400, isSuccessful: false, context});
-                return;
-            }
-
-            innerFunction({req, res, context, params});
-        }
+        requestHandlerHelperInnerFunctionBuilder({sanitizeParamsFunction, postExecutionFunction}, innerFunction),
     );
 }
 
-export function authenticatedEntityRequestHandlerHelper<ID, USER, SANITIZED_PARAMS, CONTEXT>(
+function requestHandlerHelperInnerFunctionBuilder<SANITIZED_PARAMS extends {[key: string]: string}, CONTEXT>({
+        sanitizeParamsFunction,
+        postExecutionFunction,
+    }: {
+        sanitizeParamsFunction: SanitizeParamsWoAuthFunction<CONTEXT, SANITIZED_PARAMS>,
+        postExecutionFunction?: PostExecutionFunctionWoAuthWoBody<SANITIZED_PARAMS, CONTEXT>,
+    },
+    innerFunction: RequestHandlerInnerFunctionWoAuth<SANITIZED_PARAMS, CONTEXT>
+): RequestHandlerBaseInnerFunctionWoAuth<SANITIZED_PARAMS, CONTEXT> {
+    return async ({req, res, context}) => {
+        const [paramsErrors, params] = await sanitizeParamsFunction({unsanitizedParams: req.params, context});
+        if (paramsErrors !== null) {
+            res.status(400).json(errorResponse(paramsErrors));
+            postExecutionFunction && postExecutionFunction({status: 400, isSuccessful: false, context});
+            return;
+        }
+
+        innerFunction({req, res, context, params});
+    }
+}
+
+export function authenticatedEntityRequestHandlerHelper<ID, USER, SANITIZED_PARAMS extends {[key: string]: string}, CONTEXT>(
     {
         idParamName = 'id',
         contextCreateFunction,
@@ -126,34 +195,28 @@ export function authenticatedEntityRequestHandlerHelper<ID, USER, SANITIZED_PARA
         postExecutionFunction,
     } : {
         idParamName: string,
-        contextCreateFunction: (param0: {user: USER}) => CONTEXT | Promise<CONTEXT>,
-        sanitizeIdFunction: (param0: {idParam: string}) => [Array<string>, null] | [null, ID],
-        sanitizeParamsFunction: (param0: {unsanitizedParams: {[key in string]?: string}, user: USER, submittedEntityId: ID, context: CONTEXT}) => Promise<[Array<string>, null] | [null, SANITIZED_PARAMS]> | [Array<string>, null] | [null, SANITIZED_PARAMS],
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, user: USER, submittedEntityId?: ID, params?: SANITIZED_PARAMS, context: CONTEXT}) => void | Promise<void>,
+        contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
+        sanitizeIdFunction: SanitizeIdFunction<ID>,
+        sanitizeParamsFunction: SanitizeParamsWithAuthWithIdFunction<ID, USER, CONTEXT, SANITIZED_PARAMS>,
+        postExecutionFunction?: PostExecutionFunctionWithAuthWoBodyWithId<ID, USER, SANITIZED_PARAMS, CONTEXT>,
     },
-    innerFunction: (param0: {req: express.Request, res: express.Response, user: USER, context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS}) => Promise<void>
+    innerFunction: EntityRequestHandlerInnerFunctionWithAuth<ID, USER, SANITIZED_PARAMS, CONTEXT>
 ) {
     return authenticatedRequestHandlerHelperBase(
         { contextCreateFunction, postExecutionFunction },
-        async ({req, res, user, context}) => {
-            const [submittedEntityIdErrors, submittedEntityId] = sanitizeIdFunction({idParam: req.params[idParamName]});
-            if (submittedEntityIdErrors !== null) {
-                res.status(404).json(errorResponse(submittedEntityIdErrors));
-                postExecutionFunction && postExecutionFunction({status: 404, isSuccessful: false, user, context});
-                return;
-            }
-
-            // This is duplicated between this function and the collection helper, because it should be run
-            // after sanitizing the id
-            const [paramsErrors, params] = await sanitizeParamsFunction({unsanitizedParams: req.params, submittedEntityId, user, context});
-            if (paramsErrors !== null) {
-                res.status(400).json(errorResponse(paramsErrors));
-                postExecutionFunction && postExecutionFunction({status: 400, isSuccessful: false, user, context});
-                return;
-            }
-
-            innerFunction({req, res, user, context, submittedEntityId, params});
-        }
+        async ({req, res, user, context}) =>
+            entityRequestHandlerHelperInnerFunctionBuilder<ID, SANITIZED_PARAMS, CONTEXT>(
+                {
+                    idParamName,
+                    sanitizeIdFunction,
+                    sanitizeParamsFunction: (param0) => sanitizeParamsFunction({user, ...param0}),
+                    ...(postExecutionFunction
+                        ? { postExecutionFunction: (param0) => postExecutionFunction({user, ...param0}) }
+                        : {}
+                    )
+                },
+                (param0) => innerFunction({user, ...param0})
+            )({req, res, context})
     )
 }
 
@@ -166,38 +229,57 @@ export function unauthenticatedEntityRequestHandlerHelper<ID, SANITIZED_PARAMS e
         postExecutionFunction,
     } : {
         idParamName: string,
-        contextCreateFunction: (param0: {}) => CONTEXT | Promise<CONTEXT>,
-        sanitizeIdFunction: (param0: {idParam: string}) => [Array<string>, null] | [null, ID],
-        sanitizeParamsFunction: (param0: {unsanitizedParams: {[key in string]?: string}, submittedEntityId: ID, context: CONTEXT}) => Promise<[Array<string>, null] | [null, SANITIZED_PARAMS]> | [Array<string>, null] | [null, SANITIZED_PARAMS],
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, submittedEntityId?: ID, params?: SANITIZED_PARAMS, context: CONTEXT}) => void | Promise<void>,
+        contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
+        sanitizeIdFunction: SanitizeIdFunction<ID>,
+        sanitizeParamsFunction: SanitizeParamsWoAuthWithIdFunction<ID, CONTEXT, SANITIZED_PARAMS>,
+        postExecutionFunction?: PostExecutionFunctionWoAuthWoBodyWithId<ID, SANITIZED_PARAMS, CONTEXT>,
     },
-    innerFunction: (param0: {req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>, res: express.Response, context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS}) => Promise<void>
+    innerFunction: EntityRequestHandlerInnerFunctionWoAuth<ID, SANITIZED_PARAMS, CONTEXT>,
 ) {
     return unauthenticatedRequestHandlerHelperBase(
         { contextCreateFunction, postExecutionFunction },
-        async ({req, res, context}) => {
-            if (!req.params[idParamName]) {
-                res.status(404).json(errorResponse([`No ${idParamName} provided`]));
-                postExecutionFunction && postExecutionFunction({status: 404, isSuccessful: false, context});
-                return;
-            }
-            const [submittedEntityIdErrors, submittedEntityId] = sanitizeIdFunction({idParam: req.params[idParamName]});
-            if (submittedEntityIdErrors !== null) {
-                res.status(404).json(errorResponse(submittedEntityIdErrors));
-                postExecutionFunction && postExecutionFunction({status: 404, isSuccessful: false, context});
-                return;
-            } 
-
-            // This is duplicated between this function and the collection helper, because it should be run
-            // after sanitizing the id
-            const [paramsErrors, params] = await sanitizeParamsFunction({unsanitizedParams: req.params, submittedEntityId, context});
-            if (paramsErrors !== null) {
-                res.status(400).json(errorResponse(paramsErrors));
-                postExecutionFunction && postExecutionFunction({status: 400, isSuccessful: false, context});
-                return;
-            }
-
-            innerFunction({req, res, context, submittedEntityId, params});
-        }
+        entityRequestHandlerHelperInnerFunctionBuilder<ID, SANITIZED_PARAMS, CONTEXT>(
+            { idParamName, sanitizeIdFunction, sanitizeParamsFunction, postExecutionFunction },
+            innerFunction
+        )
     )
+}
+
+function entityRequestHandlerHelperInnerFunctionBuilder<ID, SANITIZED_PARAMS extends {[key: string]: string}, CONTEXT>(
+    {
+        idParamName = 'id',
+        sanitizeIdFunction,
+        sanitizeParamsFunction,
+        postExecutionFunction,
+    } : {
+        idParamName: string,
+        sanitizeIdFunction: SanitizeIdFunction<ID>,
+        sanitizeParamsFunction: SanitizeParamsWoAuthWithIdFunction<ID, CONTEXT, SANITIZED_PARAMS>,
+        postExecutionFunction?: PostExecutionFunctionWoAuthWoBodyWithId<ID, SANITIZED_PARAMS, CONTEXT>,
+    },
+    innerFunction: EntityRequestHandlerInnerFunctionWoAuth<ID, SANITIZED_PARAMS, CONTEXT>,
+): RequestHandlerBaseInnerFunctionWoAuth<SANITIZED_PARAMS, CONTEXT> {
+    return async ({req, res, context}) => {
+        const idParam = (req.params as {[key in string]: string})[idParamName];
+        if (idParam == undefined) {
+            res.status(404).json(errorResponse([`No ${idParamName} provided`]));
+            postExecutionFunction && postExecutionFunction({status: 404, isSuccessful: false, context});
+            return;
+        }
+
+        const [submittedEntityIdErrors, submittedEntityId] = sanitizeIdFunction({idParam});
+        if (submittedEntityIdErrors !== null) {
+            res.status(404).json(errorResponse(submittedEntityIdErrors));
+            postExecutionFunction && postExecutionFunction({status: 404, isSuccessful: false, context});
+            return;
+        } 
+
+        requestHandlerHelperInnerFunctionBuilder<SANITIZED_PARAMS, CONTEXT>(
+            {
+                sanitizeParamsFunction: (param0) => sanitizeParamsFunction({submittedEntityId, ...param0}),
+                postExecutionFunction,
+            },
+            (param0) => innerFunction({submittedEntityId, ...param0})
+        )({req, res, context});
+    }
 }
