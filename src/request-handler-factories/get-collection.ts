@@ -6,11 +6,46 @@ import {
 import { SuccessfulCollectionResponse, SuccessfulCollectionResponseWithOtherData } from "@egokt/exprest-shared";
 import { collectionResponse } from "../helpers/collection-response.js";
 import {
+    ConvertToFrontEndEntityWithAuthFunction,
+    ConvertToFrontEndEntityWoAuthFunction,
     CreateContextWithAuthFunction,
     CreateContextWoAuthFunction,
+    OtherDataWithAuthWithEntitiesFunction,
+    OtherDataWoAuthWithEntitiesFunction,
     SanitizeParamsWithAuthFunction,
     SanitizeParamsWoAuthFunction
 } from "./types.js";
+
+type ExpressResponseType<ENTITY, FRONT_END_ENTITY, OTHER_DATA> =
+    express.Response<
+        OTHER_DATA extends never
+            ? SuccessfulCollectionResponse<FRONT_END_ENTITY>
+            : SuccessfulCollectionResponseWithOtherData<ENTITY, OTHER_DATA>
+    >;
+type GetCollectionRequestHandlerFunction<
+    ENTITY extends Object,
+    FRONT_END_ENTITY extends Object,
+    SANITIZED_PARAMS extends {[key: string]: string},
+    OTHER_DATA extends Object | null = null
+> =
+    (
+        req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>,
+        res: ExpressResponseType<ENTITY, FRONT_END_ENTITY, OTHER_DATA>
+    ) => Promise<void>;
+
+type RetrieveCollectionWoAuthFunctionProps<SANITIZED_PARAMS, CONTEXT> = {
+    context: CONTEXT,
+    params: SANITIZED_PARAMS,
+};
+type RetrieveCollectionWoAuthFunction<ENTITY, SANITIZED_PARAMS, CONTEXT> =
+    (param0: RetrieveCollectionWoAuthFunctionProps<SANITIZED_PARAMS, CONTEXT>)
+        => Promise<Array<ENTITY>> | Array<ENTITY>;
+
+type RetrieveCollectionWithAuthFunctionProps<USER, SANITIZED_PARAMS, CONTEXT> =
+    RetrieveCollectionWoAuthFunctionProps<SANITIZED_PARAMS, CONTEXT> & {user: USER};
+type RetrieveCollectionWithAuthFunction<USER, ENTITY, SANITIZED_PARAMS, CONTEXT> =
+    (param0: RetrieveCollectionWithAuthFunctionProps<USER, SANITIZED_PARAMS, CONTEXT>)
+        => Promise<Array<ENTITY>> | Array<ENTITY>;
 
 /**
  * Get handler factory for get at the resource level (e.g. get-all)
@@ -47,12 +82,14 @@ export function unauthenticatedResourceGetCollectionRequestHandler<
     }: {
         contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
         sanitizeParamsFunction: SanitizeParamsWoAuthFunction<CONTEXT, SANITIZED_PARAMS>,
-        retrieveEntityCollectionFunction: (param0: {context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<Array<ENTITY>> | Array<ENTITY>,
-        convertToFrontEndEntityFunction: (param0: {entity: ENTITY, context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<FRONT_END_ENTITY> | FRONT_END_ENTITY,
-        otherDataValueOrFunction?: OTHER_DATA | ((param0: {context: CONTEXT, entities: Array<ENTITY>, params: SANITIZED_PARAMS}) => OTHER_DATA extends null ? (Promise<void> | void) : (Promise<OTHER_DATA> | OTHER_DATA)),
+        retrieveEntityCollectionFunction: RetrieveCollectionWoAuthFunction<ENTITY, SANITIZED_PARAMS, CONTEXT>,
+        convertToFrontEndEntityFunction:
+            ConvertToFrontEndEntityWoAuthFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
+        otherDataValueOrFunction?:
+            OTHER_DATA | OtherDataWoAuthWithEntitiesFunction<ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
         postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, entities?: Array<ENTITY>, params?: SANITIZED_PARAMS, context: CONTEXT, feEntities?: Array<FRONT_END_ENTITY>}) => void | Promise<void>,
     }
-): (req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>, res: express.Response<OTHER_DATA extends never ? SuccessfulCollectionResponse<ENTITY> : SuccessfulCollectionResponseWithOtherData<ENTITY, OTHER_DATA>>) => Promise<void> {
+): GetCollectionRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return unauthenticatedResourceRequestHandlerHelper({
         contextCreateFunction, sanitizeParamsFunction, postExecutionFunction
     }, async ({res, context, params}) => {
@@ -104,12 +141,14 @@ export function authenticatedResourceGetCollectionRequestHandler<
     }: {
         contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
         sanitizeParamsFunction: SanitizeParamsWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS>,
-        retrieveEntityCollectionFunction: (param0: {user: USER, context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<Array<ENTITY>> | Array<ENTITY>,
-        convertToFrontEndEntityFunction: (param0: {entity: ENTITY, user: USER, context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<FRONT_END_ENTITY> | FRONT_END_ENTITY,
-        otherDataValueOrFunction?: OTHER_DATA | ((param0: {user: USER, context: CONTEXT, entities: Array<ENTITY>, params: SANITIZED_PARAMS}) => OTHER_DATA extends null ? (Promise<void> | void) : (Promise<OTHER_DATA> | OTHER_DATA)),
+        retrieveEntityCollectionFunction: RetrieveCollectionWithAuthFunction<USER, ENTITY, SANITIZED_PARAMS, CONTEXT>,
+        convertToFrontEndEntityFunction:
+            ConvertToFrontEndEntityWithAuthFunction<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
+        otherDataValueOrFunction?:
+            OTHER_DATA | OtherDataWithAuthWithEntitiesFunction<USER, ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
         postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, user: USER, entities?: Array<ENTITY>, params?: SANITIZED_PARAMS, context: CONTEXT, feEntities?: Array<FRONT_END_ENTITY>}) => void | Promise<void>,
     }
-): (req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>, res: express.Response<OTHER_DATA extends never ? SuccessfulCollectionResponse<ENTITY> : SuccessfulCollectionResponseWithOtherData<ENTITY, OTHER_DATA>>) => Promise<void> {
+): GetCollectionRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return authenticatedResourceRequestHandlerHelper({
         contextCreateFunction, sanitizeParamsFunction, postExecutionFunction
     }, async ({res, user, context, params}) => {
