@@ -9,6 +9,10 @@ import {
     ConvertToFrontEndEntityWoAuthFunction,
     CreateContextWithAuthFunction,
     CreateContextWoAuthFunction,
+    CreateOrUpdateFunction,
+    CreateOrUpdateFunctionWithUser,
+    DetermineAuthorityToChangeFunctionWithBody,
+    DetermineAuthorityToChangeFunctionWithUserWithBody,
     EntityReturningRequestHandlerFunction,
     OtherDataWithAuthWithEntityFunction,
     OtherDataWoAuthWithEntityFunction,
@@ -41,8 +45,9 @@ export function unauthenticatedResourceCreateSingletonRequestHandlerFactory<
         contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
         sanitizeParamsFunction: SanitizeParamsWoAuthFunction<CONTEXT, SANITIZED_PARAMS>,
         sanitizeBodyFunction: SanitizeBodyWoAuthFunction<CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
-        determineAuthorityToCreateFunction?: (param0: {context: CONTEXT, params: SANITIZED_PARAMS, body: SANITIZED_BODY}) => Promise<[Array<string>, boolean]> | [Array<string>, boolean],
-        createEntityFunction: (param0: {context: CONTEXT, params: SANITIZED_PARAMS, body: SANITIZED_BODY}) => Promise<ENTITY | null> | ENTITY | null,
+        determineAuthorityToCreateFunction?:
+            DetermineAuthorityToChangeFunctionWithBody<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
+        createEntityFunction: CreateOrUpdateFunction<ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
         convertToFrontEndEntityFunction?:
             ConvertToFrontEndEntityWoAuthFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:
@@ -117,8 +122,9 @@ export function authenticatedResourceCreateSingletonRequestHandlerFactory<
         contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
         sanitizeParamsFunction: SanitizeParamsWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS>,
         sanitizeBodyFunction: SanitizeBodyWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
-        determineAuthorityToCreateFunction?: (param0: {user: USER, context: CONTEXT, params: SANITIZED_PARAMS, body: SANITIZED_BODY}) => Promise<[Array<string>, boolean]> | [Array<string>, boolean],
-        createEntityFunction: (param0: {user: USER, context: CONTEXT, params: SANITIZED_PARAMS, body: SANITIZED_BODY}) => Promise<ENTITY | null> | ENTITY | null,
+        determineAuthorityToCreateFunction?:
+            DetermineAuthorityToChangeFunctionWithUserWithBody<USER, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
+        createEntityFunction: CreateOrUpdateFunctionWithUser<USER, ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
         convertToFrontEndEntityFunction?:
             ConvertToFrontEndEntityWithAuthFunction<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:

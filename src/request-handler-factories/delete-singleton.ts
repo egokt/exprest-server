@@ -9,6 +9,10 @@ import {
     ConvertToFrontEndEntityWoAuthFunction,
     CreateContextWithAuthFunction,
     CreateContextWoAuthFunction,
+    DeleteFunction,
+    DeleteFunctionWithUser,
+    DetermineAuthorityToChangeFunction,
+    DetermineAuthorityToChangeFunctionWithUser,
     EntityReturningRequestHandlerFunction,
     OtherDataWithAuthWithEntityFunction,
     OtherDataWoAuthWithEntityFunction,
@@ -37,8 +41,9 @@ export function authenticatedResourceDeleteSingletonRequestHandlerFactory<
     }: {
         contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
         sanitizeParamsFunction: SanitizeParamsWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS>,
-        determineAuthorityToDeleteFunction?: (param0: {user: USER, context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<[Array<string>, boolean]> | [Array<string>, boolean],
-        deleteEntityFunction: (param0: {user: USER, context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<ENTITY | null> | ENTITY | null,
+        determineAuthorityToDeleteFunction?:
+            DetermineAuthorityToChangeFunctionWithUser<USER, SANITIZED_PARAMS, CONTEXT>,
+        deleteEntityFunction: DeleteFunctionWithUser<USER, ENTITY, SANITIZED_PARAMS, CONTEXT>,
         convertToFrontEndEntityFunction?:
             ConvertToFrontEndEntityWithAuthFunction<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:
@@ -101,8 +106,8 @@ export function unauthenticatedResourceDeleteSingletonRequestHandlerFactory<
     }: {
         contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
         sanitizeParamsFunction: SanitizeParamsWoAuthFunction<CONTEXT, SANITIZED_PARAMS>,
-        determineAuthorityToDeleteFunction?: (param0: {context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<[Array<string>, boolean]> | [Array<string>, boolean],
-        deleteEntityFunction: (param0: {context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<ENTITY | null> | ENTITY | null,
+        determineAuthorityToDeleteFunction?: DetermineAuthorityToChangeFunction<SANITIZED_PARAMS, CONTEXT>,
+        deleteEntityFunction: DeleteFunction<ENTITY, SANITIZED_PARAMS, CONTEXT>,
         convertToFrontEndEntityFunction?:
             ConvertToFrontEndEntityWoAuthFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:

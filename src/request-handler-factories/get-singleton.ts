@@ -13,6 +13,8 @@ import {
     OtherDataWoAuthWithEntityFunction,
     PostExecutionFunctionWithEntity,
     PostExecutionFunctionWithUserWithEntity,
+    RetrieveEntityFunction,
+    RetriveEntityFunctionWithUser,
     SanitizeParamsWithAuthFunction,
     SanitizeParamsWoAuthFunction
 } from './types.js';
@@ -35,7 +37,7 @@ export function authenticatedResourceGetSingletonRequestHandler<
     }: {
         contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
         sanitizeParamsFunction: SanitizeParamsWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS>,
-        retrieveEntityFunction: (param0: {user: USER, context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<ENTITY> | ENTITY,
+        retrieveEntityFunction: RetriveEntityFunctionWithUser<USER, ENTITY, SANITIZED_PARAMS, CONTEXT>,
         convertToFrontEndEntityFunction:
             ConvertToFrontEndEntityWithAuthFunction<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:
@@ -80,7 +82,7 @@ export function unauthenticatedResourceGetSingletonRequestHandler<
     }: {
         contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
         sanitizeParamsFunction: SanitizeParamsWoAuthFunction<CONTEXT, SANITIZED_PARAMS>,
-        retrieveEntityFunction: (param0: {context: CONTEXT, params: SANITIZED_PARAMS}) => Promise<ENTITY> | ENTITY,
+        retrieveEntityFunction: RetrieveEntityFunction<ENTITY, SANITIZED_PARAMS, CONTEXT>,
         convertToFrontEndEntityFunction:
             ConvertToFrontEndEntityWoAuthFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:

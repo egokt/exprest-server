@@ -8,6 +8,8 @@ import {
 import { errorResponse } from '../helpers/error-response.js';
 import { actionResponse } from '../helpers/action-response.js';
 import {
+    ActionFunctionWithAuth,
+    ActionFunctionWoAuth,
     ActionPostExecutionFunction,
     ActionPostExecutionFunctionWithUser,
     CreateContextWithAuthFunction,
@@ -17,30 +19,6 @@ import {
     SanitizeParamsWithAuthFunction,
     SanitizeParamsWoAuthFunction,
 } from './types.js';
-
-type ActionFunctionWoAuthProps<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> = {
-    context: CONTEXT,
-    params: SANITIZED_PARAMS,
-    body: SANITIZED_BODY,
-    rawExpressRequest: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>,
-};
-type ActionFunctionWithAuthProps<USER, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
-    ActionFunctionWoAuthProps<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> & { user: USER, };
-
-type ActionFunctionNonPromiseReturnType<ACTION_RESPONSE_CONTENT> =
-    {status: number, isSuccessful: true, actionResponseContent: ACTION_RESPONSE_CONTENT | null, errors?: undefined}
-        | {status: number, isSuccessful: false, actionResponseContent?: undefined, errors: Array<string>};
-type ActionFunctionReturnType<ACTION_RESPONSE_CONTENT> =
-    Promise<ActionFunctionNonPromiseReturnType<ACTION_RESPONSE_CONTENT>>
-        | ActionFunctionNonPromiseReturnType<ACTION_RESPONSE_CONTENT>;
-
-type ActionFunctionWithAuth<USER, ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
-    (param0: ActionFunctionWithAuthProps<USER, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>) =>
-        ActionFunctionReturnType<ACTION_RESPONSE_CONTENT>;
-
-type ActionFunctionWoAuth<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
-    (param0: ActionFunctionWoAuthProps<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>) =>
-        ActionFunctionReturnType<ACTION_RESPONSE_CONTENT>;
 
 export type ActionRequestHandlerFunction<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS> =
     (

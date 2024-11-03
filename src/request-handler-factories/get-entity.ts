@@ -13,6 +13,8 @@ import {
     OtherDataWoAuthWithEntityWithIdFunction,
     PostExecutionFunctionWithIdWithEntity,
     PostExecutionFunctionWithUserWithIdWithEntity,
+    RetrieveEntityFunctionWithId,
+    RetrieveEntityFunctionWithUserWithId,
     SanitizeIdFunction,
     SanitizeParamsWithAuthWithIdFunction,
     SanitizeParamsWoAuthWithIdFunction
@@ -41,7 +43,7 @@ export function authenticatedEntityGetRequestHandlerFactory<
         contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
         sanitizeIdFunction: SanitizeIdFunction<ID>,
         sanitizeParamsFunction: SanitizeParamsWithAuthWithIdFunction<ID, USER, CONTEXT, SANITIZED_PARAMS>,
-        retrieveEntityFunction: (param0: {user: USER, context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS}) => Promise<ENTITY> | ENTITY,
+        retrieveEntityFunction: RetrieveEntityFunctionWithUserWithId<ID, USER, ENTITY, SANITIZED_PARAMS, CONTEXT>,
         convertToFrontEndEntityFunction:
             ConvertToFrontEndEntityWithAuthWithIdFunction<
                 ID, USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
@@ -94,7 +96,7 @@ export function unauthenticatedEntityGetRequestHandlerFactory<
         contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
         sanitizeIdFunction: SanitizeIdFunction<ID>,
         sanitizeParamsFunction: SanitizeParamsWoAuthWithIdFunction<ID, CONTEXT, SANITIZED_PARAMS>,
-        retrieveEntityFunction: (param0: {context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS}) => Promise<ENTITY> | ENTITY,
+        retrieveEntityFunction: RetrieveEntityFunctionWithId<ID, ENTITY, SANITIZED_PARAMS, CONTEXT>,
         convertToFrontEndEntityFunction:
             ConvertToFrontEndEntityWoAuthWithIdFunction<ID, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:

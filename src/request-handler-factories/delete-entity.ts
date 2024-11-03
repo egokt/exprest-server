@@ -9,6 +9,10 @@ import {
     ConvertToFrontEndEntityWoAuthWithIdFunction,
     CreateContextWithAuthFunction,
     CreateContextWoAuthFunction,
+    DeleteFunctionWithId,
+    DeleteFunctionWithUserWithId,
+    DetermineAuthorityToChangeFunctionWithId,
+    DetermineAuthorityToChangeFunctionWithUserWithId,
     EntityReturningRequestHandlerFunction,
     OtherDataWithAuthWithEntityWithIdFunction,
     OtherDataWoAuthWithEntityWithIdFunction,
@@ -43,8 +47,9 @@ export function authenticatedEntityDeleteRequestHandlerFactory<
         contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
         sanitizeIdFunction: SanitizeIdFunction<ID>,
         sanitizeParamsFunction: SanitizeParamsWithAuthWithIdFunction<ID, USER, CONTEXT, SANITIZED_PARAMS>,
-        determineAuthorityToDeleteFunction?: (param0: {user: USER, context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS}) => Promise<[Array<string>, boolean]> | [Array<string>, boolean],
-        deleteEntityFunction: (param0: {user: USER, context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS}) => Promise<ENTITY | null> | ENTITY | null,
+        determineAuthorityToDeleteFunction?:
+            DetermineAuthorityToChangeFunctionWithUserWithId<ID, USER, SANITIZED_PARAMS, CONTEXT>,
+        deleteEntityFunction: DeleteFunctionWithUserWithId<ID, USER, ENTITY, SANITIZED_PARAMS, CONTEXT>,
         convertToFrontEndEntityFunction?:
             ConvertToFrontEndEntityWithAuthWithIdFunction<
                 ID, USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
@@ -114,8 +119,8 @@ export function unauthenticatedEntityDeleteRequestHandlerFactory<
         contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
         sanitizeIdFunction: SanitizeIdFunction<ID>,
         sanitizeParamsFunction: SanitizeParamsWoAuthWithIdFunction<ID, CONTEXT, SANITIZED_PARAMS>,
-        determineAuthorityToDeleteFunction?: (param0: {context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS}) => Promise<[Array<string>, boolean]> | [Array<string>, boolean],
-        deleteEntityFunction: (param0: {context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS}) => Promise<ENTITY | null> | ENTITY | null,
+        determineAuthorityToDeleteFunction?: DetermineAuthorityToChangeFunctionWithId<ID, SANITIZED_PARAMS, CONTEXT>,
+        deleteEntityFunction: DeleteFunctionWithId<ID, ENTITY, SANITIZED_PARAMS, CONTEXT>,
         convertToFrontEndEntityFunction?:
             ConvertToFrontEndEntityWoAuthWithIdFunction<ID, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:

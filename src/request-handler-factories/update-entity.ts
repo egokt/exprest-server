@@ -9,6 +9,10 @@ import {
     ConvertToFrontEndEntityWoAuthWithIdFunction,
     CreateContextWithAuthFunction,
     CreateContextWoAuthFunction,
+    CreateOrUpdateFunctionWithId,
+    CreateOrUpdateFunctionWithUserWithId,
+    DetermineAuthorityToChangeFunctionWithBodyWithId,
+    DetermineAuthorityToChangeFunctionWithUserWithBodyWithId,
     EntityReturningRequestHandlerFunction,
     OtherDataWithAuthWithEntityWithIdFunction,
     OtherDataWoAuthWithEntityWithIdFunction,
@@ -48,8 +52,11 @@ export function authenticatedEntityUpdateRequestHandlerFactory<
         sanitizeIdFunction: SanitizeIdFunction<ID>,
         sanitizeParamsFunction: SanitizeParamsWithAuthWithIdFunction<ID, USER, CONTEXT, SANITIZED_PARAMS>,
         sanitizeBodyFunction: SanitizeBodyWithAuthWithIdFunction<ID, USER, CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
-        determineAuthorityToUpdateFunction?: (param0: {user: USER, context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS, body: SANITIZED_BODY}) => Promise<[Array<string>, boolean]> | [Array<string>, boolean],
-        updateEntityFunction: (param0: {user: USER, context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS, body: SANITIZED_BODY}) => Promise<ENTITY | null> | ENTITY | null,
+        determineAuthorityToUpdateFunction?:
+            DetermineAuthorityToChangeFunctionWithUserWithBodyWithId<
+                ID, USER, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
+        updateEntityFunction:
+            CreateOrUpdateFunctionWithUserWithId<ID, USER, ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
         convertToFrontEndEntityFunction?:
             ConvertToFrontEndEntityWithAuthWithIdFunction<
                 ID, USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
@@ -131,8 +138,9 @@ export function unauthenticatedEntityUpdateRequestHandlerFactory<
         sanitizeIdFunction: SanitizeIdFunction<ID>,
         sanitizeParamsFunction: SanitizeParamsWoAuthWithIdFunction<ID, CONTEXT, SANITIZED_PARAMS>,
         sanitizeBodyFunction: SanitizeBodyWoAuthWithIdFunction<ID, CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
-        determineAuthorityToUpdateFunction?: (param0: {context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS, body: SANITIZED_BODY}) => Promise<[Array<string>, boolean]> | [Array<string>, boolean],
-        updateEntityFunction: (param0: {context: CONTEXT, submittedEntityId: ID, params: SANITIZED_PARAMS, body: SANITIZED_BODY}) => Promise<ENTITY | null> | ENTITY | null,
+        determineAuthorityToUpdateFunction?:
+            DetermineAuthorityToChangeFunctionWithBodyWithId<ID, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
+        updateEntityFunction: CreateOrUpdateFunctionWithId<ID, ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
         convertToFrontEndEntityFunction?:
             ConvertToFrontEndEntityWoAuthWithIdFunction<ID, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:

@@ -205,3 +205,95 @@ export type EntityReturningRequestHandlerFunction<
         req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>,
         res: EntityReturningExpressResponseType<ENTITY, FRONT_END_ENTITY, OTHER_DATA>
     ) => Promise<void>;
+
+type DetermineAuthorityToChangeFunctionProps<SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> = {
+    params: SANITIZED_PARAMS,
+    context: CONTEXT
+} & EXTENSION;
+export type DetermineAuthorityToChangeFunction<SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> =
+    (param0: DetermineAuthorityToChangeFunctionProps<SANITIZED_PARAMS, CONTEXT, EXTENSION>)
+        => Promise<[Array<string>, false] | [null, true]> | [Array<string>, false] | [null, true];
+export type DetermineAuthorityToChangeFunctionWithBody<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    DetermineAuthorityToChangeFunction<SANITIZED_PARAMS, CONTEXT, { body: SANITIZED_BODY }>;
+export type DetermineAuthorityToChangeFunctionWithBodyWithId<ID, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    DetermineAuthorityToChangeFunction<SANITIZED_PARAMS, CONTEXT, { submittedEntityId: ID, body: SANITIZED_BODY }>;
+export type DetermineAuthorityToChangeFunctionWithId<ID, SANITIZED_PARAMS, CONTEXT> =
+    DetermineAuthorityToChangeFunction<SANITIZED_PARAMS, CONTEXT, { submittedEntityId: ID }>;
+export type DetermineAuthorityToChangeFunctionWithUser<USER, SANITIZED_PARAMS, CONTEXT> =
+    DetermineAuthorityToChangeFunction<SANITIZED_PARAMS, CONTEXT, { user: USER }>;
+export type DetermineAuthorityToChangeFunctionWithUserWithId<ID, USER, SANITIZED_PARAMS, CONTEXT> =
+    DetermineAuthorityToChangeFunction<SANITIZED_PARAMS, CONTEXT, { user: USER, submittedEntityId: ID }>;
+export type DetermineAuthorityToChangeFunctionWithUserWithBody<USER, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    DetermineAuthorityToChangeFunction<SANITIZED_PARAMS, CONTEXT, { user: USER, body: SANITIZED_BODY }>;
+export type DetermineAuthorityToChangeFunctionWithUserWithBodyWithId<
+    ID, USER, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    DetermineAuthorityToChangeFunction<
+        SANITIZED_PARAMS, CONTEXT, { user: USER, submittedEntityId: ID, body: SANITIZED_BODY }>;
+
+type RetrieveEntityFunctionProps<SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> = {
+    params: SANITIZED_PARAMS,
+    context: CONTEXT
+} & EXTENSION;
+export type RetrieveEntityFunction<ENTITY, SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> =
+    (param0: RetrieveEntityFunctionProps<SANITIZED_PARAMS, CONTEXT, EXTENSION>)
+        => Promise<ENTITY | null> | ENTITY | null;
+export type RetrieveEntityFunctionWithId<ID, ENTITY, SANITIZED_PARAMS, CONTEXT> =
+    RetrieveEntityFunction<ENTITY, SANITIZED_PARAMS, CONTEXT, { submittedEntityId: ID, }>;
+export type RetriveEntityFunctionWithUser<USER, ENTITY, SANITIZED_PARAMS, CONTEXT> =
+    RetrieveEntityFunction<ENTITY, SANITIZED_PARAMS, CONTEXT, { user: USER, }>;
+export type RetrieveEntityFunctionWithUserWithId<ID, USER, ENTITY, SANITIZED_PARAMS, CONTEXT> =
+    RetrieveEntityFunction<ENTITY, SANITIZED_PARAMS, CONTEXT, { user: USER, submittedEntityId: ID, }>;
+
+type DeleteFunctionProps<SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> = {
+    params: SANITIZED_PARAMS,
+    context: CONTEXT
+} & EXTENSION;
+export type DeleteFunction<ENTITY, SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> =
+    (param0: DeleteFunctionProps<SANITIZED_PARAMS, CONTEXT, EXTENSION>)
+        => Promise<ENTITY | null> | ENTITY | null;
+export type DeleteFunctionWithId<ID, ENTITY, SANITIZED_PARAMS, CONTEXT> =
+    DeleteFunction<ENTITY, SANITIZED_PARAMS, CONTEXT, { submittedEntityId: ID, }>;
+export type DeleteFunctionWithUser<USER, ENTITY, SANITIZED_PARAMS, CONTEXT> =
+    DeleteFunction<ENTITY, SANITIZED_PARAMS, CONTEXT, { user: USER, }>;
+export type DeleteFunctionWithUserWithId<ID, USER, ENTITY, SANITIZED_PARAMS, CONTEXT> =
+    DeleteFunction<ENTITY, SANITIZED_PARAMS, CONTEXT, { user: USER, submittedEntityId: ID, }>;
+
+type CreateOrUpdateFunctionProps<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, EXTENSION = {}> = {
+    params: SANITIZED_PARAMS,
+    context: CONTEXT,
+    body: SANITIZED_BODY,
+} & EXTENSION;
+export type CreateOrUpdateFunction<ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, EXTENSION = {}> =
+    (param0: CreateOrUpdateFunctionProps<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, EXTENSION>)
+        => Promise<ENTITY | null> | ENTITY | null;
+export type CreateOrUpdateFunctionWithId<ID, ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    CreateOrUpdateFunction<ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, { submittedEntityId: ID, }>;
+export type CreateOrUpdateFunctionWithUser<USER, ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    CreateOrUpdateFunction<ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, { user: USER, }>;
+export type CreateOrUpdateFunctionWithUserWithId<ID, USER, ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    CreateOrUpdateFunction<ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, { user: USER, submittedEntityId: ID, }>;
+
+type ActionFunctionWoAuthProps<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> = {
+    context: CONTEXT,
+    params: SANITIZED_PARAMS,
+    body: SANITIZED_BODY,
+    rawExpressRequest: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>,
+};
+type ActionFunctionWithAuthProps<USER, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    ActionFunctionWoAuthProps<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> & { user: USER, };
+
+type ActionFunctionNonPromiseReturnType<ACTION_RESPONSE_CONTENT> =
+    {status: number, isSuccessful: true, actionResponseContent: ACTION_RESPONSE_CONTENT | null, errors?: undefined}
+        | {status: number, isSuccessful: false, actionResponseContent?: undefined, errors: Array<string>};
+type ActionFunctionReturnType<ACTION_RESPONSE_CONTENT> =
+    Promise<ActionFunctionNonPromiseReturnType<ACTION_RESPONSE_CONTENT>>
+        | ActionFunctionNonPromiseReturnType<ACTION_RESPONSE_CONTENT>;
+
+export type ActionFunctionWithAuth<USER, ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    (param0: ActionFunctionWithAuthProps<USER, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>) =>
+        ActionFunctionReturnType<ACTION_RESPONSE_CONTENT>;
+
+export type ActionFunctionWoAuth<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    (param0: ActionFunctionWoAuthProps<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>) =>
+        ActionFunctionReturnType<ACTION_RESPONSE_CONTENT>;
+
