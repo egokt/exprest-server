@@ -117,9 +117,10 @@ unauthenticatedActionRequestHandlerFactory<null, {}, {}>({
         ({ status: 200, isSuccessful: true, actionResponseContent: null }),
 });
 
-// Context function uses context type
-unauthenticatedActionRequestHandlerFactory<null, {}, {}, {hello: string}>({
+// Params function uses params type
+unauthenticatedActionRequestHandlerFactory<null, {not: "this"}, {}, {hello: string}>({
     contextCreateFunction: async () => ({ hello: "world" }),
+    // @ts-expect-error
     sanitizeParamsFunction: async ({context}) => [null, {hello: context.hello}],
     sanitizeBodyFunction: async () => [null, {}],
     actionFunction: async () => 
