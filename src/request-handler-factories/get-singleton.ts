@@ -11,6 +11,8 @@ import {
     EntityReturningRequestHandlerFunction,
     OtherDataWithAuthWithEntityFunction,
     OtherDataWoAuthWithEntityFunction,
+    PostExecutionFunctionWithEntity,
+    PostExecutionFunctionWithUserWithEntity,
     SanitizeParamsWithAuthFunction,
     SanitizeParamsWoAuthFunction
 } from './types.js';
@@ -38,7 +40,8 @@ export function authenticatedResourceGetSingletonRequestHandler<
             ConvertToFrontEndEntityWithAuthFunction<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:
             OTHER_DATA | OtherDataWithAuthWithEntityFunction<USER, ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, user: USER, entity?: ENTITY, params?: SANITIZED_PARAMS, context: CONTEXT, feEntity?: FRONT_END_ENTITY}) => void | Promise<void>,
+        postExecutionFunction?:
+            PostExecutionFunctionWithUserWithEntity<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
     }
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return authenticatedResourceRequestHandlerHelper(
@@ -82,7 +85,7 @@ export function unauthenticatedResourceGetSingletonRequestHandler<
             ConvertToFrontEndEntityWoAuthFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:
             OTHER_DATA | OtherDataWoAuthWithEntityFunction<ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, entity?: ENTITY, params?: SANITIZED_PARAMS, context: CONTEXT, feEntity?: FRONT_END_ENTITY}) => void | Promise<void>,
+        postExecutionFunction?: PostExecutionFunctionWithEntity<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
     }
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return unauthenticatedResourceRequestHandlerHelper(

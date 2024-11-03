@@ -8,10 +8,10 @@ import {
 import { errorResponse } from '../helpers/error-response.js';
 import { actionResponse } from '../helpers/action-response.js';
 import {
+    ActionPostExecutionFunction,
+    ActionPostExecutionFunctionWithUser,
     CreateContextWithAuthFunction,
     CreateContextWoAuthFunction,
-    PostExecutionFunctionWithAuthWithBody,
-    PostExecutionFunctionWoAuthWithBody,
     SanitizeBodyWithAuthFunction,
     SanitizeBodyWoAuthFunction,
     SanitizeParamsWithAuthFunction,
@@ -42,44 +42,6 @@ type ActionFunctionWoAuth<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_B
     (param0: ActionFunctionWoAuthProps<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>) =>
         ActionFunctionReturnType<ACTION_RESPONSE_CONTENT>;
 
-type ActionPostExecutionFunctionWoAuth<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
-    PostExecutionFunctionWoAuthWithBody<
-        SANITIZED_PARAMS,
-        SANITIZED_BODY,
-        CONTEXT,
-        { actionResponseContent?: ACTION_RESPONSE_CONTENT}>;
-type ActionPostExecutionFunctionWithAuth<USER, ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
-    PostExecutionFunctionWithAuthWithBody<
-        USER,
-        SANITIZED_PARAMS,
-        SANITIZED_BODY,
-        CONTEXT,
-        { actionResponseContent?: ACTION_RESPONSE_CONTENT }>;
-
-type ActionRequestHandlerFactoryWoAuthProps<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> = {
-    contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
-    sanitizeParamsFunction: SanitizeParamsWoAuthFunction<CONTEXT, SANITIZED_PARAMS>,
-    sanitizeBodyFunction: SanitizeBodyWoAuthFunction<CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
-    actionFunction: ActionFunctionWoAuth<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-    postExecutionFunction?:
-        ActionPostExecutionFunctionWoAuth<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-};
-
-type ActionRequestHandlerFactoryWithAuthProps<
-    USER,
-    ACTION_RESPONSE_CONTENT,
-    SANITIZED_PARAMS,
-    SANITIZED_BODY,
-    CONTEXT
-> = {
-    contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
-    sanitizeParamsFunction: SanitizeParamsWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS>,
-    sanitizeBodyFunction: SanitizeBodyWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
-    actionFunction: ActionFunctionWithAuth<USER, ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-    postExecutionFunction?:
-        ActionPostExecutionFunctionWithAuth<USER, ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-};
-
 export type ActionRequestHandlerFunction<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS> =
     (
         req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>,
@@ -101,8 +63,16 @@ export function authenticatedActionRequestHandlerFactory<
         sanitizeBodyFunction,
         actionFunction,
         postExecutionFunction = undefined,
-    }: ActionRequestHandlerFactoryWithAuthProps<
-        USER, ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>
+    }: {
+        contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
+        sanitizeParamsFunction: SanitizeParamsWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS>,
+        sanitizeBodyFunction: SanitizeBodyWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
+        actionFunction:
+            ActionFunctionWithAuth<USER, ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
+        postExecutionFunction?:
+            ActionPostExecutionFunctionWithUser<
+                USER, ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
+    }
 ): ActionRequestHandlerFunction<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS> {
     return authenticatedResourceRequestHandlerHelper(
         {
@@ -131,7 +101,14 @@ export function unauthenticatedActionRequestHandlerFactory<
         sanitizeBodyFunction,
         actionFunction,
         postExecutionFunction = undefined,
-    }: ActionRequestHandlerFactoryWoAuthProps<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>
+    }: {
+        contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
+        sanitizeParamsFunction: SanitizeParamsWoAuthFunction<CONTEXT, SANITIZED_PARAMS>,
+        sanitizeBodyFunction: SanitizeBodyWoAuthFunction<CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
+        actionFunction: ActionFunctionWoAuth<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
+        postExecutionFunction?:
+            ActionPostExecutionFunction<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
+    }
 ): ActionRequestHandlerFunction<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS> {
     return unauthenticatedResourceRequestHandlerHelper<SANITIZED_PARAMS, CONTEXT>(
         {
@@ -158,7 +135,7 @@ function unauthenticatedInnerFunction<
     sanitizeBodyFunction: SanitizeBodyWoAuthFunction<CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
     actionFunction: ActionFunctionWoAuth<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
     postExecutionFunction?:
-        ActionPostExecutionFunctionWoAuth<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
+        ActionPostExecutionFunction<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
 }): RequestHandlerInnerFunctionWoAuth<SANITIZED_PARAMS, CONTEXT> {
     return async ({req, res, context, params}) => {
         const [bodyErrors, body] = await sanitizeBodyFunction({unsanitizedBody: req.body, context, params});
@@ -174,32 +151,16 @@ function unauthenticatedInnerFunction<
             if (actionResponseContent !== null) {
                 res.status(status).json(actionResponse(actionResponseContent));
                 postExecutionFunction && postExecutionFunction({
-                    status,
-                    isSuccessful: true,
-                    context,
-                    params,
-                    body,
-                    actionResponseContent
-                });
+                    status, isSuccessful: true, context, params, body, actionResponseContent });
             } else {
                 res.status(status).end();
                 postExecutionFunction && postExecutionFunction({
-                    status,
-                    isSuccessful: true,
-                    context,
-                    params,
-                    body
-                });
+                    status, isSuccessful: true, context, params, body });
             }
         } else {
             res.status(status).json(errorResponse(errors));
             postExecutionFunction && postExecutionFunction({
-                status,
-                isSuccessful: false,
-                context,
-                params,
-                body
-            });
+                status, isSuccessful: false, context, params, body });
         }
     };
 }

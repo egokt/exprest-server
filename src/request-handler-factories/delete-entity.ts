@@ -12,6 +12,8 @@ import {
     EntityReturningRequestHandlerFunction,
     OtherDataWithAuthWithEntityWithIdFunction,
     OtherDataWoAuthWithEntityWithIdFunction,
+    PostExecutionFunctionWithIdWithEntity,
+    PostExecutionFunctionWithUserWithIdWithEntity,
     SanitizeIdFunction,
     SanitizeParamsWithAuthWithIdFunction,
     SanitizeParamsWoAuthWithIdFunction
@@ -49,7 +51,8 @@ export function authenticatedEntityDeleteRequestHandlerFactory<
         otherDataValueOrFunction?:
             OTHER_DATA
                 | OtherDataWithAuthWithEntityWithIdFunction<ID, USER, ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, user: USER, entity?: ENTITY, submittedEntityId?: ID, params?: SANITIZED_PARAMS, context: CONTEXT, feEntity?: FRONT_END_ENTITY}) => void | Promise<void>,
+        postExecutionFunction?:
+            PostExecutionFunctionWithUserWithIdWithEntity<ID, USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>
     }
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return authenticatedEntityRequestHandlerHelper(
@@ -117,7 +120,8 @@ export function unauthenticatedEntityDeleteRequestHandlerFactory<
             ConvertToFrontEndEntityWoAuthWithIdFunction<ID, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:
             OTHER_DATA | OtherDataWoAuthWithEntityWithIdFunction<ID, ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, entity?: ENTITY, submittedEntityId?: ID, params?: SANITIZED_PARAMS, context: CONTEXT, feEntity?: FRONT_END_ENTITY}) => void | Promise<void>,
+        postExecutionFunction?:
+            PostExecutionFunctionWithIdWithEntity<ID, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
     }
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return unauthenticatedEntityRequestHandlerHelper(

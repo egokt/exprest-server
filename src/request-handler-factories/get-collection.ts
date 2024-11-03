@@ -12,6 +12,8 @@ import {
     CreateContextWoAuthFunction,
     OtherDataWithAuthWithEntitiesFunction,
     OtherDataWoAuthWithEntitiesFunction,
+    PostExecutionFunctionWithEntities,
+    PostExecutionFunctionWithUserWithEntities,
     SanitizeParamsWithAuthFunction,
     SanitizeParamsWoAuthFunction
 } from "./types.js";
@@ -87,7 +89,7 @@ export function unauthenticatedResourceGetCollectionRequestHandler<
             ConvertToFrontEndEntityWoAuthFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:
             OTHER_DATA | OtherDataWoAuthWithEntitiesFunction<ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, entities?: Array<ENTITY>, params?: SANITIZED_PARAMS, context: CONTEXT, feEntities?: Array<FRONT_END_ENTITY>}) => void | Promise<void>,
+        postExecutionFunction?: PostExecutionFunctionWithEntities<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
     }
 ): GetCollectionRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return unauthenticatedResourceRequestHandlerHelper({
@@ -146,7 +148,8 @@ export function authenticatedResourceGetCollectionRequestHandler<
             ConvertToFrontEndEntityWithAuthFunction<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:
             OTHER_DATA | OtherDataWithAuthWithEntitiesFunction<USER, ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, user: USER, entities?: Array<ENTITY>, params?: SANITIZED_PARAMS, context: CONTEXT, feEntities?: Array<FRONT_END_ENTITY>}) => void | Promise<void>,
+        postExecutionFunction?:
+            PostExecutionFunctionWithUserWithEntities<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
     }
 ): GetCollectionRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return authenticatedResourceRequestHandlerHelper({

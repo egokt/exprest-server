@@ -130,44 +130,64 @@ export type OtherDataWithAuthWithEntityWithIdFunction<ID, USER, ENTITY, SANITIZE
     (param0: OtherDataWithAuthWithEntityWithIdFunctionProps<ID, USER, ENTITY, SANITIZED_PARAMS, CONTEXT>)
         => OtherDataFunctionReturnType<OTHER_DATA>;
 
-type PostExecutionFunctionWoAuthWoBodyProps<SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> = {
+type PostExecutionFunctionProps<SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> = {
     status: number,
     isSuccessful: boolean,
     params?: SANITIZED_PARAMS,
     context: CONTEXT
 } & EXTENSION;
-export type PostExecutionFunctionWoAuthWoBody<SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> =
-    (param0: PostExecutionFunctionWoAuthWoBodyProps<SANITIZED_PARAMS, CONTEXT, EXTENSION>) => void | Promise<void>;
-
-type PostExecutionFunctionWoAuthWoBodyWithIdProps<ID, SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> =
-    PostExecutionFunctionWoAuthWoBodyProps<SANITIZED_PARAMS, CONTEXT, EXTENSION> & { submittedEntityId?: ID, };
-export type PostExecutionFunctionWoAuthWoBodyWithId<ID, SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> =
-    (param0: PostExecutionFunctionWoAuthWoBodyWithIdProps<ID, SANITIZED_PARAMS, CONTEXT, EXTENSION>)
-        => void | Promise<void>;
-
-type PostExecutionFunctionWoAuthWithBodyProps<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, EXTENSION = {}> =
-    PostExecutionFunctionWoAuthWoBodyProps<SANITIZED_PARAMS, CONTEXT, EXTENSION> & { body?: SANITIZED_BODY, };
-export type PostExecutionFunctionWoAuthWithBody<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, EXTENSION = {}> =
-    (param0: PostExecutionFunctionWoAuthWithBodyProps<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, EXTENSION>)
-        => void | Promise<void>;
-
-type PostExecutionFunctionWithAuthWoBodyProps<USER, SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> =
-    PostExecutionFunctionWoAuthWoBodyProps<SANITIZED_PARAMS, CONTEXT, EXTENSION & { user: USER, }>;
-export type PostExecutionFunctionWithAuthWoBody<USER, SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> =
-    (param0: PostExecutionFunctionWithAuthWoBodyProps<USER, SANITIZED_PARAMS, CONTEXT, EXTENSION>)
-        => void | Promise<void>;
-
-type PostExecutionFunctionWithAuthWoBodyWithIdProps<ID, USER, SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> =
-    PostExecutionFunctionWoAuthWoBodyWithIdProps<ID, SANITIZED_PARAMS, CONTEXT, EXTENSION & { user: USER, }>;
-export type PostExecutionFunctionWithAuthWoBodyWithId<ID, USER, SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> =
-    (param0: PostExecutionFunctionWithAuthWoBodyWithIdProps<ID, USER, SANITIZED_PARAMS, CONTEXT, EXTENSION>)
-        => void | Promise<void>;
-
-type PostExecutionFunctionWithAuthWithBodyProps<USER, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, EXTENSION = {}> =
-    PostExecutionFunctionWoAuthWithBodyProps<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, EXTENSION & { user: USER, }>;
-export type PostExecutionFunctionWithAuthWithBody<USER, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, EXTENSION = {}> =
-    (param0: PostExecutionFunctionWithAuthWithBodyProps<USER, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, EXTENSION>)
-        => void | Promise<void>;
+export type PostExecutionFunction<SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> =
+    (param0: PostExecutionFunctionProps<SANITIZED_PARAMS, CONTEXT, EXTENSION>) => void | Promise<void>;
+export type PostExecutionFunctionWithEntity<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT> =
+    PostExecutionFunction<SANITIZED_PARAMS, CONTEXT, { entity?: ENTITY, feEntity?: FRONT_END_ENTITY }>;
+export type PostExecutionFunctionWithEntities<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT> =
+    PostExecutionFunction<SANITIZED_PARAMS, CONTEXT,
+        { entities?: Array<ENTITY>, feEntities?: Array<FRONT_END_ENTITY> }>;
+export type PostExecutionFunctionWithId<ID, SANITIZED_PARAMS, CONTEXT> =
+    PostExecutionFunction<SANITIZED_PARAMS, CONTEXT, { submittedEntityId?: ID, }>;
+export type PostExecutionFunctionWithIdWithEntity<ID, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT> =
+    PostExecutionFunction<SANITIZED_PARAMS, CONTEXT,
+        { submittedEntityId?: ID, entity?: ENTITY, feEntity?: FRONT_END_ENTITY }>;
+export type PostExecutionFunctionWithBody<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    PostExecutionFunction<SANITIZED_PARAMS, CONTEXT, { body?: SANITIZED_BODY, }>;
+export type PostExecutionFunctionWithBodyWithEntity<
+    ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    PostExecutionFunction<
+        SANITIZED_PARAMS, CONTEXT, { body?: SANITIZED_BODY, entity?: ENTITY, feEntity?: FRONT_END_ENTITY }>;
+export type PostExecutionFunctionWithBodyWithEntityWithId<
+    ID, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    PostExecutionFunction<
+        SANITIZED_PARAMS, CONTEXT,
+        { submittedEntityId?: ID, body?: SANITIZED_BODY, entity?: ENTITY, feEntity?: FRONT_END_ENTITY }>;
+export type PostExecutionFunctionWithUser<USER, SANITIZED_PARAMS, CONTEXT> =
+    PostExecutionFunction<SANITIZED_PARAMS, CONTEXT, { user: USER }>;
+export type PostExecutionFunctionWithUserWithEntities<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT> =
+    PostExecutionFunction<SANITIZED_PARAMS, CONTEXT,
+        { user: USER, entities?: Array<ENTITY>, feEntities?: Array<FRONT_END_ENTITY> }>;
+export type PostExecutionFunctionWithUserWithBodyWithEntity<
+    USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    PostExecutionFunction<
+        SANITIZED_PARAMS, CONTEXT,
+        { user: USER, body?: SANITIZED_BODY, entity?: ENTITY, feEntity?: FRONT_END_ENTITY }>;
+export type PostExecutionFunctionWithUserWithBodyWithEntityWithId<
+    ID, USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    PostExecutionFunction<
+        SANITIZED_PARAMS, CONTEXT,
+        { user: USER, submittedEntityId?: ID, body?: SANITIZED_BODY, entity?: ENTITY, feEntity?: FRONT_END_ENTITY }>;
+export type PostExecutionFunctionWithUserWithEntity<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT> =
+    PostExecutionFunction<SANITIZED_PARAMS, CONTEXT, { user: USER, entity?: ENTITY, feEntity?: FRONT_END_ENTITY }>;
+export type PostExecutionFunctionWithUserWithId<ID, USER, SANITIZED_PARAMS, CONTEXT> =
+    PostExecutionFunction<SANITIZED_PARAMS, CONTEXT, { user: USER, submittedEntityId?: ID, }>;
+export type PostExecutionFunctionWithUserWithIdWithEntity<ID, USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT> =
+    PostExecutionFunction<SANITIZED_PARAMS, CONTEXT,
+        { user: USER, submittedEntityId?: ID, entity?: ENTITY, feEntity?: FRONT_END_ENTITY }>;
+export type ActionPostExecutionFunction<ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    PostExecutionFunction<
+        SANITIZED_PARAMS, CONTEXT, { body?: SANITIZED_BODY, actionResponseContent?: ACTION_RESPONSE_CONTENT }>;
+export type ActionPostExecutionFunctionWithUser<USER, ACTION_RESPONSE_CONTENT, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT> =
+    PostExecutionFunction<
+        SANITIZED_PARAMS, CONTEXT,
+        { user: USER, body?: SANITIZED_BODY, actionResponseContent?: ACTION_RESPONSE_CONTENT }>;
 
 type EntityReturningExpressResponseType<ENTITY, FRONT_END_ENTITY, OTHER_DATA> =
     express.Response<

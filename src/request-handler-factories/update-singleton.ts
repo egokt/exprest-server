@@ -10,6 +10,8 @@ import {
     EntityReturningRequestHandlerFunction,
     OtherDataWithAuthWithEntityFunction,
     OtherDataWoAuthWithEntityFunction,
+    PostExecutionFunctionWithBodyWithEntity,
+    PostExecutionFunctionWithUserWithBodyWithEntity,
     SanitizeBodyWithAuthFunction,
     SanitizeBodyWoAuthFunction,
     SanitizeParamsWithAuthFunction,
@@ -50,7 +52,9 @@ export function authenticatedResourceUpdateSingletonRequestHandlerFactory<
             ConvertToFrontEndEntityWithAuthFunction<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:
             OTHER_DATA | OtherDataWithAuthWithEntityFunction<USER, ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, user: USER, entity?: ENTITY, feEntity?: FRONT_END_ENTITY, body?: SANITIZED_BODY, params?: SANITIZED_PARAMS, context: CONTEXT, feEntities?: Array<FRONT_END_ENTITY>}) => void | Promise<void>,
+        postExecutionFunction?:
+            PostExecutionFunctionWithUserWithBodyWithEntity<
+                USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
     }
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return authenticatedResourceCreateSingletonRequestHandlerFactory<
@@ -100,7 +104,9 @@ export function unauthenticatedResourceUpdateSingletonRequestHandlerFactory<
             ConvertToFrontEndEntityWoAuthFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:
             OTHER_DATA | OtherDataWoAuthWithEntityFunction<ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, entity?: ENTITY, feEntity?: FRONT_END_ENTITY, body?: SANITIZED_BODY, params?: SANITIZED_PARAMS, context: CONTEXT, feEntities?: Array<FRONT_END_ENTITY>}) => void | Promise<void>,
+        postExecutionFunction?:
+            PostExecutionFunctionWithBodyWithEntity<
+                ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
     }
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return unauthenticatedResourceCreateSingletonRequestHandlerFactory<

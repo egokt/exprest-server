@@ -12,6 +12,8 @@ import {
     EntityReturningRequestHandlerFunction,
     OtherDataWithAuthWithEntityWithIdFunction,
     OtherDataWoAuthWithEntityWithIdFunction,
+    PostExecutionFunctionWithBodyWithEntityWithId,
+    PostExecutionFunctionWithUserWithBodyWithEntityWithId,
     SanitizeBodyWithAuthWithIdFunction,
     SanitizeBodyWoAuthWithIdFunction,
     SanitizeIdFunction,
@@ -54,7 +56,9 @@ export function authenticatedEntityUpdateRequestHandlerFactory<
         otherDataValueOrFunction?:
             OTHER_DATA
                 | OtherDataWithAuthWithEntityWithIdFunction<ID, USER, ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, user: USER, entity?: ENTITY, submittedEntityId?: ID, params?: SANITIZED_PARAMS, body?: SANITIZED_BODY, context: CONTEXT, feEntity?: FRONT_END_ENTITY}) => void | Promise<void>,
+        postExecutionFunction?:
+            PostExecutionFunctionWithUserWithBodyWithEntityWithId<
+                ID, USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
     }
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return authenticatedEntityRequestHandlerHelper(
@@ -133,7 +137,9 @@ export function unauthenticatedEntityUpdateRequestHandlerFactory<
             ConvertToFrontEndEntityWoAuthWithIdFunction<ID, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
         otherDataValueOrFunction?:
             OTHER_DATA | OtherDataWoAuthWithEntityWithIdFunction<ID, ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?: (param0: {status: number, isSuccessful: boolean, entity?: ENTITY, submittedEntityId?: ID, params?: SANITIZED_PARAMS, body?: SANITIZED_BODY, context: CONTEXT, feEntity?: FRONT_END_ENTITY}) => void | Promise<void>,
+        postExecutionFunction?:
+            PostExecutionFunctionWithBodyWithEntityWithId<
+                ID, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
     }
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return unauthenticatedEntityRequestHandlerHelper(

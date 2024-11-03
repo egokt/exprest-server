@@ -3,10 +3,10 @@ import { errorResponse } from '../helpers/error-response.js';
 import {
     CreateContextWithAuthFunction,
     CreateContextWoAuthFunction,
-    PostExecutionFunctionWithAuthWoBody,
-    PostExecutionFunctionWithAuthWoBodyWithId,
-    PostExecutionFunctionWoAuthWoBody,
-    PostExecutionFunctionWoAuthWoBodyWithId,
+    PostExecutionFunction,
+    PostExecutionFunctionWithId,
+    PostExecutionFunctionWithUser,
+    PostExecutionFunctionWithUserWithId,
     SanitizeIdFunction,
     SanitizeParamsWithAuthFunction,
     SanitizeParamsWithAuthWithIdFunction,
@@ -24,11 +24,11 @@ export function getUserFromRequest<USER>(req: express.Request<any> & {user?: USE
 
 type RequestHandlerHelperBaseWithAuthProps<USER, SANITIZED_PARAMS, CONTEXT> = {
     contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
-    postExecutionFunction?: PostExecutionFunctionWithAuthWoBody<USER, SANITIZED_PARAMS, CONTEXT>,
+    postExecutionFunction?: PostExecutionFunctionWithUser<USER, SANITIZED_PARAMS, CONTEXT>,
 };
 type RequestHandlerHelperBaseWoAuthProps<SANITIZED_PARAMS, CONTEXT> = {
     contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
-    postExecutionFunction?: PostExecutionFunctionWoAuthWoBody<SANITIZED_PARAMS, CONTEXT>,
+    postExecutionFunction?: PostExecutionFunction<SANITIZED_PARAMS, CONTEXT>,
 };
 
 type RequestHandlerBaseInnerFunctionWoAuthProps<SANITIZED_PARAMS, CONTEXT> = {
@@ -128,7 +128,7 @@ export function authenticatedResourceRequestHandlerHelper<USER, SANITIZED_PARAMS
     } : {
         contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
         sanitizeParamsFunction: SanitizeParamsWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS>,
-        postExecutionFunction?: PostExecutionFunctionWithAuthWoBody<USER, SANITIZED_PARAMS, CONTEXT>,
+        postExecutionFunction?: PostExecutionFunctionWithUser<USER, SANITIZED_PARAMS, CONTEXT>,
     },
     innerFunction: RequestHandlerInnerFunctionWithAuth<USER, SANITIZED_PARAMS, CONTEXT>,
 ) {
@@ -156,7 +156,7 @@ export function unauthenticatedResourceRequestHandlerHelper<SANITIZED_PARAMS ext
     } : {
         contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
         sanitizeParamsFunction: SanitizeParamsWoAuthFunction<CONTEXT, SANITIZED_PARAMS>,
-        postExecutionFunction?: PostExecutionFunctionWoAuthWoBody<SANITIZED_PARAMS, CONTEXT>,
+        postExecutionFunction?: PostExecutionFunction<SANITIZED_PARAMS, CONTEXT>,
     },
     innerFunction: RequestHandlerInnerFunctionWoAuth<SANITIZED_PARAMS, CONTEXT>,
 ) {
@@ -171,7 +171,7 @@ function requestHandlerHelperInnerFunctionBuilder<SANITIZED_PARAMS extends {[key
         postExecutionFunction,
     }: {
         sanitizeParamsFunction: SanitizeParamsWoAuthFunction<CONTEXT, SANITIZED_PARAMS>,
-        postExecutionFunction?: PostExecutionFunctionWoAuthWoBody<SANITIZED_PARAMS, CONTEXT>,
+        postExecutionFunction?: PostExecutionFunction<SANITIZED_PARAMS, CONTEXT>,
     },
     innerFunction: RequestHandlerInnerFunctionWoAuth<SANITIZED_PARAMS, CONTEXT>
 ): RequestHandlerBaseInnerFunctionWoAuth<SANITIZED_PARAMS, CONTEXT> {
@@ -199,7 +199,7 @@ export function authenticatedEntityRequestHandlerHelper<ID, USER, SANITIZED_PARA
         contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
         sanitizeIdFunction: SanitizeIdFunction<ID>,
         sanitizeParamsFunction: SanitizeParamsWithAuthWithIdFunction<ID, USER, CONTEXT, SANITIZED_PARAMS>,
-        postExecutionFunction?: PostExecutionFunctionWithAuthWoBodyWithId<ID, USER, SANITIZED_PARAMS, CONTEXT>,
+        postExecutionFunction?: PostExecutionFunctionWithUserWithId<ID, USER, SANITIZED_PARAMS, CONTEXT>,
     },
     innerFunction: EntityRequestHandlerInnerFunctionWithAuth<ID, USER, SANITIZED_PARAMS, CONTEXT>
 ) {
@@ -233,7 +233,7 @@ export function unauthenticatedEntityRequestHandlerHelper<ID, SANITIZED_PARAMS e
         contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
         sanitizeIdFunction: SanitizeIdFunction<ID>,
         sanitizeParamsFunction: SanitizeParamsWoAuthWithIdFunction<ID, CONTEXT, SANITIZED_PARAMS>,
-        postExecutionFunction?: PostExecutionFunctionWoAuthWoBodyWithId<ID, SANITIZED_PARAMS, CONTEXT>,
+        postExecutionFunction?: PostExecutionFunctionWithId<ID, SANITIZED_PARAMS, CONTEXT>,
     },
     innerFunction: EntityRequestHandlerInnerFunctionWoAuth<ID, SANITIZED_PARAMS, CONTEXT>,
 ) {
@@ -256,7 +256,7 @@ function entityRequestHandlerHelperInnerFunctionBuilder<ID, SANITIZED_PARAMS ext
         idParamName: string,
         sanitizeIdFunction: SanitizeIdFunction<ID>,
         sanitizeParamsFunction: SanitizeParamsWoAuthWithIdFunction<ID, CONTEXT, SANITIZED_PARAMS>,
-        postExecutionFunction?: PostExecutionFunctionWoAuthWoBodyWithId<ID, SANITIZED_PARAMS, CONTEXT>,
+        postExecutionFunction?: PostExecutionFunctionWithId<ID, SANITIZED_PARAMS, CONTEXT>,
     },
     innerFunction: EntityRequestHandlerInnerFunctionWoAuth<ID, SANITIZED_PARAMS, CONTEXT>,
 ): RequestHandlerBaseInnerFunctionWoAuth<SANITIZED_PARAMS, CONTEXT> {
