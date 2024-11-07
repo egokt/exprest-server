@@ -22,7 +22,7 @@ import {
     SanitizeParamsWoAuthFunction
 } from './types.js';
 
-export function authenticatedResourceDeleteSingletonRequestHandlerFactory<
+export function deleteSingletonWithAuth<
     USER,
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
@@ -88,7 +88,7 @@ export function authenticatedResourceDeleteSingletonRequestHandlerFactory<
     );
 }
 
-export function unauthenticatedResourceDeleteSingletonRequestHandlerFactory<
+export function deleteSingletonWoAuth<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},

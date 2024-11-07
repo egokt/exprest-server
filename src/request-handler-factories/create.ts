@@ -24,7 +24,7 @@ import {
     SanitizeParamsWoAuthFunction
 } from './types.js';
 
-export function unauthenticatedResourceCreateSingletonRequestHandlerFactory<
+export function createWoAuth<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
@@ -100,7 +100,7 @@ export function unauthenticatedResourceCreateSingletonRequestHandlerFactory<
     });
 } 
 
-export function authenticatedResourceCreateSingletonRequestHandlerFactory<
+export function createWithAuth<
     USER,
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,

@@ -1,4 +1,4 @@
-import { SuccessfulEntityResponse, SuccessfulEntityResponseWithOtherData } from "@egokt/exprest-shared";
+import { SuccessfulCollectionResponse, SuccessfulCollectionResponseWithOtherData, SuccessfulEntityResponse, SuccessfulEntityResponseWithOtherData } from "@egokt/exprest-shared";
 import express from "express";
 
 export type CreateContextWithAuthFunction<USER, CONTEXT> = (param0: {user: USER}) => CONTEXT | Promise<CONTEXT>;
@@ -204,6 +204,23 @@ export type EntityReturningRequestHandlerFunction<
     (
         req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>,
         res: EntityReturningExpressResponseType<ENTITY, FRONT_END_ENTITY, OTHER_DATA>
+    ) => Promise<void>;
+
+type CollectionReturningExpressResponseType<ENTITY, FRONT_END_ENTITY, OTHER_DATA> =
+    express.Response<
+        OTHER_DATA extends never
+            ? SuccessfulCollectionResponse<FRONT_END_ENTITY>
+            : SuccessfulCollectionResponseWithOtherData<ENTITY, OTHER_DATA>
+    >;
+export type GetCollectionRequestHandlerFunction<
+    ENTITY extends Object,
+    FRONT_END_ENTITY extends Object,
+    SANITIZED_PARAMS extends {[key: string]: string},
+    OTHER_DATA extends Object | null = null
+> =
+    (
+        req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>,
+        res: CollectionReturningExpressResponseType<ENTITY, FRONT_END_ENTITY, OTHER_DATA>
     ) => Promise<void>;
 
 type DetermineAuthorityToChangeFunctionProps<SANITIZED_PARAMS, CONTEXT, EXTENSION = {}> = {

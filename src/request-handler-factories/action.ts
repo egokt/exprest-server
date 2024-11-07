@@ -28,7 +28,7 @@ export type ActionRequestHandlerFunction<ACTION_RESPONSE_CONTENT, SANITIZED_PARA
         >
     ) => Promise<void>;
 
-export function authenticatedActionRequestHandlerFactory<
+export function actionWithAuth<
     USER,
     ACTION_RESPONSE_CONTENT extends Object | null,
     SANITIZED_PARAMS extends {[key: string]: string},
@@ -67,7 +67,7 @@ export function authenticatedActionRequestHandlerFactory<
     );
 }
 
-export function unauthenticatedActionRequestHandlerFactory<
+export function actionWoAuth<
     ACTION_RESPONSE_CONTENT extends Object | null,
     SANITIZED_PARAMS extends {[key: string]: string},
     SANITIZED_BODY,

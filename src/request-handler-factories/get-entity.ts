@@ -20,7 +20,7 @@ import {
     SanitizeParamsWoAuthWithIdFunction
 } from './types.js';
 
-export function authenticatedEntityGetRequestHandlerFactory<
+export function getEntityWithAuth<
     USER,
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
@@ -74,7 +74,7 @@ export function authenticatedEntityGetRequestHandlerFactory<
     );
 }
 
-export function unauthenticatedEntityGetRequestHandlerFactory<
+export function getEntityWoAuth<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},

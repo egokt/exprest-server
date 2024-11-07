@@ -1,6 +1,6 @@
 import {
-    authenticatedResourceCreateSingletonRequestHandlerFactory,
-    unauthenticatedResourceCreateSingletonRequestHandlerFactory
+    createWithAuth,
+    createWoAuth
 } from './create.js';
 import {
     ConvertToFrontEndEntityWithAuthFunction,
@@ -28,7 +28,7 @@ import {
  * @param param0
  * @returns
  */
-export function authenticatedResourceUpdateSingletonRequestHandlerFactory<
+export function updateSingletonWithAuth<
     USER,
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
@@ -62,7 +62,7 @@ export function authenticatedResourceUpdateSingletonRequestHandlerFactory<
                 USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
     }
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
-    return authenticatedResourceCreateSingletonRequestHandlerFactory<
+    return createWithAuth<
         USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA
     >({
         contextCreateFunction,
@@ -82,7 +82,7 @@ export function authenticatedResourceUpdateSingletonRequestHandlerFactory<
  * @param param0 
  * @returns 
  */
-export function unauthenticatedResourceUpdateSingletonRequestHandlerFactory<
+export function updateSingletonWoAuth<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
@@ -115,7 +115,7 @@ export function unauthenticatedResourceUpdateSingletonRequestHandlerFactory<
                 ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
     }
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
-    return unauthenticatedResourceCreateSingletonRequestHandlerFactory<
+    return createWoAuth<
         ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA
     >({
         contextCreateFunction, 

@@ -1,15 +1,14 @@
-import express from "express";
 import {
     authenticatedResourceRequestHandlerHelper,
     unauthenticatedResourceRequestHandlerHelper
 } from "./request-handler-helpers.js";
-import { SuccessfulCollectionResponse, SuccessfulCollectionResponseWithOtherData } from "@egokt/exprest-shared";
 import { collectionResponse } from "../helpers/collection-response.js";
 import {
     ConvertToFrontEndEntityWithAuthFunction,
     ConvertToFrontEndEntityWoAuthFunction,
     CreateContextWithAuthFunction,
     CreateContextWoAuthFunction,
+    GetCollectionRequestHandlerFunction,
     OtherDataWithAuthWithEntitiesFunction,
     OtherDataWoAuthWithEntitiesFunction,
     PostExecutionFunctionWithEntities,
@@ -17,23 +16,6 @@ import {
     SanitizeParamsWithAuthFunction,
     SanitizeParamsWoAuthFunction
 } from "./types.js";
-
-type ExpressResponseType<ENTITY, FRONT_END_ENTITY, OTHER_DATA> =
-    express.Response<
-        OTHER_DATA extends never
-            ? SuccessfulCollectionResponse<FRONT_END_ENTITY>
-            : SuccessfulCollectionResponseWithOtherData<ENTITY, OTHER_DATA>
-    >;
-type GetCollectionRequestHandlerFunction<
-    ENTITY extends Object,
-    FRONT_END_ENTITY extends Object,
-    SANITIZED_PARAMS extends {[key: string]: string},
-    OTHER_DATA extends Object | null = null
-> =
-    (
-        req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>,
-        res: ExpressResponseType<ENTITY, FRONT_END_ENTITY, OTHER_DATA>
-    ) => Promise<void>;
 
 type RetrieveCollectionWoAuthFunctionProps<SANITIZED_PARAMS, CONTEXT> = {
     context: CONTEXT,
@@ -55,7 +37,7 @@ type RetrieveCollectionWithAuthFunction<USER, ENTITY, SANITIZED_PARAMS, CONTEXT>
  * This factory is meant to be used with authenticated GET routes.
  * 
  * Example usage:
- * app.use("/api/resource", authenticatedResourceGetHandlerFactory({
+ * app.use("/api/resource", getCollectionWoAuth({
  *     contextCreateFunction: () => ({}),
  *     sanitizeParamsFunction: () => [null, {}],
  *     retrieveEntityCollectionFunction: () => [{id: 1, name: "Entity 1"}, {id: 2, name: "Entity 2"}],
@@ -67,7 +49,7 @@ type RetrieveCollectionWithAuthFunction<USER, ENTITY, SANITIZED_PARAMS, CONTEXT>
  * });
  * 
  */
-export function unauthenticatedResourceGetCollectionRequestHandler<
+export function getCollectionWoAuth<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
@@ -125,7 +107,7 @@ export function unauthenticatedResourceGetCollectionRequestHandler<
  * });
  *
  */
-export function authenticatedResourceGetCollectionRequestHandler<
+export function getCollectionWithAuth<
     USER,
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,

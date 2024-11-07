@@ -23,7 +23,7 @@ import {
     SanitizeParamsWoAuthWithIdFunction
 } from './types.js';
 
-export function authenticatedEntityDeleteRequestHandlerFactory<
+export function deleteEntityWithAuth<
     USER,
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
@@ -96,7 +96,7 @@ export function authenticatedEntityDeleteRequestHandlerFactory<
     );
 }
 
-export function unauthenticatedEntityDeleteRequestHandlerFactory<
+export function deleteEntityWoAuth<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
