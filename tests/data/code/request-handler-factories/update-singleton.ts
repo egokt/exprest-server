@@ -1,10 +1,10 @@
 import {
-    unauthenticatedResourceUpdateSingletonRequestHandlerFactory,
-    authenticatedResourceUpdateSingletonRequestHandlerFactory,
+    updateSingletonWoAuth,
+    updateSingletonWithAuth,
 } from "../../../../src/request-handler-factories/update-singleton.js";
 
 // minimum required properties
-unauthenticatedResourceUpdateSingletonRequestHandlerFactory({
+updateSingletonWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
@@ -12,7 +12,7 @@ unauthenticatedResourceUpdateSingletonRequestHandlerFactory({
 });
 
 // with all properties
-unauthenticatedResourceUpdateSingletonRequestHandlerFactory({
+updateSingletonWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
@@ -24,7 +24,7 @@ unauthenticatedResourceUpdateSingletonRequestHandlerFactory({
 });
 
 // with all properties - non-async
-unauthenticatedResourceUpdateSingletonRequestHandlerFactory({
+updateSingletonWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
@@ -36,7 +36,7 @@ unauthenticatedResourceUpdateSingletonRequestHandlerFactory({
 });
 
 // with all properties - mixed async and non-async
-unauthenticatedResourceUpdateSingletonRequestHandlerFactory({
+updateSingletonWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
@@ -48,7 +48,7 @@ unauthenticatedResourceUpdateSingletonRequestHandlerFactory({
 });
 
 // with an entity
-unauthenticatedResourceUpdateSingletonRequestHandlerFactory<{hello: string}, {feHello: string}, {}, {}>({
+updateSingletonWoAuth<{hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
@@ -57,7 +57,7 @@ unauthenticatedResourceUpdateSingletonRequestHandlerFactory<{hello: string}, {fe
 });
 
 // with context
-unauthenticatedResourceUpdateSingletonRequestHandlerFactory<{hello: string}, {feHello: string}, {}, {}, {context: string}>({
+updateSingletonWoAuth<{hello: string}, {feHello: string}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
@@ -65,7 +65,7 @@ unauthenticatedResourceUpdateSingletonRequestHandlerFactory<{hello: string}, {fe
 });
 
 // with other data
-unauthenticatedResourceUpdateSingletonRequestHandlerFactory<
+updateSingletonWoAuth<
     {hello: string}, {feHello: string}, {}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
@@ -75,7 +75,7 @@ unauthenticatedResourceUpdateSingletonRequestHandlerFactory<
 });
 
 // authenticated - minimum required properties
-authenticatedResourceUpdateSingletonRequestHandlerFactory({
+updateSingletonWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
@@ -83,7 +83,7 @@ authenticatedResourceUpdateSingletonRequestHandlerFactory({
 });
 
 // authenticated - with all properties
-authenticatedResourceUpdateSingletonRequestHandlerFactory({
+updateSingletonWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
@@ -95,7 +95,7 @@ authenticatedResourceUpdateSingletonRequestHandlerFactory({
 });
 
 // authenticated - with all properties - non-async
-authenticatedResourceUpdateSingletonRequestHandlerFactory({
+updateSingletonWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
@@ -107,7 +107,7 @@ authenticatedResourceUpdateSingletonRequestHandlerFactory({
 });
 
 // authenticated - with all properties - mixed async and non-async
-authenticatedResourceUpdateSingletonRequestHandlerFactory({
+updateSingletonWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
@@ -119,7 +119,7 @@ authenticatedResourceUpdateSingletonRequestHandlerFactory({
 });
 
 // authenticated - with an entity
-authenticatedResourceUpdateSingletonRequestHandlerFactory<{}, {hello: string}, {feHello: string}, {}, {}>({
+updateSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
@@ -128,7 +128,7 @@ authenticatedResourceUpdateSingletonRequestHandlerFactory<{}, {hello: string}, {
 });
 
 // authenticated - with context
-authenticatedResourceUpdateSingletonRequestHandlerFactory<{}, {hello: string}, {feHello: string}, {}, {}, {context: string}>({
+updateSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
@@ -136,7 +136,7 @@ authenticatedResourceUpdateSingletonRequestHandlerFactory<{}, {hello: string}, {
 });
 
 // authenticated - with other data
-authenticatedResourceUpdateSingletonRequestHandlerFactory<
+updateSingletonWithAuth<
     {}, {hello: string}, {feHello: string}, {}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),

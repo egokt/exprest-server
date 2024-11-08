@@ -1,4 +1,4 @@
-import { SuccessfulActionResponse } from '@egokt/exprest-shared';
+import { SuccessfulActionResponse } from 'exprest-shared';
 import express from 'express';
 import {
     authenticatedResourceRequestHandlerHelper,

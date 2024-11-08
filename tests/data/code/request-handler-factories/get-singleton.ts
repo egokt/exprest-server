@@ -1,10 +1,10 @@
 import {
-    unauthenticatedResourceGetSingletonRequestHandler,
-    authenticatedResourceGetSingletonRequestHandler,
+    getSingletonWoAuth,
+    getSingletonWithAuth,
 } from "../../../../src/request-handler-factories/get-singleton.js";
 
 // minimum required properties
-unauthenticatedResourceGetSingletonRequestHandler({
+getSingletonWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({}),
@@ -12,7 +12,7 @@ unauthenticatedResourceGetSingletonRequestHandler({
 });
 
 // with all properties
-unauthenticatedResourceGetSingletonRequestHandler({
+getSingletonWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({}),
@@ -22,7 +22,7 @@ unauthenticatedResourceGetSingletonRequestHandler({
 });
 
 // with all properties - non-async
-unauthenticatedResourceGetSingletonRequestHandler({
+getSingletonWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: () => [null, {}],
     retrieveEntityFunction: () => ({}),
@@ -32,7 +32,7 @@ unauthenticatedResourceGetSingletonRequestHandler({
 });
 
 // with all properties - mixed async and non-async
-unauthenticatedResourceGetSingletonRequestHandler({
+getSingletonWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: () => ({}),
@@ -42,7 +42,7 @@ unauthenticatedResourceGetSingletonRequestHandler({
 });
 
 // with an entity
-unauthenticatedResourceGetSingletonRequestHandler<{hello: string}, {feHello: string}, {}, {}>({
+getSingletonWoAuth<{hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({hello: 'world'}),
@@ -50,7 +50,7 @@ unauthenticatedResourceGetSingletonRequestHandler<{hello: string}, {feHello: str
 });
 
 // with context
-unauthenticatedResourceGetSingletonRequestHandler<{hello: string}, {feHello: string}, {}, {context: string}>({
+getSingletonWoAuth<{hello: string}, {feHello: string}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async ({context}) => ({hello: context.context}),
@@ -58,7 +58,7 @@ unauthenticatedResourceGetSingletonRequestHandler<{hello: string}, {feHello: str
 });
 
 // with other data
-unauthenticatedResourceGetSingletonRequestHandler<
+getSingletonWoAuth<
     {hello: string}, {feHello: string}, {}, {context: string}, {other: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
@@ -69,7 +69,7 @@ unauthenticatedResourceGetSingletonRequestHandler<
 });
 
 // authenticated minimum required properties
-authenticatedResourceGetSingletonRequestHandler({
+getSingletonWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({}),
@@ -77,7 +77,7 @@ authenticatedResourceGetSingletonRequestHandler({
 });
 
 // authenticated with all properties
-authenticatedResourceGetSingletonRequestHandler({
+getSingletonWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({}),
@@ -87,7 +87,7 @@ authenticatedResourceGetSingletonRequestHandler({
 });
 
 // authenticated with all properties - non-async
-authenticatedResourceGetSingletonRequestHandler({
+getSingletonWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: () => [null, {}],
     retrieveEntityFunction: () => ({}),
@@ -97,7 +97,7 @@ authenticatedResourceGetSingletonRequestHandler({
 });
 
 // authenticated with all properties - mixed async and non-async
-authenticatedResourceGetSingletonRequestHandler({
+getSingletonWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: () => ({}),
@@ -107,7 +107,7 @@ authenticatedResourceGetSingletonRequestHandler({
 });
 
 // authenticated with an entity
-authenticatedResourceGetSingletonRequestHandler<{}, {hello: string}, {feHello: string}, {}, {}>({
+getSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({hello: 'world'}),
@@ -115,7 +115,7 @@ authenticatedResourceGetSingletonRequestHandler<{}, {hello: string}, {feHello: s
 });
 
 // authenticated with context
-authenticatedResourceGetSingletonRequestHandler<{}, {hello: string}, {feHello: string}, {}, {context: string}>({
+getSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async ({context}) => ({hello: context.context}),
@@ -123,7 +123,7 @@ authenticatedResourceGetSingletonRequestHandler<{}, {hello: string}, {feHello: s
 });
 
 // authenticated with other data
-authenticatedResourceGetSingletonRequestHandler<
+getSingletonWithAuth<
     {}, {hello: string}, {feHello: string}, {}, {context: string}, {other: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),

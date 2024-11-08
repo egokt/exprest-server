@@ -1,10 +1,10 @@
 import {
-    unauthenticatedEntityGetRequestHandlerFactory,
-    authenticatedEntityGetRequestHandlerFactory
+    getEntityWoAuth,
+    getEntityWithAuth,
 } from "../../../../src/request-handler-factories/get-entity.js";
 
 // minimum required properties
-unauthenticatedEntityGetRequestHandlerFactory({
+getEntityWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -13,7 +13,7 @@ unauthenticatedEntityGetRequestHandlerFactory({
 });
 
 // with all properties
-unauthenticatedEntityGetRequestHandlerFactory({
+getEntityWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -24,7 +24,7 @@ unauthenticatedEntityGetRequestHandlerFactory({
 });
 
 // with all properties - non-async
-unauthenticatedEntityGetRequestHandlerFactory({
+getEntityWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: () => [null, {}],
@@ -35,7 +35,7 @@ unauthenticatedEntityGetRequestHandlerFactory({
 });
 
 // with all properties - mixed async and non-async
-unauthenticatedEntityGetRequestHandlerFactory({
+getEntityWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -46,7 +46,7 @@ unauthenticatedEntityGetRequestHandlerFactory({
 });
 
 // with an entity
-unauthenticatedEntityGetRequestHandlerFactory<{hello: string}, {feHello: string}, {}, {}>({
+getEntityWoAuth<{hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -55,7 +55,7 @@ unauthenticatedEntityGetRequestHandlerFactory<{hello: string}, {feHello: string}
 });
 
 // with context
-unauthenticatedEntityGetRequestHandlerFactory<{hello: string}, {feHello: string}, {}, {context: string}>({
+getEntityWoAuth<{hello: string}, {feHello: string}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -64,7 +64,7 @@ unauthenticatedEntityGetRequestHandlerFactory<{hello: string}, {feHello: string}
 });
 
 // with other data
-unauthenticatedEntityGetRequestHandlerFactory<
+getEntityWoAuth<
     {hello: string}, {feHello: string}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
@@ -76,7 +76,7 @@ unauthenticatedEntityGetRequestHandlerFactory<
 });
 
 // authenticated minimum required properties
-authenticatedEntityGetRequestHandlerFactory({
+getEntityWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -85,7 +85,7 @@ authenticatedEntityGetRequestHandlerFactory({
 });
 
 // authenticated with all properties
-authenticatedEntityGetRequestHandlerFactory({
+getEntityWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -96,7 +96,7 @@ authenticatedEntityGetRequestHandlerFactory({
 });
 
 // authenticated with all properties - non-async
-authenticatedEntityGetRequestHandlerFactory({
+getEntityWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: () => [null, {}],
@@ -107,7 +107,7 @@ authenticatedEntityGetRequestHandlerFactory({
 });
 
 // authenticated with all properties - mixed async and non-async
-authenticatedEntityGetRequestHandlerFactory({
+getEntityWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -118,7 +118,7 @@ authenticatedEntityGetRequestHandlerFactory({
 });
 
 // authenticated with an entity
-authenticatedEntityGetRequestHandlerFactory<{}, {hello: string}, {feHello: string}, {}, {}>({
+getEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -127,7 +127,7 @@ authenticatedEntityGetRequestHandlerFactory<{}, {hello: string}, {feHello: strin
 });
 
 // authenticated with context
-authenticatedEntityGetRequestHandlerFactory<{}, {hello: string}, {feHello: string}, {}, {context: string}>({
+getEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -136,7 +136,7 @@ authenticatedEntityGetRequestHandlerFactory<{}, {hello: string}, {feHello: strin
 });
 
 // authenticated with other data
-authenticatedEntityGetRequestHandlerFactory<
+getEntityWithAuth<
     {}, {hello: string}, {feHello: string}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),

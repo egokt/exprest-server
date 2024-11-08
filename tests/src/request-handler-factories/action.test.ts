@@ -1,12 +1,12 @@
 import { actionResponse } from "../../../src/helpers/action-response";
 import { errorResponse } from "../../../src/helpers/error-response";
-import { authenticatedActionRequestHandlerFactory, unauthenticatedActionRequestHandlerFactory } from "../../../src/request-handler-factories/action";
+import { actionWithAuth, actionWoAuth } from "../../../src/request-handler-factories/action";
 import { mockExpressResponse } from "../helpers";
 
-describe("unauthenticatedActionRequestHandlerFactory", () => {
+describe("actionWoAuth", () => {
     it("should call contextCreateFunction", async () => {
         const contextCreateFunction = jest.fn().mockResolvedValue({});
-        const handler = unauthenticatedActionRequestHandlerFactory({
+        const handler = actionWoAuth({
             contextCreateFunction,
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
@@ -18,7 +18,7 @@ describe("unauthenticatedActionRequestHandlerFactory", () => {
 
     it("should call sanitizeParamsFunction", async () => {
         const sanitizeParamsFunction = jest.fn().mockResolvedValue([null, {}]);
-        const handler = unauthenticatedActionRequestHandlerFactory({
+        const handler = actionWoAuth({
             contextCreateFunction: () => ({}),
             sanitizeParamsFunction,
             sanitizeBodyFunction: () => [null, {}],
@@ -30,7 +30,7 @@ describe("unauthenticatedActionRequestHandlerFactory", () => {
 
     it("should call sanitizeBodyFunction", async () => {
         const sanitizeBodyFunction = jest.fn().mockResolvedValue([null, {}]);
-        const handler = unauthenticatedActionRequestHandlerFactory({
+        const handler = actionWoAuth({
             contextCreateFunction: () => ({}),
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction,
@@ -43,7 +43,7 @@ describe("unauthenticatedActionRequestHandlerFactory", () => {
     it("should call actionFunction", async () => {
         const actionFunction =
             jest.fn().mockResolvedValue({ status: 200, isSuccessful: true, actionResponseContent: null });
-        const handler = unauthenticatedActionRequestHandlerFactory({
+        const handler = actionWoAuth({
             contextCreateFunction: () => ({}),
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
@@ -55,7 +55,7 @@ describe("unauthenticatedActionRequestHandlerFactory", () => {
 
     it("should call postExecutionFunction", async () => {
         const postExecutionFunction = jest.fn();
-        const handler = unauthenticatedActionRequestHandlerFactory({
+        const handler = actionWoAuth({
             contextCreateFunction: () => ({}),
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
@@ -72,7 +72,7 @@ describe("unauthenticatedActionRequestHandlerFactory", () => {
         const mockJsonFunc = jest.fn();
         const mockStatusFunc = jest.fn().mockReturnValue({ json: mockJsonFunc });
         const mockResponse = { status: mockStatusFunc };
-        const handler = unauthenticatedActionRequestHandlerFactory({
+        const handler = actionWoAuth({
             contextCreateFunction: () => ({}),
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
@@ -91,7 +91,7 @@ describe("unauthenticatedActionRequestHandlerFactory", () => {
         const mockEndFunc = jest.fn();
         const mockStatusFunc = jest.fn().mockReturnValue({ json: mockJsonFunc, end: mockEndFunc });
         const mockResponse = { status: mockStatusFunc };
-        const handler = unauthenticatedActionRequestHandlerFactory({
+        const handler = actionWoAuth({
             contextCreateFunction: () => ({}),
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
@@ -112,7 +112,7 @@ describe("unauthenticatedActionRequestHandlerFactory", () => {
         const mockEndFunc = jest.fn();
         const mockStatusFunc = jest.fn().mockReturnValue({ json: mockJsonFunc, end: mockEndFunc });
         const mockResponse = { status: mockStatusFunc };
-        const handler = unauthenticatedActionRequestHandlerFactory({
+        const handler = actionWoAuth({
             contextCreateFunction: () => ({}),
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
@@ -126,11 +126,11 @@ describe("unauthenticatedActionRequestHandlerFactory", () => {
     });
 });
 
-describe("authenticatedActionRequestHandlerFactory", () => {
+describe("actionWithAuth", () => {
     it("should fail if not authenticated", async () => {
         const mockStatusFunc = jest.fn().mockReturnValue({send: jest.fn()});
         const mockResponse = {status: mockStatusFunc}
-        const handler = authenticatedActionRequestHandlerFactory({
+        const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
@@ -142,7 +142,7 @@ describe("authenticatedActionRequestHandlerFactory", () => {
 
     it("should call contextCreateFunction", async () => {
         const contextCreateFunction = jest.fn().mockResolvedValue({});
-        const handler = authenticatedActionRequestHandlerFactory({
+        const handler = actionWithAuth({
             contextCreateFunction,
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
@@ -154,7 +154,7 @@ describe("authenticatedActionRequestHandlerFactory", () => {
 
     it("should call sanitizeParamsFunction", async () => {
         const sanitizeParamsFunction = jest.fn().mockResolvedValue([null, {}]);
-        const handler = authenticatedActionRequestHandlerFactory({
+        const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
             sanitizeParamsFunction,
             sanitizeBodyFunction: () => [null, {}],
@@ -166,7 +166,7 @@ describe("authenticatedActionRequestHandlerFactory", () => {
 
     it("should call sanitizeBodyFunction", async () => {
         const sanitizeBodyFunction = jest.fn().mockResolvedValue([null, {}]);
-        const handler = authenticatedActionRequestHandlerFactory({
+        const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction,
@@ -179,7 +179,7 @@ describe("authenticatedActionRequestHandlerFactory", () => {
     it("should call actionFunction", async () => {
         const actionFunction =
             jest.fn().mockResolvedValue({ status: 200, isSuccessful: true, actionResponseContent: null });
-        const handler = authenticatedActionRequestHandlerFactory({
+        const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
@@ -191,7 +191,7 @@ describe("authenticatedActionRequestHandlerFactory", () => {
 
     it("should call postExecutionFunction", async () => {
         const postExecutionFunction = jest.fn();
-        const handler = authenticatedActionRequestHandlerFactory({
+        const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
@@ -208,7 +208,7 @@ describe("authenticatedActionRequestHandlerFactory", () => {
         const mockJsonFunc = jest.fn();
         const mockStatusFunc = jest.fn().mockReturnValue({ json: mockJsonFunc });
         const mockResponse = { status: mockStatusFunc };
-        const handler = authenticatedActionRequestHandlerFactory({
+        const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
@@ -227,7 +227,7 @@ describe("authenticatedActionRequestHandlerFactory", () => {
         const mockEndFunc = jest.fn();
         const mockStatusFunc = jest.fn().mockReturnValue({ json: mockJsonFunc, end: mockEndFunc });
         const mockResponse = { status: mockStatusFunc };
-        const handler = authenticatedActionRequestHandlerFactory({
+        const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
@@ -248,7 +248,7 @@ describe("authenticatedActionRequestHandlerFactory", () => {
         const mockEndFunc = jest.fn();
         const mockStatusFunc = jest.fn().mockReturnValue({ json: mockJsonFunc, end: mockEndFunc });
         const mockResponse = { status: mockStatusFunc };
-        const handler = authenticatedActionRequestHandlerFactory({
+        const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],

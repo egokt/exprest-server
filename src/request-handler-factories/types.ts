@@ -1,4 +1,4 @@
-import { SuccessfulCollectionResponse, SuccessfulCollectionResponseWithOtherData, SuccessfulEntityResponse, SuccessfulEntityResponseWithOtherData } from "@egokt/exprest-shared";
+import { SuccessfulCollectionResponse, SuccessfulCollectionResponseWithOtherData, SuccessfulEntityResponse, SuccessfulEntityResponseWithOtherData } from "exprest-shared";
 import express from "express";
 
 export type CreateContextWithAuthFunction<USER, CONTEXT> = (param0: {user: USER}) => CONTEXT | Promise<CONTEXT>;

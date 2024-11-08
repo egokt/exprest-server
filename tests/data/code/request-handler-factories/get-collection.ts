@@ -1,10 +1,10 @@
 import {
-    unauthenticatedResourceGetCollectionRequestHandler,
-    authenticatedResourceGetCollectionRequestHandler
+    getCollectionWoAuth,
+    getCollectionWithAuth,
 } from "../../../../src/request-handler-factories/get-collection.js";
 
 // minimum required properties
-unauthenticatedResourceGetCollectionRequestHandler({
+getCollectionWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async () => [],
@@ -12,7 +12,7 @@ unauthenticatedResourceGetCollectionRequestHandler({
 });
 
 // with all properties
-unauthenticatedResourceGetCollectionRequestHandler({
+getCollectionWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async () => [],
@@ -22,7 +22,7 @@ unauthenticatedResourceGetCollectionRequestHandler({
 });
 
 // with all properties - non-async
-unauthenticatedResourceGetCollectionRequestHandler({
+getCollectionWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: () => [null, {}],
     retrieveEntityCollectionFunction: () => [],
@@ -32,7 +32,7 @@ unauthenticatedResourceGetCollectionRequestHandler({
 });
 
 // with all properties - mixed async and non-async
-unauthenticatedResourceGetCollectionRequestHandler({
+getCollectionWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: () => [],
@@ -42,7 +42,7 @@ unauthenticatedResourceGetCollectionRequestHandler({
 });
 
 // with an entity
-unauthenticatedResourceGetCollectionRequestHandler<{hello: string}, {feHello: string}, {}, {}>({
+getCollectionWoAuth<{hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async () => [{hello: 'world'}],
@@ -50,7 +50,7 @@ unauthenticatedResourceGetCollectionRequestHandler<{hello: string}, {feHello: st
 });
 
 // with context
-unauthenticatedResourceGetCollectionRequestHandler<{hello: string}, {feHello: string}, {}, {context: string}>({
+getCollectionWoAuth<{hello: string}, {feHello: string}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async ({context}) => [{hello: context.context}],
@@ -58,7 +58,7 @@ unauthenticatedResourceGetCollectionRequestHandler<{hello: string}, {feHello: st
 });
 
 // with other data
-unauthenticatedResourceGetCollectionRequestHandler<
+getCollectionWoAuth<
     {hello: string}, {feHello: string}, {}, {context: string}, {otherStuff: string[]}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
@@ -69,7 +69,7 @@ unauthenticatedResourceGetCollectionRequestHandler<
 });
 
 // authenticated with minimum required properties
-authenticatedResourceGetCollectionRequestHandler({
+getCollectionWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async () => [],
@@ -77,7 +77,7 @@ authenticatedResourceGetCollectionRequestHandler({
 });
 
 // authenticated with all properties
-authenticatedResourceGetCollectionRequestHandler({
+getCollectionWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async () => [],
@@ -87,7 +87,7 @@ authenticatedResourceGetCollectionRequestHandler({
 });
 
 // authenticated with all properties - non-async
-authenticatedResourceGetCollectionRequestHandler({
+getCollectionWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: () => [null, {}],
     retrieveEntityCollectionFunction: () => [],
@@ -97,7 +97,7 @@ authenticatedResourceGetCollectionRequestHandler({
 });
 
 // authenticated with all properties - mixed async and non-async
-authenticatedResourceGetCollectionRequestHandler({
+getCollectionWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: () => [],
@@ -107,7 +107,7 @@ authenticatedResourceGetCollectionRequestHandler({
 });
 
 // authenticated with an entity
-authenticatedResourceGetCollectionRequestHandler<{}, {hello: string}, {feHello: string}, {}, {}>({
+getCollectionWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async () => [{hello: 'world'}],
@@ -115,7 +115,7 @@ authenticatedResourceGetCollectionRequestHandler<{}, {hello: string}, {feHello: 
 });
 
 // authenticated with context
-authenticatedResourceGetCollectionRequestHandler<{}, {hello: string}, {feHello: string}, {}, {context: string}>({
+getCollectionWithAuth<{}, {hello: string}, {feHello: string}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async ({context}) => [{hello: context.context}],
@@ -123,7 +123,7 @@ authenticatedResourceGetCollectionRequestHandler<{}, {hello: string}, {feHello: 
 });
 
 // authenticated with other data
-authenticatedResourceGetCollectionRequestHandler<
+getCollectionWithAuth<
     {}, {hello: string}, {feHello: string}, {}, {context: string}, {otherStuff: string[]}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
