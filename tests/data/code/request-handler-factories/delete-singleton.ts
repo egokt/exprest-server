@@ -1,17 +1,17 @@
 import {
-    unauthenticatedResourceDeleteSingletonRequestHandlerFactory,
-    authenticatedResourceDeleteSingletonRequestHandlerFactory
+    deleteSingletonWoAuth,
+    deleteSingletonWithAuth,
 } from '../../../../src/request-handler-factories/delete-singleton.js';
 
 // minimum required properties
-unauthenticatedResourceDeleteSingletonRequestHandlerFactory({
+deleteSingletonWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async () => ({}),
 });
 
 // with all properties
-unauthenticatedResourceDeleteSingletonRequestHandlerFactory({
+deleteSingletonWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async () => ({}),
@@ -22,7 +22,7 @@ unauthenticatedResourceDeleteSingletonRequestHandlerFactory({
 });
 
 // with all properties - non-async
-unauthenticatedResourceDeleteSingletonRequestHandlerFactory({
+deleteSingletonWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: () => [null, {}],
     deleteEntityFunction: () => ({}),
@@ -33,7 +33,7 @@ unauthenticatedResourceDeleteSingletonRequestHandlerFactory({
 });
 
 // with all properties - mixed async and non-async
-unauthenticatedResourceDeleteSingletonRequestHandlerFactory({
+deleteSingletonWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: () => ({}),
@@ -44,7 +44,7 @@ unauthenticatedResourceDeleteSingletonRequestHandlerFactory({
 });
 
 // with an entity
-unauthenticatedResourceDeleteSingletonRequestHandlerFactory<{hello: string}, {feHello: string}, {}, {}>({
+deleteSingletonWoAuth<{hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async () => ({hello: 'world'}),
@@ -52,14 +52,14 @@ unauthenticatedResourceDeleteSingletonRequestHandlerFactory<{hello: string}, {fe
 });
 
 // with context
-unauthenticatedResourceDeleteSingletonRequestHandlerFactory<{hello: string}, {feHello: string}, {}, {context: string}>({
+deleteSingletonWoAuth<{hello: string}, {feHello: string}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async ({context}) => ({hello: context.context}),
 });
 
 // with other data
-unauthenticatedResourceDeleteSingletonRequestHandlerFactory<
+deleteSingletonWoAuth<
     {hello: string}, {feHello: string}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
@@ -69,14 +69,14 @@ unauthenticatedResourceDeleteSingletonRequestHandlerFactory<
 });
 
 // minimum required properties
-authenticatedResourceDeleteSingletonRequestHandlerFactory({
+deleteSingletonWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async () => ({}),
 });
 
 // with all properties
-authenticatedResourceDeleteSingletonRequestHandlerFactory({
+deleteSingletonWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async () => ({}),
@@ -87,7 +87,7 @@ authenticatedResourceDeleteSingletonRequestHandlerFactory({
 });
 
 // with all properties - non-async
-authenticatedResourceDeleteSingletonRequestHandlerFactory({
+deleteSingletonWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: () => [null, {}],
     deleteEntityFunction: () => ({}),
@@ -98,7 +98,7 @@ authenticatedResourceDeleteSingletonRequestHandlerFactory({
 });
 
 // with all properties - mixed async and non-async
-authenticatedResourceDeleteSingletonRequestHandlerFactory({
+deleteSingletonWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: () => ({}),
@@ -109,7 +109,7 @@ authenticatedResourceDeleteSingletonRequestHandlerFactory({
 });
 
 // with an entity
-authenticatedResourceDeleteSingletonRequestHandlerFactory<{}, {hello: string}, {feHello: string}, {}, {}>({
+deleteSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async () => ({hello: 'world'}),
@@ -117,14 +117,14 @@ authenticatedResourceDeleteSingletonRequestHandlerFactory<{}, {hello: string}, {
 });
 
 // with context
-authenticatedResourceDeleteSingletonRequestHandlerFactory<{}, {hello: string}, {feHello: string}, {}, {context: string}>({
+deleteSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async ({context}) => ({hello: context.context}),
 });
 
 // with other data
-authenticatedResourceDeleteSingletonRequestHandlerFactory<
+deleteSingletonWithAuth<
     {}, {hello: string}, {feHello: string}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),

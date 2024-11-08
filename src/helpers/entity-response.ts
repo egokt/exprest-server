@@ -1,7 +1,7 @@
 import {
     SuccessfulEntityResponse,
     SuccessfulEntityResponseWithOtherData,
-} from "@egokt/exprest-shared";
+} from "exprest-shared";
 
 export function entityResponse<FEM_TYPE>(
     entity: FEM_TYPE

@@ -1,7 +1,7 @@
 import {
     SuccessfulCollectionResponse,
     SuccessfulCollectionResponseWithOtherData,
-} from "@egokt/exprest-shared";
+} from "exprest-shared";
 
 export function collectionResponse<FEM_TYPE>(
     collection: Array<FEM_TYPE>

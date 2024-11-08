@@ -1,10 +1,10 @@
 import {
-    unauthenticatedEntityDeleteRequestHandlerFactory,
-    authenticatedEntityDeleteRequestHandlerFactory
+    deleteEntityWoAuth,
+    deleteEntityWithAuth,
 } from '../../../../src/request-handler-factories/delete-entity.js';
 
 // minimum required properties
-unauthenticatedEntityDeleteRequestHandlerFactory({
+deleteEntityWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -12,7 +12,7 @@ unauthenticatedEntityDeleteRequestHandlerFactory({
 });
 
 // with all properties
-unauthenticatedEntityDeleteRequestHandlerFactory({
+deleteEntityWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -24,7 +24,7 @@ unauthenticatedEntityDeleteRequestHandlerFactory({
 });
 
 // with all properties - non-async
-unauthenticatedEntityDeleteRequestHandlerFactory({
+deleteEntityWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: () => [null, {}],
@@ -36,7 +36,7 @@ unauthenticatedEntityDeleteRequestHandlerFactory({
 });
 
 // with all properties - mixed async and non-async
-unauthenticatedEntityDeleteRequestHandlerFactory({
+deleteEntityWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -48,7 +48,7 @@ unauthenticatedEntityDeleteRequestHandlerFactory({
 });
 
 // with an entity
-unauthenticatedEntityDeleteRequestHandlerFactory<{hello: string}, {feHello: string}, {}, {}>({
+deleteEntityWoAuth<{hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -57,7 +57,7 @@ unauthenticatedEntityDeleteRequestHandlerFactory<{hello: string}, {feHello: stri
 });
 
 // with context
-unauthenticatedEntityDeleteRequestHandlerFactory<{hello: string}, {feHello: string}, {}, {context: string}>({
+deleteEntityWoAuth<{hello: string}, {feHello: string}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -65,7 +65,7 @@ unauthenticatedEntityDeleteRequestHandlerFactory<{hello: string}, {feHello: stri
 });
 
 // with other data
-unauthenticatedEntityDeleteRequestHandlerFactory<
+deleteEntityWoAuth<
     {hello: string}, {feHello: string}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
@@ -76,7 +76,7 @@ unauthenticatedEntityDeleteRequestHandlerFactory<
 });
 
 // minimum required properties
-authenticatedEntityDeleteRequestHandlerFactory({
+deleteEntityWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -84,7 +84,7 @@ authenticatedEntityDeleteRequestHandlerFactory({
 });
 
 // with all properties
-authenticatedEntityDeleteRequestHandlerFactory({
+deleteEntityWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -96,7 +96,7 @@ authenticatedEntityDeleteRequestHandlerFactory({
 });
 
 // with all properties - non-async
-authenticatedEntityDeleteRequestHandlerFactory({
+deleteEntityWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: () => [null, {}],
@@ -108,7 +108,7 @@ authenticatedEntityDeleteRequestHandlerFactory({
 });
 
 // with all properties - mixed async and non-async
-authenticatedEntityDeleteRequestHandlerFactory({
+deleteEntityWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -120,7 +120,7 @@ authenticatedEntityDeleteRequestHandlerFactory({
 });
 
 // with an entity
-authenticatedEntityDeleteRequestHandlerFactory<{}, {hello: string}, {feHello: string}, {}, {}>({
+deleteEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -129,7 +129,7 @@ authenticatedEntityDeleteRequestHandlerFactory<{}, {hello: string}, {feHello: st
 });
 
 // with context
-authenticatedEntityDeleteRequestHandlerFactory<{}, {hello: string}, {feHello: string}, {}, {context: string}>({
+deleteEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -137,7 +137,7 @@ authenticatedEntityDeleteRequestHandlerFactory<{}, {hello: string}, {feHello: st
 });
 
 // with other data
-authenticatedEntityDeleteRequestHandlerFactory<
+deleteEntityWithAuth<
     {}, {hello: string}, {feHello: string}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),

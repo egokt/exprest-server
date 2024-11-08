@@ -1,4 +1,4 @@
-import { SuccessfulActionResponse, } from "@egokt/exprest-shared";
+import { SuccessfulActionResponse, } from "exprest-shared";
 
 export function actionResponse<ACTION_RESPONSE_CONTENT>(
     actionResult: ACTION_RESPONSE_CONTENT

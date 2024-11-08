@@ -1,10 +1,10 @@
 import {
-    unauthenticatedEntityUpdateRequestHandlerFactory,
-    authenticatedEntityUpdateRequestHandlerFactory,
+    updateEntityWoAuth,
+    updateEntityWithAuth,
 } from "../../../../src/request-handler-factories/update-entity.js";
 
 // minimum required properties
-unauthenticatedEntityUpdateRequestHandlerFactory({
+updateEntityWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -13,7 +13,7 @@ unauthenticatedEntityUpdateRequestHandlerFactory({
 });
 
 // with all properties
-unauthenticatedEntityUpdateRequestHandlerFactory({
+updateEntityWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -26,7 +26,7 @@ unauthenticatedEntityUpdateRequestHandlerFactory({
 });
 
 // with all properties - non-async
-unauthenticatedEntityUpdateRequestHandlerFactory({
+updateEntityWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: () => [null, {}],
@@ -39,7 +39,7 @@ unauthenticatedEntityUpdateRequestHandlerFactory({
 });
 
 // with all properties - mixed async and non-async
-unauthenticatedEntityUpdateRequestHandlerFactory({
+updateEntityWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -52,7 +52,7 @@ unauthenticatedEntityUpdateRequestHandlerFactory({
 });
 
 // with an entity
-unauthenticatedEntityUpdateRequestHandlerFactory<{hello: string}, {feHello: string}, {}, {}>({
+updateEntityWoAuth<{hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -62,7 +62,7 @@ unauthenticatedEntityUpdateRequestHandlerFactory<{hello: string}, {feHello: stri
 });
 
 // with context
-unauthenticatedEntityUpdateRequestHandlerFactory<{hello: string}, {feHello: string}, {}, {}, {context: string}>({
+updateEntityWoAuth<{hello: string}, {feHello: string}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -72,7 +72,7 @@ unauthenticatedEntityUpdateRequestHandlerFactory<{hello: string}, {feHello: stri
 });
 
 // with other data
-unauthenticatedEntityUpdateRequestHandlerFactory<
+updateEntityWoAuth<
     {hello: string}, {feHello: string}, {}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
@@ -84,7 +84,7 @@ unauthenticatedEntityUpdateRequestHandlerFactory<
 });
 
 // authenticated - minimum required properties
-authenticatedEntityUpdateRequestHandlerFactory({
+updateEntityWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -93,7 +93,7 @@ authenticatedEntityUpdateRequestHandlerFactory({
 });
 
 // authenticated - with all properties
-authenticatedEntityUpdateRequestHandlerFactory({
+updateEntityWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -106,7 +106,7 @@ authenticatedEntityUpdateRequestHandlerFactory({
 });
 
 // authenticated - with all properties - non-async
-authenticatedEntityUpdateRequestHandlerFactory({
+updateEntityWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: () => [null, {}],
@@ -119,7 +119,7 @@ authenticatedEntityUpdateRequestHandlerFactory({
 });
 
 // authenticated - with all properties - mixed async and non-async
-authenticatedEntityUpdateRequestHandlerFactory({
+updateEntityWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -132,7 +132,7 @@ authenticatedEntityUpdateRequestHandlerFactory({
 });
 
 // authenticated - with an entity
-authenticatedEntityUpdateRequestHandlerFactory<{}, {hello: string}, {feHello: string}, {}, {}>({
+updateEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -142,7 +142,7 @@ authenticatedEntityUpdateRequestHandlerFactory<{}, {hello: string}, {feHello: st
 });
 
 // authenticated - with context
-authenticatedEntityUpdateRequestHandlerFactory<{}, {hello: string}, {feHello: string}, {}, {}, {context: string}>({
+updateEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
@@ -152,7 +152,7 @@ authenticatedEntityUpdateRequestHandlerFactory<{}, {hello: string}, {feHello: st
 });
 
 // authenticated - with other data
-authenticatedEntityUpdateRequestHandlerFactory<
+updateEntityWithAuth<
     {}, {hello: string}, {feHello: string}, {}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),

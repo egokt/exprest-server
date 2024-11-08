@@ -1,10 +1,10 @@
 import {
-    unauthenticatedResourceCreateSingletonRequestHandlerFactory,
-    authenticatedResourceCreateSingletonRequestHandlerFactory,
+    createWoAuth,
+    createWithAuth,
 } from '../../../../src/request-handler-factories/create.js';
 
 // minimum required properties
-unauthenticatedResourceCreateSingletonRequestHandlerFactory({
+createWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
@@ -12,7 +12,7 @@ unauthenticatedResourceCreateSingletonRequestHandlerFactory({
 });
 
 // with all properties
-unauthenticatedResourceCreateSingletonRequestHandlerFactory({
+createWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
@@ -24,7 +24,7 @@ unauthenticatedResourceCreateSingletonRequestHandlerFactory({
 });
 
 // with all properties - non-async
-unauthenticatedResourceCreateSingletonRequestHandlerFactory({
+createWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
@@ -36,7 +36,7 @@ unauthenticatedResourceCreateSingletonRequestHandlerFactory({
 });
 
 // with all properties - mixed async and non-async
-unauthenticatedResourceCreateSingletonRequestHandlerFactory({
+createWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
@@ -48,7 +48,7 @@ unauthenticatedResourceCreateSingletonRequestHandlerFactory({
 });
 
 // with an entity
-unauthenticatedResourceCreateSingletonRequestHandlerFactory<{hello: string}, {feHello: string}, {}, {}>({
+createWoAuth<{hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
@@ -57,7 +57,7 @@ unauthenticatedResourceCreateSingletonRequestHandlerFactory<{hello: string}, {fe
 });
 
 // with context
-unauthenticatedResourceCreateSingletonRequestHandlerFactory<
+createWoAuth<
     {hello: string}, {feHello: string}, {}, {}, {source: string}
 >({
     contextCreateFunction: async () => ({source: 'world'}),
@@ -68,7 +68,7 @@ unauthenticatedResourceCreateSingletonRequestHandlerFactory<
 });
 
 // with other data
-unauthenticatedResourceCreateSingletonRequestHandlerFactory<
+createWoAuth<
     {hello: string}, {feHello: string}, {}, {}, {source: string}, {otherStuff: string[]}
 >({
     contextCreateFunction: async () => ({source: 'world'}),
@@ -80,7 +80,7 @@ unauthenticatedResourceCreateSingletonRequestHandlerFactory<
 });
 
 // minimum required properties
-authenticatedResourceCreateSingletonRequestHandlerFactory({
+createWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
@@ -88,7 +88,7 @@ authenticatedResourceCreateSingletonRequestHandlerFactory({
 });
 
 // with all properties
-authenticatedResourceCreateSingletonRequestHandlerFactory({
+createWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
@@ -100,7 +100,7 @@ authenticatedResourceCreateSingletonRequestHandlerFactory({
 });
 
 // with all properties - non-async
-authenticatedResourceCreateSingletonRequestHandlerFactory({
+createWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
@@ -112,7 +112,7 @@ authenticatedResourceCreateSingletonRequestHandlerFactory({
 });
 
 // with all properties - mixed async and non-async
-authenticatedResourceCreateSingletonRequestHandlerFactory({
+createWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
@@ -124,7 +124,7 @@ authenticatedResourceCreateSingletonRequestHandlerFactory({
 });
 
 // with an entity
-authenticatedResourceCreateSingletonRequestHandlerFactory<{}, {hello: string}, {feHello: string}, {}, {}>({
+createWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
@@ -133,7 +133,7 @@ authenticatedResourceCreateSingletonRequestHandlerFactory<{}, {hello: string}, {
 });
 
 // with context
-authenticatedResourceCreateSingletonRequestHandlerFactory<
+createWithAuth<
     {}, {hello: string}, {feHello: string}, {}, {}, {source: string}
 >({
     contextCreateFunction: async () => ({source: 'world'}),
@@ -144,7 +144,7 @@ authenticatedResourceCreateSingletonRequestHandlerFactory<
 });
 
 // with other data
-authenticatedResourceCreateSingletonRequestHandlerFactory<
+createWithAuth<
     {}, {hello: string}, {feHello: string}, {}, {}, {source: string}, {otherStuff: string[]}
 >({
     contextCreateFunction: async () => ({source: 'world'}),
