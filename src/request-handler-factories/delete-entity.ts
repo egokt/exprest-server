@@ -77,7 +77,7 @@ export function deleteEntityWithAuth<
                     if (convertToFrontEndEntityFunction) {
                         const feEntity = await convertToFrontEndEntityFunction({entity: deletedEntity, user, context, submittedEntityId, params});
                         if (otherDataValueOrFunction) {
-                            const otherData = (otherDataValueOrFunction instanceof Function
+                            const otherData = (typeof otherDataValueOrFunction === "function"
                                 ? await otherDataValueOrFunction({user, context, entity: deletedEntity, submittedEntityId, params})
                                 : otherDataValueOrFunction);
                             res.status(200).json(entityResponse(feEntity, otherData));
@@ -146,7 +146,7 @@ export function deleteEntityWoAuth<
                     if (convertToFrontEndEntityFunction) {
                         const feEntity = await convertToFrontEndEntityFunction({entity: deletedEntity, context, submittedEntityId, params});
                         if (otherDataValueOrFunction) {
-                            const otherData = (otherDataValueOrFunction instanceof Function
+                            const otherData = (typeof otherDataValueOrFunction === "function"
                                 ? await otherDataValueOrFunction({context, entity: deletedEntity, submittedEntityId, params})
                                 : otherDataValueOrFunction);
                             res.status(200).json(entityResponse(feEntity, otherData));
