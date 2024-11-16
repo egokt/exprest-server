@@ -55,7 +55,7 @@ export function getSingletonWithAuth<
                 postExecutionFunction && postExecutionFunction({status: 404, isSuccessful: false, user, context});
             } else {
                 const feEntity = await convertToFrontEndEntityFunction({entity, user, context, params});
-                const otherData = (otherDataValueOrFunction instanceof Function
+                const otherData = (typeof otherDataValueOrFunction === "function"
                     ? await otherDataValueOrFunction({user, entity, context, params})
                     : otherDataValueOrFunction);
                 res.status(200).json(entityResponse(feEntity, otherData));
@@ -99,7 +99,7 @@ export function getSingletonWoAuth<
                 postExecutionFunction && postExecutionFunction({status: 404, isSuccessful: false, context});
             } else {
                 const feEntity = await convertToFrontEndEntityFunction({entity, context, params});
-                const otherData = (otherDataValueOrFunction instanceof Function
+                const otherData = (typeof otherDataValueOrFunction === "function"
                     ? await otherDataValueOrFunction({entity, context, params})
                     : otherDataValueOrFunction);
                 res.status(200).json(entityResponse(feEntity, otherData));

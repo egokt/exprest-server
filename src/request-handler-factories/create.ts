@@ -76,13 +76,13 @@ export function createWoAuth<
             const entity =
                 await createEntityFunction({params, body, context});
             if (entity === null) {
-                res.status(404).end();
-                postExecutionFunction && postExecutionFunction({status: 404, isSuccessful: false, context, params, body});
+                res.status(400).end();
+                postExecutionFunction && postExecutionFunction({status: 400, isSuccessful: false, context, params, body});
             } else {
                 if (convertToFrontEndEntityFunction) {
                     const feEntity = await convertToFrontEndEntityFunction({entity, context, params});
                     if (otherDataValueOrFunction) {
-                        const otherData = (otherDataValueOrFunction instanceof Function
+                        const otherData = (typeof otherDataValueOrFunction === "function"
                             ? await otherDataValueOrFunction({context, entity, params})
                             : otherDataValueOrFunction);
                         res.status(200).json(entityResponse(feEntity, otherData));
@@ -93,7 +93,7 @@ export function createWoAuth<
                     }
                 } else {
                     res.status(204).end();
-                    postExecutionFunction && postExecutionFunction({status: 204, isSuccessful: true, context, params, body});
+                    postExecutionFunction && postExecutionFunction({status: 204, isSuccessful: true, entity, context, params, body});
                 }
             }
         }
@@ -153,13 +153,13 @@ export function createWithAuth<
             const entity =
                 await createEntityFunction({user, params, body, context});
             if (entity === null) {
-                res.status(404).end();
-                postExecutionFunction && postExecutionFunction({status: 404, isSuccessful: false, user, context, params, body});
+                res.status(400).end();
+                postExecutionFunction && postExecutionFunction({status: 400, isSuccessful: false, user, context, params, body});
             } else {
                 if (convertToFrontEndEntityFunction) {
                     const feEntity = await convertToFrontEndEntityFunction({entity, user, context, params});
                     if (otherDataValueOrFunction) {
-                        const otherData = (otherDataValueOrFunction instanceof Function
+                        const otherData = (typeof otherDataValueOrFunction === "function"
                             ? await otherDataValueOrFunction({user, context, entity, params})
                             : otherDataValueOrFunction);
                         res.status(200).json(entityResponse(feEntity, otherData));
@@ -170,7 +170,7 @@ export function createWithAuth<
                     }
                 } else {
                     res.status(204).end();
-                    postExecutionFunction && postExecutionFunction({status: 204, isSuccessful: true, user, context, params, body});
+                    postExecutionFunction && postExecutionFunction({status: 204, isSuccessful: true, entity, user, context, params, body});
                 }
             }
         }

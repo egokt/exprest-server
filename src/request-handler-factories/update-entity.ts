@@ -93,7 +93,7 @@ export function updateEntityWithAuth<
                     if (convertToFrontEndEntityFunction) {
                         const feEntity = await convertToFrontEndEntityFunction({entity, user, context, submittedEntityId, params});
                         if (otherDataValueOrFunction) {
-                            const otherData = (otherDataValueOrFunction instanceof Function
+                            const otherData = (typeof otherDataValueOrFunction === "function"
                                 ? await otherDataValueOrFunction({user, context, entity, submittedEntityId, params})
                                 : otherDataValueOrFunction);
                             res.status(200).json(entityResponse(feEntity, otherData));
@@ -175,7 +175,7 @@ export function updateEntityWoAuth<
                     if (convertToFrontEndEntityFunction) {
                         const feEntity = await convertToFrontEndEntityFunction({entity, context, submittedEntityId, params});
                         if (otherDataValueOrFunction) {
-                            const otherData = (otherDataValueOrFunction instanceof Function
+                            const otherData = (typeof otherDataValueOrFunction === "function"
                                 ? await otherDataValueOrFunction({context, entity, submittedEntityId, params})
                                 : otherDataValueOrFunction);
                             res.status(200).json(entityResponse(feEntity, otherData));

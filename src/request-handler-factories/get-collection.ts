@@ -81,7 +81,7 @@ export function getCollectionWoAuth<
         const feEntitiesOrPromises =
             entities.map((entity) => convertToFrontEndEntityFunction({entity, context, params}));
         const feEntities = await Promise.all(feEntitiesOrPromises);
-        const otherData = (otherDataValueOrFunction instanceof Function
+        const otherData = (typeof otherDataValueOrFunction === "function"
             ? (await otherDataValueOrFunction({context, entities, params}))
             : otherDataValueOrFunction);
         res.status(200).json(collectionResponse(feEntities, otherData));
@@ -141,7 +141,7 @@ export function getCollectionWithAuth<
         const feEntitiesOrPromises =
             entities.map((entity) => convertToFrontEndEntityFunction({entity, user, context, params}));
         const feEntities = await Promise.all(feEntitiesOrPromises);
-        const otherData = (otherDataValueOrFunction instanceof Function
+        const otherData = (typeof otherDataValueOrFunction === "function"
             ? (await otherDataValueOrFunction({user, context, entities, params}))
             : otherDataValueOrFunction);
         res.status(200).json(collectionResponse(feEntities, otherData));
