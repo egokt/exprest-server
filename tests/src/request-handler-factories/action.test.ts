@@ -12,7 +12,8 @@ describe("actionWoAuth", () => {
             sanitizeBodyFunction: () => [null, {}],
             actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
         });
-        await handler({} as any, mockExpressResponse() as any);
+        const { response } = mockExpressResponse();
+        await handler({} as any, response as any);
         expect(contextCreateFunction).toHaveBeenCalled();
     });
 
@@ -24,7 +25,8 @@ describe("actionWoAuth", () => {
             sanitizeBodyFunction: () => [null, {}],
             actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
         });
-        await handler({} as any, mockExpressResponse() as any);
+        const { response } = mockExpressResponse();
+        await handler({} as any, response as any);
         expect(sanitizeParamsFunction).toHaveBeenCalled();
     });
 
@@ -36,7 +38,8 @@ describe("actionWoAuth", () => {
             sanitizeBodyFunction,
             actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
         });
-        await handler({} as any, mockExpressResponse() as any);
+        const { response } = mockExpressResponse();
+        await handler({} as any, response as any);
         expect(sanitizeBodyFunction).toHaveBeenCalled();
     });
 
@@ -49,7 +52,8 @@ describe("actionWoAuth", () => {
             sanitizeBodyFunction: () => [null, {}],
             actionFunction,
         });
-        await handler({} as any, mockExpressResponse() as any);
+        const { response } = mockExpressResponse();
+        await handler({} as any, response as any);
         expect(actionFunction).toHaveBeenCalled();
     });
 
@@ -62,7 +66,8 @@ describe("actionWoAuth", () => {
             actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
             postExecutionFunction,
         });
-        await handler({} as any, mockExpressResponse() as any);
+        const { response } = mockExpressResponse();
+        await handler({} as any, response as any);
         expect(postExecutionFunction).toHaveBeenCalled();
     });
 
@@ -148,7 +153,8 @@ describe("actionWithAuth", () => {
             sanitizeBodyFunction: () => [null, {}],
             actionFunction: () => ({ status: 204, isSuccessful: true, actionResponseContent: null }),
         });
-        await handler({user: {}} as any, mockExpressResponse() as any);
+        const { response } = mockExpressResponse();
+        await handler({user: {}} as any, response as any);
         expect(contextCreateFunction).toHaveBeenCalled();
     });
 
@@ -160,7 +166,8 @@ describe("actionWithAuth", () => {
             sanitizeBodyFunction: () => [null, {}],
             actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
         });
-        await handler({user: {}} as any, mockExpressResponse() as any);
+        const { response } = mockExpressResponse();
+        await handler({user: {}} as any, response as any);
         expect(sanitizeParamsFunction).toHaveBeenCalled();
     });
 
@@ -172,7 +179,8 @@ describe("actionWithAuth", () => {
             sanitizeBodyFunction,
             actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
         });
-        await handler({user: {}} as any, mockExpressResponse() as any);
+        const { response } = mockExpressResponse();
+        await handler({user: {}} as any, response as any);
         expect(sanitizeBodyFunction).toHaveBeenCalled();
     });
 
@@ -185,7 +193,8 @@ describe("actionWithAuth", () => {
             sanitizeBodyFunction: () => [null, {}],
             actionFunction,
         });
-        await handler({user: {}} as any, mockExpressResponse() as any);
+        const { response } = mockExpressResponse();
+        await handler({user: {}} as any, response as any);
         expect(actionFunction).toHaveBeenCalled();
     });
 
@@ -198,7 +207,8 @@ describe("actionWithAuth", () => {
             actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
             postExecutionFunction,
         });
-        await handler({user: {}} as any, mockExpressResponse() as any);
+        const { response } = mockExpressResponse();
+        await handler({user: {}} as any, response as any);
         expect(postExecutionFunction).toHaveBeenCalled();
     });
 

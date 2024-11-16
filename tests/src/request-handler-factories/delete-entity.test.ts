@@ -1,3 +1,4 @@
+import { entityResponse } from "../../../src/helpers/entity-response";
 import { deleteEntityWoAuth, deleteEntityWithAuth } from "../../../src/request-handler-factories/delete-entity";
 import { mockExpressResponse } from "../helpers";
 
@@ -8,11 +9,12 @@ describe("deleteEntityWoAuth", () => {
 
         // Act
         const handler = deleteEntityWoAuth(props);
-        const response = mockExpressResponse();
+        const {response, jsonFn } = mockExpressResponse();
         await handler({params: {id: 1}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(200);
+        expect(jsonFn).toHaveBeenCalledWith(entityResponse({}, {}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
@@ -36,11 +38,13 @@ describe("deleteEntityWoAuth", () => {
 
         // Act
         const handler = deleteEntityWoAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({params: {}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(404);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).not.toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
@@ -61,11 +65,13 @@ describe("deleteEntityWoAuth", () => {
 
         // Act
         const handler = deleteEntityWoAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({params: {id: 1}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(404);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
@@ -86,11 +92,13 @@ describe("deleteEntityWoAuth", () => {
 
         // Act
         const handler = deleteEntityWoAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({params: {id: 1}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(400);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
@@ -112,11 +120,13 @@ describe("deleteEntityWoAuth", () => {
 
         // Act
         const handler = deleteEntityWoAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({params: {id: 1}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(403);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
@@ -138,11 +148,12 @@ describe("deleteEntityWoAuth", () => {
 
         // Act
         const handler = deleteEntityWoAuth(props);
-        const response = mockExpressResponse();
+        const { response } = mockExpressResponse();
         await handler({params: {id: 1}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(404);
+        // we don't return error reasons in this case: see https://github.com/egokt/exprest-server/issues/10
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
@@ -164,11 +175,12 @@ describe("deleteEntityWoAuth", () => {
 
         // Act
         const handler = deleteEntityWoAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({params: {id: 1}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(204);
+        expect(jsonFn).not.toHaveBeenCalled();
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
@@ -190,11 +202,12 @@ describe("deleteEntityWoAuth", () => {
 
         // Act
         const handler = deleteEntityWoAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({params: {id: 1}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(200);
+        expect(jsonFn).toHaveBeenCalledWith(entityResponse({}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
@@ -218,7 +231,7 @@ describe("deleteEntityWithAuth", () => {
 
         // Act
         const handler = deleteEntityWithAuth(props);
-        const response = mockExpressResponse();
+        const { response } = mockExpressResponse();
         await handler({params: {id: 1}} as any, response as any);
 
         // Assert
@@ -239,11 +252,12 @@ describe("deleteEntityWithAuth", () => {
 
         // Act
         const handler = deleteEntityWithAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({user: {}, params: {id: 1}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(200);
+        expect(jsonFn).toHaveBeenCalledWith(entityResponse({}, {}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
@@ -267,11 +281,13 @@ describe("deleteEntityWithAuth", () => {
 
         // Act
         const handler = deleteEntityWithAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({user: {}, params: {}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(404);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).not.toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
@@ -292,11 +308,13 @@ describe("deleteEntityWithAuth", () => {
 
         // Act
         const handler = deleteEntityWithAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({user: {}, params: {id: 1}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(404);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
@@ -317,11 +335,13 @@ describe("deleteEntityWithAuth", () => {
 
         // Act
         const handler = deleteEntityWithAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({user: {}, params: {id: 1}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(400);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
@@ -343,11 +363,13 @@ describe("deleteEntityWithAuth", () => {
 
         // Act
         const handler = deleteEntityWithAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({user: {}, params: {id: 1}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(403);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
@@ -369,11 +391,12 @@ describe("deleteEntityWithAuth", () => {
 
         // Act
         const handler = deleteEntityWithAuth(props);
-        const response = mockExpressResponse();
+        const { response } = mockExpressResponse();
         await handler({user: {}, params: {id: 1}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(404);
+        // we don't return error reasons in this case: see https://github.com/egokt/exprest-server/issues/10
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
@@ -395,11 +418,12 @@ describe("deleteEntityWithAuth", () => {
 
         // Act
         const handler = deleteEntityWithAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({user: {}, params: {id: 1}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(204);
+        expect(jsonFn).not.toHaveBeenCalled();
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
@@ -421,11 +445,12 @@ describe("deleteEntityWithAuth", () => {
 
         // Act
         const handler = deleteEntityWithAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({user: {}, params: {id: 1}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(200);
+        expect(jsonFn).toHaveBeenCalledWith(entityResponse({}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();

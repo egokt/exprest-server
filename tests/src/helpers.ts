@@ -1,4 +1,8 @@
 
 export function mockExpressResponse() {
-    return {status: jest.fn().mockReturnValue({json: jest.fn(), end: jest.fn(), send: jest.fn()})};
+    const jsonFn = jest.fn();
+    const endFn = jest.fn();
+    const sendFn = jest.fn();
+    const status = jest.fn().mockReturnValue({json: jsonFn, end: endFn, send: sendFn});
+    return {response: {status}, status, jsonFn, endFn, sendFn};
 }
