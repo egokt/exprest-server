@@ -190,6 +190,27 @@ describe("createWoAuth", () => {
 });
 
 describe("createWithAuth", () => {
+    it("should return 401 if user is not defined", async () => {
+        // Arrange
+        const props = defaultPropMock();
+
+        // Act
+        const handler = createWithAuth(props);
+        const response = mockExpressResponse();
+        await handler({} as any, response as any);
+
+        // Assert
+        expect(response.status).toHaveBeenCalledWith(401);
+        expect(props.contextCreateFunction).not.toHaveBeenCalled();
+        expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
+        expect(props.sanitizeBodyFunction).not.toHaveBeenCalled();
+        expect(props.determineAuthorityToCreateFunction).not.toHaveBeenCalled();
+        expect(props.createEntityFunction).not.toHaveBeenCalled();
+        expect(props.convertToFrontEndEntityFunction).not.toHaveBeenCalled();
+        expect(props.otherDataValueOrFunction).not.toHaveBeenCalled();
+        expect(props.postExecutionFunction).not.toHaveBeenCalled();
+    });
+
     it("should call all necessary functions", async () => {
         // Arrange
         const props = defaultPropMock();
