@@ -1,3 +1,4 @@
+import { entityResponse } from "../../../src/helpers/entity-response";
 import { createWoAuth, createWithAuth } from "../../../src/request-handler-factories/create";
 import { mockExpressResponse } from "../helpers";
 
@@ -8,11 +9,12 @@ describe("createWoAuth", () => {
 
         // Act
         const handler = createWoAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(200);
+        expect(jsonFn).toHaveBeenCalledWith(entityResponse({}, {}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
@@ -35,11 +37,13 @@ describe("createWoAuth", () => {
 
         // Act
         const handler = createWoAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(400);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).not.toHaveBeenCalled();
@@ -62,11 +66,13 @@ describe("createWoAuth", () => {
 
         // Act
         const handler = createWoAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(400);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
@@ -89,11 +95,13 @@ describe("createWoAuth", () => {
 
         // Act
         const handler = createWoAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(403);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
@@ -116,11 +124,12 @@ describe("createWoAuth", () => {
 
         // Act
         const handler = createWoAuth(props);
-        const response = mockExpressResponse();
+        const { response } = mockExpressResponse();
         await handler({} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(400);
+        // we don't return error reasons in this case: see https://github.com/egokt/exprest-server/issues/10
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
@@ -143,11 +152,12 @@ describe("createWoAuth", () => {
 
         // Act
         const handler = createWoAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(204);
+        expect(jsonFn).not.toHaveBeenCalled();
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
@@ -169,11 +179,12 @@ describe("createWoAuth", () => {
 
         // Act
         const handler = createWoAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(200);
+        expect(jsonFn).toHaveBeenCalledWith(entityResponse({}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
@@ -196,7 +207,7 @@ describe("createWithAuth", () => {
 
         // Act
         const handler = createWithAuth(props);
-        const response = mockExpressResponse();
+        const { response } = mockExpressResponse();
         await handler({} as any, response as any);
 
         // Assert
@@ -217,11 +228,12 @@ describe("createWithAuth", () => {
 
         // Act
         const handler = createWithAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({user: {}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(200);
+        expect(jsonFn).toHaveBeenCalledWith(entityResponse({}, {}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
@@ -244,11 +256,13 @@ describe("createWithAuth", () => {
 
         // Act
         const handler = createWithAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({user: {}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(400);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).not.toHaveBeenCalled();
@@ -271,11 +285,13 @@ describe("createWithAuth", () => {
 
         // Act
         const handler = createWithAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({user: {}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(400);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
@@ -298,11 +314,13 @@ describe("createWithAuth", () => {
 
         // Act
         const handler = createWithAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({user: {}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(403);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
@@ -325,11 +343,12 @@ describe("createWithAuth", () => {
 
         // Act
         const handler = createWithAuth(props);
-        const response = mockExpressResponse();
+        const { response } = mockExpressResponse();
         await handler({user: {}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(400);
+        // we don't return error reasons in this case: see https://github.com/egokt/exprest-server/issues/10
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
@@ -352,11 +371,12 @@ describe("createWithAuth", () => {
 
         // Act
         const handler = createWithAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({user: {}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(204);
+        expect(jsonFn).not.toHaveBeenCalled();
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
@@ -378,11 +398,12 @@ describe("createWithAuth", () => {
 
         // Act
         const handler = createWithAuth(props);
-        const response = mockExpressResponse();
+        const { response, jsonFn } = mockExpressResponse();
         await handler({user: {}} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(200);
+        expect(jsonFn).toHaveBeenCalledWith(entityResponse({}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
