@@ -112,7 +112,7 @@ function unauthenticatedRequestHandlerHelperBase<SANITIZED_PARAMS extends {[key:
             await innerFunction({req, res, context});
         } catch (err) {
             console.error("Returning 500 due to error" + (err instanceof Error ? `: ${err.stack}` : ""));
-            res.status(500).send();
+            res.status(500).end();
             postExecutionFunction && postExecutionFunction({status: 500, isSuccessful: false, context});
         }
     }
@@ -236,7 +236,7 @@ export function unauthenticatedEntityRequestHandlerHelper<ID, SANITIZED_PARAMS e
         postExecutionFunction?: PostExecutionFunctionWithId<ID, SANITIZED_PARAMS, CONTEXT>,
     },
     innerFunction: EntityRequestHandlerInnerFunctionWoAuth<ID, SANITIZED_PARAMS, CONTEXT>,
-) {
+): RequestHandlerFunctionWoAuthReturnType<SANITIZED_PARAMS> {
     return unauthenticatedRequestHandlerHelperBase(
         { contextCreateFunction, postExecutionFunction },
         entityRequestHandlerHelperInnerFunctionBuilder<ID, SANITIZED_PARAMS, CONTEXT>(
@@ -275,7 +275,7 @@ function entityRequestHandlerHelperInnerFunctionBuilder<ID, SANITIZED_PARAMS ext
             return;
         } 
 
-        requestHandlerHelperInnerFunctionBuilder<SANITIZED_PARAMS, CONTEXT>(
+        await requestHandlerHelperInnerFunctionBuilder<SANITIZED_PARAMS, CONTEXT>(
             {
                 sanitizeParamsFunction: async (param0) => await sanitizeParamsFunction({submittedEntityId, ...param0}),
                 postExecutionFunction,

@@ -88,7 +88,7 @@ export function deleteEntityWithAuth<
                         }
                     } else {
                         res.status(204).end();
-                        postExecutionFunction && postExecutionFunction({status: 204, isSuccessful: true, user, context, submittedEntityId, params});
+                        postExecutionFunction && postExecutionFunction({status: 204, isSuccessful: true, user, entity: deletedEntity, context, submittedEntityId, params});
                     }
                 }
             }
@@ -157,7 +157,7 @@ export function deleteEntityWoAuth<
                         }
                     } else {
                         res.status(204).end();
-                        postExecutionFunction && postExecutionFunction({status: 204, isSuccessful: true, context, submittedEntityId, params});
+                        postExecutionFunction && postExecutionFunction({status: 204, isSuccessful: true, entity: deletedEntity, context, submittedEntityId, params});
                     }
                 }
             }
