@@ -344,8 +344,6 @@ describe('deleteSingletonWithAuth', () => {
     });
 });
 
-
-
 function defaultPropMock<FUNC extends typeof deleteSingletonWoAuth | typeof deleteSingletonWithAuth>(): Parameters<FUNC>[0] {
     return {
         contextCreateFunction: jest.fn(),
