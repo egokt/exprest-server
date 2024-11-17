@@ -104,7 +104,7 @@ export function updateEntityWithAuth<
                         }
                     } else {
                         res.status(204).end();
-                        postExecutionFunction && postExecutionFunction({status: 204, isSuccessful: true, user, context, submittedEntityId, params, body});
+                        postExecutionFunction && postExecutionFunction({status: 204, isSuccessful: true, entity, user, context, submittedEntityId, params, body});
                     }
                 }
             }
@@ -186,7 +186,7 @@ export function updateEntityWoAuth<
                         }
                     } else {
                         res.status(204).end();
-                        postExecutionFunction && postExecutionFunction({status: 204, isSuccessful: true, context, submittedEntityId, params, body});
+                        postExecutionFunction && postExecutionFunction({status: 204, isSuccessful: true, context, entity, submittedEntityId, params, body});
                     }
                 }
             }
