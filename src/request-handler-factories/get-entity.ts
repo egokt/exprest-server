@@ -61,7 +61,7 @@ export function getEntityWithAuth<
             const entity = await retrieveEntityFunction({user, submittedEntityId, context, params});
             if (entity === null) {
                 res.status(404).send();
-                postExecutionFunction && postExecutionFunction({status: 404, isSuccessful: false, user, context});
+                postExecutionFunction && postExecutionFunction({status: 404, isSuccessful: false, user, params, context});
             } else {
                 const feEntity = await convertToFrontEndEntityFunction({entity, user, context, submittedEntityId, params});
                 const otherData = (typeof otherDataValueOrFunction === "function"
@@ -111,7 +111,7 @@ export function getEntityWoAuth<
             const entity = await retrieveEntityFunction({submittedEntityId, context, params});
             if (entity === null) {
                 res.status(404).send();
-                postExecutionFunction && postExecutionFunction({status: 404, isSuccessful: false, context});
+                postExecutionFunction && postExecutionFunction({status: 404, isSuccessful: false, params, context});
             } else {
                 const feEntity = await convertToFrontEndEntityFunction({entity, context, submittedEntityId, params});
                 const otherData = (typeof otherDataValueOrFunction === "function"

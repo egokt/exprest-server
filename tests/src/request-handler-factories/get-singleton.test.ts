@@ -47,7 +47,6 @@ describe("getSingletonWoAuth", () => {
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.retrieveEntityFunction).not.toHaveBeenCalled();
         expect(props.convertToFrontEndEntityFunction).not.toHaveBeenCalled();
-        expect(props.convertToFrontEndEntityFunction).not.toHaveBeenCalled();
         expect(props.otherDataValueOrFunction).not.toHaveBeenCalled();
         expect(props.postExecutionFunction).toHaveBeenCalled();
         const postExecutionFunctionArgs = (props.postExecutionFunction as ReturnType<typeof jest.fn>).mock.calls[0][0];
@@ -148,7 +147,6 @@ describe("getSingletonWithAuth", () => {
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.retrieveEntityFunction).not.toHaveBeenCalled();
-        expect(props.convertToFrontEndEntityFunction).not.toHaveBeenCalled();
         expect(props.convertToFrontEndEntityFunction).not.toHaveBeenCalled();
         expect(props.otherDataValueOrFunction).not.toHaveBeenCalled();
         expect(props.postExecutionFunction).toHaveBeenCalled();
