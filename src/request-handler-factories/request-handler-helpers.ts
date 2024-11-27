@@ -11,8 +11,8 @@ import {
     SanitizeParamsWithAuthFunction,
     SanitizeParamsWithAuthWithIdFunction,
     SanitizeParamsWoAuthFunction,
-    SanitizeParamsWoAuthWithIdFunction
-} from './types.js';
+    SanitizeParamsWoAuthWithIdFunction,
+} from 'exprest-shared';
 
 export function getUserFromRequest<USER>(req: express.Request<any> & {user?: USER}): USER | null {
     if (req.user) {
