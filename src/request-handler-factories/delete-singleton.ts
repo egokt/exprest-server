@@ -5,22 +5,10 @@ import {
 import { errorResponse } from '../helpers/error-response.js';
 import { entityResponse } from '../helpers/entity-response.js';
 import {
-    ConvertToFrontEndEntityWithAuthFunction,
-    ConvertToFrontEndEntityWoAuthFunction,
-    CreateContextWithAuthFunction,
-    CreateContextWoAuthFunction,
-    DeleteFunction,
-    DeleteFunctionWithUser,
-    DetermineAuthorityToChangeFunction,
-    DetermineAuthorityToChangeFunctionWithUser,
-    EntityReturningRequestHandlerFunction,
-    OtherDataWithAuthWithEntityFunction,
-    OtherDataWoAuthWithEntityFunction,
-    PostExecutionFunctionWithEntity,
-    PostExecutionFunctionWithUserWithEntity,
-    SanitizeParamsWithAuthFunction,
-    SanitizeParamsWoAuthFunction
-} from './types.js';
+    DeleteSingletonWithAuthRequestHandlerFactoryProps,
+    DeleteSingletonWoAuthRequestHandlerFactoryProps,
+    EntityReturningRequestHandlerFunction
+} from 'exprest-shared';
 
 export function deleteSingletonWithAuth<
     USER,
@@ -38,19 +26,8 @@ export function deleteSingletonWithAuth<
         convertToFrontEndEntityFunction = undefined,
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
-    }: {
-        contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
-        sanitizeParamsFunction: SanitizeParamsWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS>,
-        determineAuthorityToDeleteFunction?:
-            DetermineAuthorityToChangeFunctionWithUser<USER, SANITIZED_PARAMS, CONTEXT>,
-        deleteEntityFunction: DeleteFunctionWithUser<USER, ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        convertToFrontEndEntityFunction?:
-            ConvertToFrontEndEntityWithAuthFunction<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        otherDataValueOrFunction?:
-            OTHER_DATA | OtherDataWithAuthWithEntityFunction<USER, ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?:
-            PostExecutionFunctionWithUserWithEntity<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
-    }
+    }: DeleteSingletonWithAuthRequestHandlerFactoryProps<
+        USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return authenticatedResourceRequestHandlerHelper(
         { contextCreateFunction, sanitizeParamsFunction, postExecutionFunction },
@@ -103,17 +80,7 @@ export function deleteSingletonWoAuth<
         convertToFrontEndEntityFunction = undefined,
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
-    }: {
-        contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
-        sanitizeParamsFunction: SanitizeParamsWoAuthFunction<CONTEXT, SANITIZED_PARAMS>,
-        determineAuthorityToDeleteFunction?: DetermineAuthorityToChangeFunction<SANITIZED_PARAMS, CONTEXT>,
-        deleteEntityFunction: DeleteFunction<ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        convertToFrontEndEntityFunction?:
-            ConvertToFrontEndEntityWoAuthFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        otherDataValueOrFunction?:
-            OTHER_DATA | OtherDataWoAuthWithEntityFunction<ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?: PostExecutionFunctionWithEntity<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
-    }
+    }: DeleteSingletonWoAuthRequestHandlerFactoryProps<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return unauthenticatedResourceRequestHandlerHelper(
         { contextCreateFunction, sanitizeParamsFunction, postExecutionFunction },

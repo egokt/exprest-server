@@ -5,23 +5,10 @@ import {
 import { errorResponse } from '../helpers/error-response.js';
 import { entityResponse } from '../helpers/entity-response.js';
 import {
-    ConvertToFrontEndEntityWithAuthWithIdFunction,
-    ConvertToFrontEndEntityWoAuthWithIdFunction,
-    CreateContextWithAuthFunction,
-    CreateContextWoAuthFunction,
-    DeleteFunctionWithId,
-    DeleteFunctionWithUserWithId,
-    DetermineAuthorityToChangeFunctionWithId,
-    DetermineAuthorityToChangeFunctionWithUserWithId,
-    EntityReturningRequestHandlerFunction,
-    OtherDataWithAuthWithEntityWithIdFunction,
-    OtherDataWoAuthWithEntityWithIdFunction,
-    PostExecutionFunctionWithIdWithEntity,
-    PostExecutionFunctionWithUserWithIdWithEntity,
-    SanitizeIdFunction,
-    SanitizeParamsWithAuthWithIdFunction,
-    SanitizeParamsWoAuthWithIdFunction
-} from './types.js';
+    DeleteEntityWithAuthRequestHandlerFactoryProps,
+    DeleteEntityWoAuthRequestHandlerFactoryProps,
+    EntityReturningRequestHandlerFunction
+} from 'exprest-shared';
 
 export function deleteEntityWithAuth<
     USER,
@@ -42,23 +29,8 @@ export function deleteEntityWithAuth<
         convertToFrontEndEntityFunction = undefined,
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
-    }: {
-        idParamName?: string,
-        contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
-        sanitizeIdFunction: SanitizeIdFunction<ID>,
-        sanitizeParamsFunction: SanitizeParamsWithAuthWithIdFunction<ID, USER, CONTEXT, SANITIZED_PARAMS>,
-        determineAuthorityToDeleteFunction?:
-            DetermineAuthorityToChangeFunctionWithUserWithId<ID, USER, SANITIZED_PARAMS, CONTEXT>,
-        deleteEntityFunction: DeleteFunctionWithUserWithId<ID, USER, ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        convertToFrontEndEntityFunction?:
-            ConvertToFrontEndEntityWithAuthWithIdFunction<
-                ID, USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        otherDataValueOrFunction?:
-            OTHER_DATA
-                | OtherDataWithAuthWithEntityWithIdFunction<ID, USER, ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?:
-            PostExecutionFunctionWithUserWithIdWithEntity<ID, USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>
-    }
+    }: DeleteEntityWithAuthRequestHandlerFactoryProps<
+        USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA, ID>
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return authenticatedEntityRequestHandlerHelper(
         { contextCreateFunction, idParamName, sanitizeIdFunction, sanitizeParamsFunction, postExecutionFunction },
@@ -114,20 +86,7 @@ export function deleteEntityWoAuth<
         convertToFrontEndEntityFunction = undefined,
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
-    }: {
-        idParamName?: string,
-        contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
-        sanitizeIdFunction: SanitizeIdFunction<ID>,
-        sanitizeParamsFunction: SanitizeParamsWoAuthWithIdFunction<ID, CONTEXT, SANITIZED_PARAMS>,
-        determineAuthorityToDeleteFunction?: DetermineAuthorityToChangeFunctionWithId<ID, SANITIZED_PARAMS, CONTEXT>,
-        deleteEntityFunction: DeleteFunctionWithId<ID, ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        convertToFrontEndEntityFunction?:
-            ConvertToFrontEndEntityWoAuthWithIdFunction<ID, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        otherDataValueOrFunction?:
-            OTHER_DATA | OtherDataWoAuthWithEntityWithIdFunction<ID, ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?:
-            PostExecutionFunctionWithIdWithEntity<ID, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
-    }
+    }: DeleteEntityWoAuthRequestHandlerFactoryProps<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA, ID>
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return unauthenticatedEntityRequestHandlerHelper(
         { contextCreateFunction, idParamName, sanitizeIdFunction, sanitizeParamsFunction, postExecutionFunction },
