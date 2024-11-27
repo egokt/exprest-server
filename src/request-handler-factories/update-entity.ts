@@ -5,25 +5,10 @@ import {
 import { errorResponse } from '../helpers/error-response.js';
 import { entityResponse } from '../helpers/entity-response.js';
 import {
-    ConvertToFrontEndEntityWithAuthWithIdFunction,
-    ConvertToFrontEndEntityWoAuthWithIdFunction,
-    CreateContextWithAuthFunction,
-    CreateContextWoAuthFunction,
-    CreateOrUpdateFunctionWithId,
-    CreateOrUpdateFunctionWithUserWithId,
-    DetermineAuthorityToChangeFunctionWithBodyWithId,
-    DetermineAuthorityToChangeFunctionWithUserWithBodyWithId,
     EntityReturningRequestHandlerFunction,
-    OtherDataWithAuthWithEntityWithIdFunction,
-    OtherDataWoAuthWithEntityWithIdFunction,
-    PostExecutionFunctionWithBodyWithEntityWithId,
-    PostExecutionFunctionWithUserWithBodyWithEntityWithId,
-    SanitizeBodyWithAuthWithIdFunction,
-    SanitizeBodyWoAuthWithIdFunction,
-    SanitizeIdFunction,
-    SanitizeParamsWithAuthWithIdFunction,
-    SanitizeParamsWoAuthWithIdFunction
-} from './types.js';
+    UpdateEntityWithAuthRequestHandlerFactoryProps,
+    UpdateEntityWoAuthRequestHandlerFactoryProps
+} from 'exprest-shared';
 
 export function updateEntityWithAuth<
     USER,
@@ -46,27 +31,8 @@ export function updateEntityWithAuth<
         convertToFrontEndEntityFunction = undefined,
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
-    }: {
-        idParamName?: string,
-        contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
-        sanitizeIdFunction: SanitizeIdFunction<ID>,
-        sanitizeParamsFunction: SanitizeParamsWithAuthWithIdFunction<ID, USER, CONTEXT, SANITIZED_PARAMS>,
-        sanitizeBodyFunction: SanitizeBodyWithAuthWithIdFunction<ID, USER, CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
-        determineAuthorityToUpdateFunction?:
-            DetermineAuthorityToChangeFunctionWithUserWithBodyWithId<
-                ID, USER, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-        updateEntityFunction:
-            CreateOrUpdateFunctionWithUserWithId<ID, USER, ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-        convertToFrontEndEntityFunction?:
-            ConvertToFrontEndEntityWithAuthWithIdFunction<
-                ID, USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        otherDataValueOrFunction?:
-            OTHER_DATA
-                | OtherDataWithAuthWithEntityWithIdFunction<ID, USER, ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?:
-            PostExecutionFunctionWithUserWithBodyWithEntityWithId<
-                ID, USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-    }
+    }: UpdateEntityWithAuthRequestHandlerFactoryProps<
+        USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA, ID>
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return authenticatedEntityRequestHandlerHelper(
         { contextCreateFunction, idParamName, sanitizeIdFunction, sanitizeParamsFunction, postExecutionFunction },
@@ -132,23 +98,8 @@ export function updateEntityWoAuth<
         convertToFrontEndEntityFunction = undefined,
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
-    }: {
-        idParamName?: string,
-        contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
-        sanitizeIdFunction: SanitizeIdFunction<ID>,
-        sanitizeParamsFunction: SanitizeParamsWoAuthWithIdFunction<ID, CONTEXT, SANITIZED_PARAMS>,
-        sanitizeBodyFunction: SanitizeBodyWoAuthWithIdFunction<ID, CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
-        determineAuthorityToUpdateFunction?:
-            DetermineAuthorityToChangeFunctionWithBodyWithId<ID, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-        updateEntityFunction: CreateOrUpdateFunctionWithId<ID, ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-        convertToFrontEndEntityFunction?:
-            ConvertToFrontEndEntityWoAuthWithIdFunction<ID, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        otherDataValueOrFunction?:
-            OTHER_DATA | OtherDataWoAuthWithEntityWithIdFunction<ID, ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?:
-            PostExecutionFunctionWithBodyWithEntityWithId<
-                ID, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-    }
+    }: UpdateEntityWoAuthRequestHandlerFactoryProps<
+        ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA, ID>
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return unauthenticatedEntityRequestHandlerHelper(
         { contextCreateFunction, idParamName, sanitizeIdFunction, sanitizeParamsFunction, postExecutionFunction },

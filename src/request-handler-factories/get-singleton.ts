@@ -4,20 +4,10 @@ import {
 } from './request-handler-helpers.js';
 import { entityResponse } from '../helpers/entity-response.js';
 import {
-    ConvertToFrontEndEntityWithAuthFunction,
-    ConvertToFrontEndEntityWoAuthFunction,
-    CreateContextWithAuthFunction,
-    CreateContextWoAuthFunction,
+    GetSingletonWoAuthRequestHandlerFactoryProps,
+    GetSingletonWithAuthRequestHandlerFactoryProps,
     EntityReturningRequestHandlerFunction,
-    OtherDataWithAuthWithEntityFunction,
-    OtherDataWoAuthWithEntityFunction,
-    PostExecutionFunctionWithEntity,
-    PostExecutionFunctionWithUserWithEntity,
-    RetrieveEntityFunction,
-    RetriveEntityFunctionWithUser,
-    SanitizeParamsWithAuthFunction,
-    SanitizeParamsWoAuthFunction
-} from './types.js';
+} from 'exprest-shared';
 
 export function getSingletonWithAuth<
     USER,
@@ -34,17 +24,7 @@ export function getSingletonWithAuth<
         convertToFrontEndEntityFunction,
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
-    }: {
-        contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
-        sanitizeParamsFunction: SanitizeParamsWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS>,
-        retrieveEntityFunction: RetriveEntityFunctionWithUser<USER, ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        convertToFrontEndEntityFunction:
-            ConvertToFrontEndEntityWithAuthFunction<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        otherDataValueOrFunction?:
-            OTHER_DATA | OtherDataWithAuthWithEntityFunction<USER, ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?:
-            PostExecutionFunctionWithUserWithEntity<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
-    }
+    }: GetSingletonWithAuthRequestHandlerFactoryProps<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return authenticatedResourceRequestHandlerHelper(
         { contextCreateFunction, sanitizeParamsFunction, postExecutionFunction },
@@ -79,16 +59,7 @@ export function getSingletonWoAuth<
         convertToFrontEndEntityFunction,
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
-    }: {
-        contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
-        sanitizeParamsFunction: SanitizeParamsWoAuthFunction<CONTEXT, SANITIZED_PARAMS>,
-        retrieveEntityFunction: RetrieveEntityFunction<ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        convertToFrontEndEntityFunction:
-            ConvertToFrontEndEntityWoAuthFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        otherDataValueOrFunction?:
-            OTHER_DATA | OtherDataWoAuthWithEntityFunction<ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?: PostExecutionFunctionWithEntity<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
-    }
+    }: GetSingletonWoAuthRequestHandlerFactoryProps<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return unauthenticatedResourceRequestHandlerHelper(
         { contextCreateFunction, sanitizeParamsFunction, postExecutionFunction },

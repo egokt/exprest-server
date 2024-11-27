@@ -1,26 +1,9 @@
 import {
-    createWithAuth,
-    createWoAuth
-} from './create.js';
-import {
-    ConvertToFrontEndEntityWithAuthFunction,
-    ConvertToFrontEndEntityWoAuthFunction,
-    CreateContextWithAuthFunction,
-    CreateContextWoAuthFunction,
-    CreateOrUpdateFunction,
-    CreateOrUpdateFunctionWithUser,
-    DetermineAuthorityToChangeFunctionWithBody,
-    DetermineAuthorityToChangeFunctionWithUserWithBody,
     EntityReturningRequestHandlerFunction,
-    OtherDataWithAuthWithEntityFunction,
-    OtherDataWoAuthWithEntityFunction,
-    PostExecutionFunctionWithBodyWithEntity,
-    PostExecutionFunctionWithUserWithBodyWithEntity,
-    SanitizeBodyWithAuthFunction,
-    SanitizeBodyWoAuthFunction,
-    SanitizeParamsWithAuthFunction,
-    SanitizeParamsWoAuthFunction
-} from './types.js';
+    UpdateSingletonWithAuthRequestHandlerFactoryProps,
+    UpdateSingletonWoAuthRequestHandlerFactoryProps
+} from 'exprest-shared';
+import { createWithAuth, createWoAuth } from './create.js';
 
 /**
  *
@@ -46,21 +29,8 @@ export function updateSingletonWithAuth<
         convertToFrontEndEntityFunction = undefined,
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
-    }: {
-        contextCreateFunction: CreateContextWithAuthFunction<USER, CONTEXT>,
-        sanitizeParamsFunction: SanitizeParamsWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS>,
-        sanitizeBodyFunction: SanitizeBodyWithAuthFunction<USER, CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
-        determineAuthorityToUpdateFunction?:
-            DetermineAuthorityToChangeFunctionWithUserWithBody<USER, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-        updateEntityFunction: CreateOrUpdateFunctionWithUser<USER, ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-        convertToFrontEndEntityFunction?:
-            ConvertToFrontEndEntityWithAuthFunction<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        otherDataValueOrFunction?:
-            OTHER_DATA | OtherDataWithAuthWithEntityFunction<USER, ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?:
-            PostExecutionFunctionWithUserWithBodyWithEntity<
-                USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-    }
+    }: UpdateSingletonWithAuthRequestHandlerFactoryProps<
+        USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA>
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return createWithAuth<
         USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA
@@ -99,21 +69,8 @@ export function updateSingletonWoAuth<
         convertToFrontEndEntityFunction = undefined,
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
-    }: {
-        contextCreateFunction: CreateContextWoAuthFunction<CONTEXT>,
-        sanitizeParamsFunction: SanitizeParamsWoAuthFunction<CONTEXT, SANITIZED_PARAMS>,
-        sanitizeBodyFunction: SanitizeBodyWoAuthFunction<CONTEXT, SANITIZED_PARAMS, SANITIZED_BODY>,
-        determineAuthorityToUpdateFunction?:
-            DetermineAuthorityToChangeFunctionWithBody<SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-        updateEntityFunction: CreateOrUpdateFunction<ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-        convertToFrontEndEntityFunction?:
-            ConvertToFrontEndEntityWoAuthFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT>,
-        otherDataValueOrFunction?:
-            OTHER_DATA | OtherDataWoAuthWithEntityFunction<ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>,
-        postExecutionFunction?:
-            PostExecutionFunctionWithBodyWithEntity<
-                ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT>,
-    }
+    }: UpdateSingletonWoAuthRequestHandlerFactoryProps<
+        ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA>
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return createWoAuth<
         ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA

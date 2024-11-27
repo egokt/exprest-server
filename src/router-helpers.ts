@@ -1,5 +1,8 @@
-import { ActionRequestHandlerFunction } from './request-handler-factories/action.js';
-import { EntityReturningRequestHandlerFunction, GetCollectionRequestHandlerFunction } from './request-handler-factories/types.js';
+import {
+    ActionRequestHandlerFunction,
+    EntityReturningRequestHandlerFunction,
+    GetCollectionRequestHandlerFunction
+} from 'exprest-shared';
 
 /**
  * Function to use for adding an action handler to an express router.
@@ -27,7 +30,7 @@ export function addCreateRoute<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
-    OTHER_DATA extends Object | null,
+    OTHER_DATA extends Object | null = null,
 >(
     router: import('express').Router,
     path: string,
@@ -47,7 +50,7 @@ export function addDeleteEntityRoute<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
-    OTHER_DATA extends Object | null,
+    OTHER_DATA extends Object | null = null,
 >(
     idParamName: string,
     router: import('express').Router,
@@ -61,7 +64,7 @@ export function addDeleteSingletonRoute<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
-    OTHER_DATA extends Object | null,
+    OTHER_DATA extends Object | null = null,
 >(
     router: import('express').Router,
     path: string,
@@ -81,7 +84,7 @@ export function addGetCollectionRoute<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
-    OTHER_DATA extends Object | null,
+    OTHER_DATA extends Object | null = null,
 >(
     router: import('express').Router,
     path: string,
@@ -101,7 +104,7 @@ export function addGetEntityRoute<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
-    OTHER_DATA extends Object | null,
+    OTHER_DATA extends Object | null = null,
 >(
     idParamName: string,
     router: import('express').Router,
@@ -122,7 +125,7 @@ export function addGetSingletonRoute<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
-    OTHER_DATA extends Object | null,
+    OTHER_DATA extends Object | null = null,
 >(
     router: import('express').Router,
     path: string,
@@ -142,7 +145,7 @@ export function addUpdateEntityRoute<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
-    OTHER_DATA extends Object | null,
+    OTHER_DATA extends Object | null = null,
 >(
     idParamName: string,
     router: import('express').Router,
@@ -156,7 +159,7 @@ export function addUpdateSingletonRoute<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
     SANITIZED_PARAMS extends {[key: string]: string},
-    OTHER_DATA extends Object | null,
+    OTHER_DATA extends Object | null = null,
 >(
     router: import('express').Router,
     path: string,
