@@ -6,6 +6,7 @@ import {
 // minimum required properties
 createWoAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     createEntityFunction: async () => ({}),
@@ -14,6 +15,7 @@ createWoAuth({
 // with all properties
 createWoAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     createEntityFunction: async () => ({}),
@@ -26,6 +28,7 @@ createWoAuth({
 // with all properties - non-async
 createWoAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
     createEntityFunction: () => ({}),
@@ -38,6 +41,7 @@ createWoAuth({
 // with all properties - mixed async and non-async
 createWoAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
     createEntityFunction: async () => ({}),
@@ -48,8 +52,9 @@ createWoAuth({
 });
 
 // with an entity
-createWoAuth<{hello: string}, {feHello: string}, {}, {}>({
+createWoAuth<{hello: string}, {feHello: string}, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     createEntityFunction: async () => ({hello: 'world'}),
@@ -58,9 +63,10 @@ createWoAuth<{hello: string}, {feHello: string}, {}, {}>({
 
 // with context
 createWoAuth<
-    {hello: string}, {feHello: string}, {}, {}, {source: string}
+    {hello: string}, {feHello: string}, {}, {}, {}, {source: string}
 >({
     contextCreateFunction: async () => ({source: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     createEntityFunction: async ({context}) => ({hello: context.source}),
@@ -69,9 +75,10 @@ createWoAuth<
 
 // with other data
 createWoAuth<
-    {hello: string}, {feHello: string}, {}, {}, {source: string}, {otherStuff: string[]}
+    {hello: string}, {feHello: string}, {}, {}, {}, {source: string}, {otherStuff: string[]}
 >({
     contextCreateFunction: async () => ({source: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     createEntityFunction: async ({context}) => ({hello: context.source}),
@@ -82,6 +89,7 @@ createWoAuth<
 // minimum required properties
 createWithAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     createEntityFunction: async () => ({}),
@@ -90,6 +98,7 @@ createWithAuth({
 // with all properties
 createWithAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     createEntityFunction: async () => ({}),
@@ -102,6 +111,7 @@ createWithAuth({
 // with all properties - non-async
 createWithAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
     createEntityFunction: () => ({}),
@@ -114,6 +124,7 @@ createWithAuth({
 // with all properties - mixed async and non-async
 createWithAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
     createEntityFunction: async () => ({}),
@@ -124,8 +135,9 @@ createWithAuth({
 });
 
 // with an entity
-createWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
+createWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     createEntityFunction: async () => ({hello: 'world'}),
@@ -134,9 +146,10 @@ createWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
 
 // with context
 createWithAuth<
-    {}, {hello: string}, {feHello: string}, {}, {}, {source: string}
+    {}, {hello: string}, {feHello: string}, {}, {}, {}, {source: string}
 >({
     contextCreateFunction: async () => ({source: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     createEntityFunction: async ({context}) => ({hello: context.source}),
@@ -145,9 +158,10 @@ createWithAuth<
 
 // with other data
 createWithAuth<
-    {}, {hello: string}, {feHello: string}, {}, {}, {source: string}, {otherStuff: string[]}
+    {}, {hello: string}, {feHello: string}, {}, {}, {}, {source: string}, {otherStuff: string[]}
 >({
     contextCreateFunction: async () => ({source: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     createEntityFunction: async ({context}) => ({hello: context.source}),

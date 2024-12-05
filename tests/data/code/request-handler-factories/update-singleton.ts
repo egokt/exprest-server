@@ -6,6 +6,7 @@ import {
 // minimum required properties
 updateSingletonWoAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async () => ({}),
@@ -14,6 +15,7 @@ updateSingletonWoAuth({
 // with all properties
 updateSingletonWoAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async () => ({}),
@@ -26,6 +28,7 @@ updateSingletonWoAuth({
 // with all properties - non-async
 updateSingletonWoAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: () => [null, {}],
     sanitizeParamsFunction: () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
     updateEntityFunction: () => ({}),
@@ -38,6 +41,7 @@ updateSingletonWoAuth({
 // with all properties - mixed async and non-async
 updateSingletonWoAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
     updateEntityFunction: () => ({}),
@@ -48,8 +52,9 @@ updateSingletonWoAuth({
 });
 
 // with an entity
-updateSingletonWoAuth<{hello: string}, {feHello: string}, {}, {}>({
+updateSingletonWoAuth<{hello: string}, {feHello: string}, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async () => ({hello: 'world'}),
@@ -57,8 +62,9 @@ updateSingletonWoAuth<{hello: string}, {feHello: string}, {}, {}>({
 });
 
 // with context
-updateSingletonWoAuth<{hello: string}, {feHello: string}, {}, {}, {context: string}>({
+updateSingletonWoAuth<{hello: string}, {feHello: string}, {}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async ({context}) => ({hello: context.context}),
@@ -66,9 +72,10 @@ updateSingletonWoAuth<{hello: string}, {feHello: string}, {}, {}, {context: stri
 
 // with other data
 updateSingletonWoAuth<
-    {hello: string}, {feHello: string}, {}, {}, {context: string}, {source: string}
+    {hello: string}, {feHello: string}, {}, {}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async ({context}) => ({hello: context.context}),
@@ -77,6 +84,7 @@ updateSingletonWoAuth<
 // authenticated - minimum required properties
 updateSingletonWithAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async () => ({}),
@@ -85,6 +93,7 @@ updateSingletonWithAuth({
 // authenticated - with all properties
 updateSingletonWithAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async () => ({}),
@@ -97,6 +106,7 @@ updateSingletonWithAuth({
 // authenticated - with all properties - non-async
 updateSingletonWithAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: () => [null, {}],
     sanitizeParamsFunction: () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
     updateEntityFunction: () => ({}),
@@ -109,6 +119,7 @@ updateSingletonWithAuth({
 // authenticated - with all properties - mixed async and non-async
 updateSingletonWithAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
     updateEntityFunction: () => ({}),
@@ -119,8 +130,9 @@ updateSingletonWithAuth({
 });
 
 // authenticated - with an entity
-updateSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
+updateSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async () => ({hello: 'world'}),
@@ -128,8 +140,9 @@ updateSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
 });
 
 // authenticated - with context
-updateSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {context: string}>({
+updateSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async ({context}) => ({hello: context.context}),
@@ -137,9 +150,10 @@ updateSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {context
 
 // authenticated - with other data
 updateSingletonWithAuth<
-    {}, {hello: string}, {feHello: string}, {}, {}, {context: string}, {source: string}
+    {}, {hello: string}, {feHello: string}, {}, {}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async ({context}) => ({hello: context.context}),

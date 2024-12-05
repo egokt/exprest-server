@@ -6,6 +6,7 @@ import {
 // minimum required properties
 getCollectionWoAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async () => [],
     convertToFrontEndEntityFunction: async () => ({}),
@@ -14,6 +15,7 @@ getCollectionWoAuth({
 // with all properties
 getCollectionWoAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async () => [],
     convertToFrontEndEntityFunction: async () => ({}),
@@ -24,6 +26,7 @@ getCollectionWoAuth({
 // with all properties - non-async
 getCollectionWoAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: () => [null, {}],
     sanitizeParamsFunction: () => [null, {}],
     retrieveEntityCollectionFunction: () => [],
     convertToFrontEndEntityFunction: () => ({}),
@@ -34,6 +37,7 @@ getCollectionWoAuth({
 // with all properties - mixed async and non-async
 getCollectionWoAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: () => [],
     convertToFrontEndEntityFunction: () => ({}),
@@ -44,14 +48,16 @@ getCollectionWoAuth({
 // with an entity
 getCollectionWoAuth<{hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async () => [{hello: 'world'}],
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
 });
 
 // with context
-getCollectionWoAuth<{hello: string}, {feHello: string}, {}, {context: string}>({
+getCollectionWoAuth<{hello: string}, {feHello: string}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async ({context}) => [{hello: context.context}],
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
@@ -59,9 +65,10 @@ getCollectionWoAuth<{hello: string}, {feHello: string}, {}, {context: string}>({
 
 // with other data
 getCollectionWoAuth<
-    {hello: string}, {feHello: string}, {}, {context: string}, {otherStuff: string[]}
+    {hello: string}, {feHello: string}, {}, {}, {context: string}, {otherStuff: string[]}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async ({context}) => [{hello: context.context}],
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
@@ -71,6 +78,7 @@ getCollectionWoAuth<
 // authenticated with minimum required properties
 getCollectionWithAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async () => [],
     convertToFrontEndEntityFunction: async () => ({}),
@@ -79,6 +87,7 @@ getCollectionWithAuth({
 // authenticated with all properties
 getCollectionWithAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async () => [],
     convertToFrontEndEntityFunction: async () => ({}),
@@ -89,6 +98,7 @@ getCollectionWithAuth({
 // authenticated with all properties - non-async
 getCollectionWithAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: () => [null, {}],
     sanitizeParamsFunction: () => [null, {}],
     retrieveEntityCollectionFunction: () => [],
     convertToFrontEndEntityFunction: () => ({}),
@@ -99,6 +109,7 @@ getCollectionWithAuth({
 // authenticated with all properties - mixed async and non-async
 getCollectionWithAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: () => [],
     convertToFrontEndEntityFunction: () => ({}),
@@ -107,16 +118,18 @@ getCollectionWithAuth({
 });
 
 // authenticated with an entity
-getCollectionWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
+getCollectionWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async () => [{hello: 'world'}],
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
 });
 
 // authenticated with context
-getCollectionWithAuth<{}, {hello: string}, {feHello: string}, {}, {context: string}>({
+getCollectionWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async ({context}) => [{hello: context.context}],
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
@@ -124,9 +137,10 @@ getCollectionWithAuth<{}, {hello: string}, {feHello: string}, {}, {context: stri
 
 // authenticated with other data
 getCollectionWithAuth<
-    {}, {hello: string}, {feHello: string}, {}, {context: string}, {otherStuff: string[]}
+    {}, {hello: string}, {feHello: string}, {}, {}, {context: string}, {otherStuff: string[]}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityCollectionFunction: async ({context}) => [{hello: context.context}],
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),

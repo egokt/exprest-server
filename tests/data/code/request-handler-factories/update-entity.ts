@@ -7,6 +7,7 @@ import {
 updateEntityWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async () => ({}),
@@ -16,6 +17,7 @@ updateEntityWoAuth({
 updateEntityWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async () => ({}),
@@ -29,6 +31,7 @@ updateEntityWoAuth({
 updateEntityWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: () => [null, {}],
     sanitizeParamsFunction: () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
     updateEntityFunction: () => ({}),
@@ -42,6 +45,7 @@ updateEntityWoAuth({
 updateEntityWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
     updateEntityFunction: () => ({}),
@@ -52,9 +56,10 @@ updateEntityWoAuth({
 });
 
 // with an entity
-updateEntityWoAuth<{hello: string}, {feHello: string}, {}, {}>({
+updateEntityWoAuth<{hello: string}, {feHello: string}, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async () => ({hello: 'world'}),
@@ -62,9 +67,10 @@ updateEntityWoAuth<{hello: string}, {feHello: string}, {}, {}>({
 });
 
 // with context
-updateEntityWoAuth<{hello: string}, {feHello: string}, {}, {}, {context: string}>({
+updateEntityWoAuth<{hello: string}, {feHello: string}, {}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async ({context}) => ({hello: context.context}),
@@ -73,10 +79,11 @@ updateEntityWoAuth<{hello: string}, {feHello: string}, {}, {}, {context: string}
 
 // with other data
 updateEntityWoAuth<
-    {hello: string}, {feHello: string}, {}, {}, {context: string}, {source: string}
+    {hello: string}, {feHello: string}, {}, {}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async ({context}) => ({hello: context.context}),
@@ -87,6 +94,7 @@ updateEntityWoAuth<
 updateEntityWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async () => ({}),
@@ -96,6 +104,7 @@ updateEntityWithAuth({
 updateEntityWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async () => ({}),
@@ -109,6 +118,7 @@ updateEntityWithAuth({
 updateEntityWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: () => [null, {}],
     sanitizeParamsFunction: () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
     updateEntityFunction: () => ({}),
@@ -122,6 +132,7 @@ updateEntityWithAuth({
 updateEntityWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: () => [null, {}],
     updateEntityFunction: () => ({}),
@@ -132,9 +143,10 @@ updateEntityWithAuth({
 });
 
 // authenticated - with an entity
-updateEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
+updateEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async () => ({hello: 'world'}),
@@ -142,10 +154,11 @@ updateEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
 });
 
 // authenticated - with context
-updateEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {context: string}>({
+updateEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeIdFunction: () => [null, 1],
     sanitizeParamsFunction: async () => [null, {}],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async ({context}) => ({hello: context.context}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
@@ -153,13 +166,13 @@ updateEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {context: s
 
 // authenticated - with other data
 updateEntityWithAuth<
-    {}, {hello: string}, {feHello: string}, {}, {}, {context: string}, {source: string}
+    {}, {hello: string}, {feHello: string}, {}, {}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async ({context}) => ({hello: context.context}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
 });
-

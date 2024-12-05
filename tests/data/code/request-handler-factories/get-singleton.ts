@@ -6,6 +6,7 @@ import {
 // minimum required properties
 getSingletonWoAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({}),
     convertToFrontEndEntityFunction: async () => ({}),
@@ -14,6 +15,7 @@ getSingletonWoAuth({
 // with all properties
 getSingletonWoAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({}),
     convertToFrontEndEntityFunction: async () => ({}),
@@ -24,6 +26,7 @@ getSingletonWoAuth({
 // with all properties - non-async
 getSingletonWoAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: () => [null, {}],
     sanitizeParamsFunction: () => [null, {}],
     retrieveEntityFunction: () => ({}),
     convertToFrontEndEntityFunction: () => ({}),
@@ -34,6 +37,7 @@ getSingletonWoAuth({
 // with all properties - mixed async and non-async
 getSingletonWoAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: () => ({}),
     convertToFrontEndEntityFunction: () => ({}),
@@ -44,14 +48,16 @@ getSingletonWoAuth({
 // with an entity
 getSingletonWoAuth<{hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({hello: 'world'}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
 });
 
 // with context
-getSingletonWoAuth<{hello: string}, {feHello: string}, {}, {context: string}>({
+getSingletonWoAuth<{hello: string}, {feHello: string}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async ({context}) => ({hello: context.context}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
@@ -59,9 +65,10 @@ getSingletonWoAuth<{hello: string}, {feHello: string}, {}, {context: string}>({
 
 // with other data
 getSingletonWoAuth<
-    {hello: string}, {feHello: string}, {}, {context: string}, {other: string}
+    {hello: string}, {feHello: string}, {}, {}, {context: string}, {other: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async ({context}) => ({hello: context.context}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
@@ -71,6 +78,7 @@ getSingletonWoAuth<
 // authenticated minimum required properties
 getSingletonWithAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({}),
     convertToFrontEndEntityFunction: async () => ({}),
@@ -79,6 +87,7 @@ getSingletonWithAuth({
 // authenticated with all properties
 getSingletonWithAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({}),
     convertToFrontEndEntityFunction: async () => ({}),
@@ -89,6 +98,7 @@ getSingletonWithAuth({
 // authenticated with all properties - non-async
 getSingletonWithAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: () => [null, {}],
     sanitizeParamsFunction: () => [null, {}],
     retrieveEntityFunction: () => ({}),
     convertToFrontEndEntityFunction: () => ({}),
@@ -99,6 +109,7 @@ getSingletonWithAuth({
 // authenticated with all properties - mixed async and non-async
 getSingletonWithAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: () => ({}),
     convertToFrontEndEntityFunction: () => ({}),
@@ -107,16 +118,18 @@ getSingletonWithAuth({
 });
 
 // authenticated with an entity
-getSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
+getSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({hello: 'world'}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
 });
 
 // authenticated with context
-getSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {context: string}>({
+getSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async ({context}) => ({hello: context.context}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
@@ -124,12 +137,12 @@ getSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {context: strin
 
 // authenticated with other data
 getSingletonWithAuth<
-    {}, {hello: string}, {feHello: string}, {}, {context: string}, {other: string}
+    {}, {hello: string}, {feHello: string}, {}, {}, {context: string}, {other: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async ({context}) => ({hello: context.context}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
     otherDataValueOrFunction: async () => ({other: 'data'}),
 });
-

@@ -30,32 +30,44 @@ import {
 export function getCollectionWoAuth<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
+    SANITIZED_HEADERS extends {[key: string]: string},
     SANITIZED_PARAMS extends {[key: string]: string},
     CONTEXT extends Object = {},
     OTHER_DATA extends Object | null = null
 > (
     {
         contextCreateFunction,
+        sanitizeHeadersFunction,
         sanitizeParamsFunction,
         retrieveEntityCollectionFunction,
         convertToFrontEndEntityFunction,
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
-    }: GetCollectionWoAuthRequestHandlerFactoryProps<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>
+    }: GetCollectionWoAuthRequestHandlerFactoryProps<
+        ENTITY, FRONT_END_ENTITY, SANITIZED_HEADERS, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>
 ): GetCollectionRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
-    return unauthenticatedResourceRequestHandlerHelper({
-        contextCreateFunction, sanitizeParamsFunction, postExecutionFunction
-    }, async ({res, context, params}) => {
-        const entities = await retrieveEntityCollectionFunction({context, params});
-        const feEntitiesOrPromises =
-            entities.map((entity) => convertToFrontEndEntityFunction({entity, context, params}));
-        const feEntities = await Promise.all(feEntitiesOrPromises);
-        const otherData = (typeof otherDataValueOrFunction === "function"
-            ? (await otherDataValueOrFunction({context, entities, params}))
-            : otherDataValueOrFunction);
-        res.status(200).json(collectionResponse(feEntities, otherData));
-        postExecutionFunction && postExecutionFunction({status: 200, isSuccessful: true, entities, params, context, feEntities});
-    });
+    return unauthenticatedResourceRequestHandlerHelper(
+        {
+            contextCreateFunction,
+            sanitizeHeadersFunction,
+            sanitizeParamsFunction,
+            postExecutionFunction
+        },
+        async ({res, context, headers, params}) => {
+            const entities = await retrieveEntityCollectionFunction({context, headers, params});
+            const feEntitiesOrPromises =
+                entities.map((entity) => convertToFrontEndEntityFunction({entity, context, headers, params}));
+            const feEntities = await Promise.all(feEntitiesOrPromises);
+            const otherData = (typeof otherDataValueOrFunction === "function"
+                ? (await otherDataValueOrFunction({context, entities, headers, params}))
+                : otherDataValueOrFunction);
+            res.status(200).json(collectionResponse(feEntities, otherData));
+            postExecutionFunction && postExecutionFunction({
+                status: 200,
+                isSuccessful: true,
+                entities, headers, params, context, feEntities });
+        }
+    );
 }
 
 /**
@@ -80,31 +92,41 @@ export function getCollectionWithAuth<
     USER,
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
+    SANITIZED_HEADERS extends {[key: string]: string},
     SANITIZED_PARAMS extends {[key: string]: string},
     CONTEXT extends Object = {},
     OTHER_DATA extends Object | null = null
 > (
     {
         contextCreateFunction,
+        sanitizeHeadersFunction,
         sanitizeParamsFunction,
         retrieveEntityCollectionFunction,
         convertToFrontEndEntityFunction,
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
     }: GetCollectionWithAuthRequestHandlerFactoryProps<
-        USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>
+        USER, ENTITY, FRONT_END_ENTITY, SANITIZED_HEADERS, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>
 ): GetCollectionRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
-    return authenticatedResourceRequestHandlerHelper({
-        contextCreateFunction, sanitizeParamsFunction, postExecutionFunction
-    }, async ({res, user, context, params}) => {
-        const entities = await retrieveEntityCollectionFunction({user, context, params});
-        const feEntitiesOrPromises =
-            entities.map((entity) => convertToFrontEndEntityFunction({entity, user, context, params}));
-        const feEntities = await Promise.all(feEntitiesOrPromises);
-        const otherData = (typeof otherDataValueOrFunction === "function"
-            ? (await otherDataValueOrFunction({user, context, entities, params}))
-            : otherDataValueOrFunction);
-        res.status(200).json(collectionResponse(feEntities, otherData));
-        postExecutionFunction && postExecutionFunction({status: 200, isSuccessful: true, user, entities, params, context, feEntities});
-    });
+    return authenticatedResourceRequestHandlerHelper(
+        {
+            contextCreateFunction,
+            sanitizeHeadersFunction,
+            sanitizeParamsFunction,
+            postExecutionFunction
+        }, async ({res, user, context, headers, params}) => {
+            const entities = await retrieveEntityCollectionFunction({user, context, headers, params});
+            const feEntitiesOrPromises =
+                entities.map((entity) => convertToFrontEndEntityFunction({entity, user, context, headers, params}));
+            const feEntities = await Promise.all(feEntitiesOrPromises);
+            const otherData = (typeof otherDataValueOrFunction === "function"
+                ? (await otherDataValueOrFunction({user, context, entities, headers, params}))
+                : otherDataValueOrFunction);
+            res.status(200).json(collectionResponse(feEntities, otherData));
+            postExecutionFunction && postExecutionFunction({
+                status: 200,
+                isSuccessful: true,
+                user, entities, headers, params, context, feEntities});
+        }
+    );
 }

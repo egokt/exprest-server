@@ -7,6 +7,7 @@ import {
 getEntityWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({}),
     convertToFrontEndEntityFunction: async () => ({}),
@@ -16,6 +17,7 @@ getEntityWoAuth({
 getEntityWoAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({}),
     convertToFrontEndEntityFunction: async () => ({}),
@@ -27,6 +29,7 @@ getEntityWoAuth({
 getEntityWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: () => [null, {}],
     sanitizeParamsFunction: () => [null, {}],
     retrieveEntityFunction: () => ({}),
     convertToFrontEndEntityFunction: () => ({}),
@@ -38,6 +41,7 @@ getEntityWoAuth({
 getEntityWoAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: () => ({}),
     convertToFrontEndEntityFunction: () => ({}),
@@ -49,15 +53,17 @@ getEntityWoAuth({
 getEntityWoAuth<{hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({hello: 'world'}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
 });
 
 // with context
-getEntityWoAuth<{hello: string}, {feHello: string}, {}, {context: string}>({
+getEntityWoAuth<{hello: string}, {feHello: string}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async ({context}) => ({hello: context.context}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
@@ -65,10 +71,11 @@ getEntityWoAuth<{hello: string}, {feHello: string}, {}, {context: string}>({
 
 // with other data
 getEntityWoAuth<
-    {hello: string}, {feHello: string}, {}, {context: string}, {source: string}
+    {hello: string}, {feHello: string}, {}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async ({context}) => ({hello: context.context}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
@@ -79,6 +86,7 @@ getEntityWoAuth<
 getEntityWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({}),
     convertToFrontEndEntityFunction: async () => ({}),
@@ -88,6 +96,7 @@ getEntityWithAuth({
 getEntityWithAuth({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({}),
     convertToFrontEndEntityFunction: async () => ({}),
@@ -99,6 +108,7 @@ getEntityWithAuth({
 getEntityWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: () => [null, {}],
     sanitizeParamsFunction: () => [null, {}],
     retrieveEntityFunction: () => ({}),
     convertToFrontEndEntityFunction: () => ({}),
@@ -110,6 +120,7 @@ getEntityWithAuth({
 getEntityWithAuth({
     contextCreateFunction: () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: () => ({}),
     convertToFrontEndEntityFunction: () => ({}),
@@ -121,15 +132,17 @@ getEntityWithAuth({
 getEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async () => ({hello: 'world'}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
 });
 
 // authenticated with context
-getEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {context: string}>({
+getEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async ({context}) => ({hello: context.context}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
@@ -137,10 +150,11 @@ getEntityWithAuth<{}, {hello: string}, {feHello: string}, {}, {context: string}>
 
 // authenticated with other data
 getEntityWithAuth<
-    {}, {hello: string}, {feHello: string}, {}, {context: string}, {source: string}
+    {}, {hello: string}, {feHello: string}, {}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
     sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     retrieveEntityFunction: async ({context}) => ({hello: context.context}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),

@@ -8,6 +8,7 @@ describe("actionWoAuth", () => {
         const contextCreateFunction = jest.fn().mockResolvedValue({});
         const handler = actionWoAuth({
             contextCreateFunction,
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
             actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
@@ -17,10 +18,25 @@ describe("actionWoAuth", () => {
         expect(contextCreateFunction).toHaveBeenCalled();
     });
 
+    it("should call sanitizeHeadersFunction", async () => {
+        const sanitizeHeadersFunction = jest.fn().mockResolvedValue([null, {}]);
+        const handler = actionWoAuth({
+            contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction,
+            sanitizeParamsFunction: () => [null, {}],
+            sanitizeBodyFunction: () => [null, {}],
+            actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
+        });
+        const { response } = mockExpressResponse();
+        await handler({} as any, response as any);
+        expect(sanitizeHeadersFunction).toHaveBeenCalled();
+    });
+
     it("should call sanitizeParamsFunction", async () => {
         const sanitizeParamsFunction = jest.fn().mockResolvedValue([null, {}]);
         const handler = actionWoAuth({
             contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction,
             sanitizeBodyFunction: () => [null, {}],
             actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
@@ -34,6 +50,7 @@ describe("actionWoAuth", () => {
         const sanitizeBodyFunction = jest.fn().mockResolvedValue([null, {}]);
         const handler = actionWoAuth({
             contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction,
             actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
@@ -48,6 +65,7 @@ describe("actionWoAuth", () => {
             jest.fn().mockResolvedValue({ status: 200, isSuccessful: true, actionResponseContent: null });
         const handler = actionWoAuth({
             contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
             actionFunction,
@@ -61,6 +79,7 @@ describe("actionWoAuth", () => {
         const postExecutionFunction = jest.fn();
         const handler = actionWoAuth({
             contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
             actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
@@ -79,6 +98,7 @@ describe("actionWoAuth", () => {
         const mockResponse = { status: mockStatusFunc };
         const handler = actionWoAuth({
             contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
             actionFunction,
@@ -98,6 +118,7 @@ describe("actionWoAuth", () => {
         const mockResponse = { status: mockStatusFunc };
         const handler = actionWoAuth({
             contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
             actionFunction,
@@ -119,6 +140,7 @@ describe("actionWoAuth", () => {
         const mockResponse = { status: mockStatusFunc };
         const handler = actionWoAuth({
             contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
             actionFunction,
@@ -137,6 +159,7 @@ describe("actionWithAuth", () => {
         const mockResponse = {status: mockStatusFunc}
         const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
             actionFunction: () => ({ status: 204, isSuccessful: true, actionResponseContent: null }),
@@ -149,6 +172,7 @@ describe("actionWithAuth", () => {
         const contextCreateFunction = jest.fn().mockResolvedValue({});
         const handler = actionWithAuth({
             contextCreateFunction,
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
             actionFunction: () => ({ status: 204, isSuccessful: true, actionResponseContent: null }),
@@ -158,10 +182,25 @@ describe("actionWithAuth", () => {
         expect(contextCreateFunction).toHaveBeenCalled();
     });
 
+    it("should call sanitizeHeadersFunction", async () => {
+        const sanitizeHeadersFunction = jest.fn().mockResolvedValue([null, {}]);
+        const handler = actionWithAuth({
+            contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction,
+            sanitizeParamsFunction: () => [null, {}],
+            sanitizeBodyFunction: () => [null, {}],
+            actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
+        });
+        const { response } = mockExpressResponse();
+        await handler({user: {}} as any, response as any);
+        expect(sanitizeHeadersFunction).toHaveBeenCalled();
+    });
+
     it("should call sanitizeParamsFunction", async () => {
         const sanitizeParamsFunction = jest.fn().mockResolvedValue([null, {}]);
         const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction,
             sanitizeBodyFunction: () => [null, {}],
             actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
@@ -175,6 +214,7 @@ describe("actionWithAuth", () => {
         const sanitizeBodyFunction = jest.fn().mockResolvedValue([null, {}]);
         const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction,
             actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
@@ -189,6 +229,7 @@ describe("actionWithAuth", () => {
             jest.fn().mockResolvedValue({ status: 200, isSuccessful: true, actionResponseContent: null });
         const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
             actionFunction,
@@ -202,6 +243,7 @@ describe("actionWithAuth", () => {
         const postExecutionFunction = jest.fn();
         const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
             actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
@@ -220,6 +262,7 @@ describe("actionWithAuth", () => {
         const mockResponse = { status: mockStatusFunc };
         const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
             actionFunction,
@@ -239,6 +282,7 @@ describe("actionWithAuth", () => {
         const mockResponse = { status: mockStatusFunc };
         const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
             actionFunction,
@@ -260,6 +304,7 @@ describe("actionWithAuth", () => {
         const mockResponse = { status: mockStatusFunc };
         const handler = actionWithAuth({
             contextCreateFunction: () => ({}),
+            sanitizeHeadersFunction: () => [null, {}],
             sanitizeParamsFunction: () => [null, {}],
             sanitizeBodyFunction: () => [null, {}],
             actionFunction,
