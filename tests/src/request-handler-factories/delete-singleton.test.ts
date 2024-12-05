@@ -16,6 +16,7 @@ describe('deleteSingletonWoAuth', () => {
         expect(response.status).toHaveBeenCalledWith(200);
         expect(jsonFn).toHaveBeenCalledWith(entityResponse({}, {}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToDeleteFunction).toHaveBeenCalled();
         expect(props.deleteEntityFunction).toHaveBeenCalled();
@@ -28,6 +29,34 @@ describe('deleteSingletonWoAuth', () => {
         expect(postExecutionFunctionArgs.params).toBeDefined();
         expect(postExecutionFunctionArgs.entity).toBeDefined();
         expect(postExecutionFunctionArgs.feEntity).toBeDefined();
+    });
+
+    it("should return 400 if sanitizeHeadersFunction returns errors", async () => {
+        // Arrange
+        const props = defaultPropMock<typeof deleteSingletonWoAuth>();
+        props.sanitizeHeadersFunction = jest.fn().mockReturnValue(['error', {}]);
+
+        // Act
+        const handler = deleteSingletonWoAuth(props);
+        const {response, jsonFn } = mockExpressResponse();
+        await handler({params: {}} as any, response as any);
+
+        // Assert
+        expect(response.status).toHaveBeenCalledWith(400);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
+        expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
+        expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
+        expect(props.determineAuthorityToDeleteFunction).not.toHaveBeenCalled();
+        expect(props.deleteEntityFunction).not.toHaveBeenCalled();
+        expect(props.convertToFrontEndEntityFunction).not.toHaveBeenCalled();
+        expect(props.otherDataValueOrFunction).not.toHaveBeenCalled();
+        expect(props.postExecutionFunction).toHaveBeenCalled();
+        const postExecutionFunctionArgs = (props.postExecutionFunction as ReturnType<typeof jest.fn>).mock.calls[0][0];
+        expect(postExecutionFunctionArgs.status).toBe(400);
+        expect(postExecutionFunctionArgs.isSuccessful).toBe(false);
+        expect(postExecutionFunctionArgs.params).not.toBeDefined();
     });
 
     it("should return 400 if sanitizeParamsFunction returns errors", async () => {
@@ -45,6 +74,7 @@ describe('deleteSingletonWoAuth', () => {
         const responseContent = jsonFn.mock.calls[0][0];
         expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToDeleteFunction).not.toHaveBeenCalled();
         expect(props.deleteEntityFunction).not.toHaveBeenCalled();
@@ -72,6 +102,7 @@ describe('deleteSingletonWoAuth', () => {
         const responseContent = jsonFn.mock.calls[0][0];
         expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToDeleteFunction).toHaveBeenCalled();
         expect(props.deleteEntityFunction).not.toHaveBeenCalled();
@@ -98,6 +129,7 @@ describe('deleteSingletonWoAuth', () => {
         expect(response.status).toHaveBeenCalledWith(404);
         // we don't return error reasons in this case: see https://github.com/egokt/exprest-server/issues/10
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToDeleteFunction).toHaveBeenCalled();
         expect(props.deleteEntityFunction).toHaveBeenCalled();
@@ -124,6 +156,7 @@ describe('deleteSingletonWoAuth', () => {
         expect(response.status).toHaveBeenCalledWith(204);
         expect(jsonFn).not.toHaveBeenCalled();
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToDeleteFunction).toHaveBeenCalled();
         expect(props.deleteEntityFunction).toHaveBeenCalled();
@@ -149,6 +182,7 @@ describe('deleteSingletonWoAuth', () => {
         expect(response.status).toHaveBeenCalledWith(200);
         expect(jsonFn).toHaveBeenCalledWith(entityResponse({}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToDeleteFunction).toHaveBeenCalled();
         expect(props.deleteEntityFunction).toHaveBeenCalled();
@@ -177,6 +211,7 @@ describe('deleteSingletonWithAuth', () => {
         expect(response.status).toHaveBeenCalledWith(401);
         expect(props.contextCreateFunction).not.toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
+        expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
         expect(props.determineAuthorityToDeleteFunction).not.toHaveBeenCalled();
         expect(props.deleteEntityFunction).not.toHaveBeenCalled();
         expect(props.convertToFrontEndEntityFunction).not.toHaveBeenCalled();
@@ -197,6 +232,7 @@ describe('deleteSingletonWithAuth', () => {
         expect(response.status).toHaveBeenCalledWith(200);
         expect(jsonFn).toHaveBeenCalledWith(entityResponse({}, {}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToDeleteFunction).toHaveBeenCalled();
         expect(props.deleteEntityFunction).toHaveBeenCalled();
@@ -209,6 +245,34 @@ describe('deleteSingletonWithAuth', () => {
         expect(postExecutionFunctionArgs.params).toBeDefined();
         expect(postExecutionFunctionArgs.entity).toBeDefined();
         expect(postExecutionFunctionArgs.feEntity).toBeDefined();
+    });
+
+    it("should return 400 if sanitizeHeadersFunction returns errors", async () => {
+        // Arrange
+        const props = defaultPropMock<typeof deleteSingletonWithAuth>();
+        props.sanitizeHeadersFunction = jest.fn().mockReturnValue(['error', {}]);
+
+        // Act
+        const handler = deleteSingletonWithAuth(props);
+        const {response, jsonFn } = mockExpressResponse();
+        await handler({user: {}, params: {}} as any, response as any);
+
+        // Assert
+        expect(response.status).toHaveBeenCalledWith(400);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
+        expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
+        expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
+        expect(props.determineAuthorityToDeleteFunction).not.toHaveBeenCalled();
+        expect(props.deleteEntityFunction).not.toHaveBeenCalled();
+        expect(props.convertToFrontEndEntityFunction).not.toHaveBeenCalled();
+        expect(props.otherDataValueOrFunction).not.toHaveBeenCalled();
+        expect(props.postExecutionFunction).toHaveBeenCalled();
+        const postExecutionFunctionArgs = (props.postExecutionFunction as ReturnType<typeof jest.fn>).mock.calls[0][0];
+        expect(postExecutionFunctionArgs.status).toBe(400);
+        expect(postExecutionFunctionArgs.isSuccessful).toBe(false);
+        expect(postExecutionFunctionArgs.params).not.toBeDefined();
     });
 
     it("should return 400 if sanitizeParamsFunction returns errors", async () => {
@@ -226,6 +290,7 @@ describe('deleteSingletonWithAuth', () => {
         const responseContent = jsonFn.mock.calls[0][0];
         expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToDeleteFunction).not.toHaveBeenCalled();
         expect(props.deleteEntityFunction).not.toHaveBeenCalled();
@@ -253,6 +318,7 @@ describe('deleteSingletonWithAuth', () => {
         const responseContent = jsonFn.mock.calls[0][0];
         expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToDeleteFunction).toHaveBeenCalled();
         expect(props.deleteEntityFunction).not.toHaveBeenCalled();
@@ -279,6 +345,7 @@ describe('deleteSingletonWithAuth', () => {
         expect(response.status).toHaveBeenCalledWith(404);
         // we don't return error reasons in this case: see https://github.com/egokt/exprest-server/issues/10
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToDeleteFunction).toHaveBeenCalled();
         expect(props.deleteEntityFunction).toHaveBeenCalled();
@@ -305,6 +372,7 @@ describe('deleteSingletonWithAuth', () => {
         expect(response.status).toHaveBeenCalledWith(204);
         expect(jsonFn).not.toHaveBeenCalled();
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToDeleteFunction).toHaveBeenCalled();
         expect(props.deleteEntityFunction).toHaveBeenCalled();
@@ -330,6 +398,7 @@ describe('deleteSingletonWithAuth', () => {
         expect(response.status).toHaveBeenCalledWith(200);
         expect(jsonFn).toHaveBeenCalledWith(entityResponse({}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToDeleteFunction).toHaveBeenCalled();
         expect(props.deleteEntityFunction).toHaveBeenCalled();
@@ -347,6 +416,7 @@ describe('deleteSingletonWithAuth', () => {
 function defaultPropMock<FUNC extends typeof deleteSingletonWoAuth | typeof deleteSingletonWithAuth>(): Parameters<FUNC>[0] {
     return {
         contextCreateFunction: jest.fn(),
+        sanitizeHeadersFunction: jest.fn().mockReturnValue([null, {}]),
         sanitizeParamsFunction: jest.fn().mockReturnValue([null, {}]),
         determineAuthorityToDeleteFunction: jest.fn().mockReturnValue([null, true]),
         deleteEntityFunction: jest.fn().mockReturnValue({}),

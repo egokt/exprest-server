@@ -6,6 +6,7 @@ import {
 // minimum required properties
 deleteSingletonWoAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async () => ({}),
 });
@@ -13,6 +14,7 @@ deleteSingletonWoAuth({
 // with all properties
 deleteSingletonWoAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async () => ({}),
     determineAuthorityToDeleteFunction: async () => [null, true],
@@ -24,6 +26,7 @@ deleteSingletonWoAuth({
 // with all properties - non-async
 deleteSingletonWoAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: () => [null, {}],
     sanitizeParamsFunction: () => [null, {}],
     deleteEntityFunction: () => ({}),
     determineAuthorityToDeleteFunction: () => [null, true],
@@ -35,6 +38,7 @@ deleteSingletonWoAuth({
 // with all properties - mixed async and non-async
 deleteSingletonWoAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: () => ({}),
     determineAuthorityToDeleteFunction: async () => [null, true],
@@ -46,23 +50,26 @@ deleteSingletonWoAuth({
 // with an entity
 deleteSingletonWoAuth<{hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async () => ({hello: 'world'}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
 });
 
 // with context
-deleteSingletonWoAuth<{hello: string}, {feHello: string}, {}, {context: string}>({
+deleteSingletonWoAuth<{hello: string}, {feHello: string}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async ({context}) => ({hello: context.context}),
 });
 
 // with other data
 deleteSingletonWoAuth<
-    {hello: string}, {feHello: string}, {}, {context: string}, {source: string}
+    {hello: string}, {feHello: string}, {}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async ({context}) => ({hello: context.context}),
     otherDataValueOrFunction: async () => ({source: 'world'}),
@@ -71,6 +78,7 @@ deleteSingletonWoAuth<
 // minimum required properties
 deleteSingletonWithAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async () => ({}),
 });
@@ -78,6 +86,7 @@ deleteSingletonWithAuth({
 // with all properties
 deleteSingletonWithAuth({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async () => ({}),
     determineAuthorityToDeleteFunction: async () => [null, true],
@@ -89,6 +98,7 @@ deleteSingletonWithAuth({
 // with all properties - non-async
 deleteSingletonWithAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: () => [null, {}],
     sanitizeParamsFunction: () => [null, {}],
     deleteEntityFunction: () => ({}),
     determineAuthorityToDeleteFunction: () => [null, true],
@@ -100,6 +110,7 @@ deleteSingletonWithAuth({
 // with all properties - mixed async and non-async
 deleteSingletonWithAuth({
     contextCreateFunction: () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: () => ({}),
     determineAuthorityToDeleteFunction: async () => [null, true],
@@ -111,23 +122,26 @@ deleteSingletonWithAuth({
 // with an entity
 deleteSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async () => ({hello: 'world'}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
 });
 
 // with context
-deleteSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {context: string}>({
+deleteSingletonWithAuth<{}, {hello: string}, {feHello: string}, {}, {}, {context: string}>({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async ({context}) => ({hello: context.context}),
 });
 
 // with other data
 deleteSingletonWithAuth<
-    {}, {hello: string}, {feHello: string}, {}, {context: string}, {source: string}
+    {}, {hello: string}, {feHello: string}, {}, {}, {context: string}, {source: string}
 >({
     contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     deleteEntityFunction: async ({context}) => ({hello: context.context}),
     otherDataValueOrFunction: async () => ({source: 'world'}),

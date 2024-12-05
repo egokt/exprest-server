@@ -13,33 +13,47 @@ export function getSingletonWithAuth<
     USER,
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
+    SANITIZED_HEADERS extends {[key: string]: string},
     SANITIZED_PARAMS extends {[key: string]: string},
     CONTEXT extends Object = {},
     OTHER_DATA extends Object | null = null
 > (
     {
         contextCreateFunction,
+        sanitizeHeadersFunction,
         sanitizeParamsFunction,
         retrieveEntityFunction,
         convertToFrontEndEntityFunction,
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
-    }: GetSingletonWithAuthRequestHandlerFactoryProps<USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>
+    }: GetSingletonWithAuthRequestHandlerFactoryProps<
+        USER, ENTITY, FRONT_END_ENTITY, SANITIZED_HEADERS, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return authenticatedResourceRequestHandlerHelper(
-        { contextCreateFunction, sanitizeParamsFunction, postExecutionFunction },
-        async ({res, user, context, params}) => {
-            const entity = await retrieveEntityFunction({user, context, params});
+        {
+            contextCreateFunction,
+            sanitizeHeadersFunction,
+            sanitizeParamsFunction,
+            postExecutionFunction
+        },
+        async ({res, user, context, headers, params}) => {
+            const entity = await retrieveEntityFunction({user, context, headers, params});
             if (entity === null) {
                 res.status(404).send();
-                postExecutionFunction && postExecutionFunction({status: 404, isSuccessful: false, user, context});
+                postExecutionFunction && postExecutionFunction({
+                    status: 404,
+                    isSuccessful: false,
+                    headers, params, user, context});
             } else {
-                const feEntity = await convertToFrontEndEntityFunction({entity, user, context, params});
+                const feEntity = await convertToFrontEndEntityFunction({entity, user, context, headers, params});
                 const otherData = (typeof otherDataValueOrFunction === "function"
-                    ? await otherDataValueOrFunction({user, entity, context, params})
+                    ? await otherDataValueOrFunction({user, entity, context, headers, params})
                     : otherDataValueOrFunction);
                 res.status(200).json(entityResponse(feEntity, otherData));
-                postExecutionFunction && postExecutionFunction({status: 200, isSuccessful: true, user, entity, params, context, feEntity});
+                postExecutionFunction && postExecutionFunction({
+                    status: 200,
+                    isSuccessful: true,
+                    user, entity, headers, params, context, feEntity});
             }
         }
     );
@@ -48,33 +62,47 @@ export function getSingletonWithAuth<
 export function getSingletonWoAuth<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
+    SANITIZED_HEADERS extends {[key: string]: string},
     SANITIZED_PARAMS extends {[key: string]: string},
     CONTEXT extends Object = {},
     OTHER_DATA extends Object | null = null
 > (
     {
         contextCreateFunction,
+        sanitizeHeadersFunction,
         sanitizeParamsFunction,
         retrieveEntityFunction,
         convertToFrontEndEntityFunction,
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
-    }: GetSingletonWoAuthRequestHandlerFactoryProps<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>
+    }: GetSingletonWoAuthRequestHandlerFactoryProps<
+        ENTITY, FRONT_END_ENTITY, SANITIZED_HEADERS, SANITIZED_PARAMS, CONTEXT, OTHER_DATA>
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return unauthenticatedResourceRequestHandlerHelper(
-        { contextCreateFunction, sanitizeParamsFunction, postExecutionFunction },
-        async ({res, context, params}) => {
-            const entity = await retrieveEntityFunction({context, params});
+        {
+            contextCreateFunction,
+            sanitizeHeadersFunction,
+            sanitizeParamsFunction,
+            postExecutionFunction
+        },
+        async ({res, context, headers, params}) => {
+            const entity = await retrieveEntityFunction({context, headers, params});
             if (entity === null) {
                 res.status(404).send();
-                postExecutionFunction && postExecutionFunction({status: 404, isSuccessful: false, context});
+                postExecutionFunction && postExecutionFunction({
+                    status: 404,
+                    isSuccessful: false,
+                    headers, params, context});
             } else {
-                const feEntity = await convertToFrontEndEntityFunction({entity, context, params});
+                const feEntity = await convertToFrontEndEntityFunction({entity, context, headers, params});
                 const otherData = (typeof otherDataValueOrFunction === "function"
-                    ? await otherDataValueOrFunction({entity, context, params})
+                    ? await otherDataValueOrFunction({entity, context, headers, params})
                     : otherDataValueOrFunction);
                 res.status(200).json(entityResponse(feEntity, otherData));
-                postExecutionFunction && postExecutionFunction({status: 200, isSuccessful: true, entity, params, context, feEntity});
+                postExecutionFunction && postExecutionFunction({
+                    status: 200,
+                    isSuccessful: true,
+                    entity, headers, params, context, feEntity});
             }
         }
     );

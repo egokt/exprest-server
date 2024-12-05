@@ -16,6 +16,7 @@ describe("updateEntityWoAuth", () => {
         expect(response.status).toHaveBeenCalledWith(200);
         expect(jsonFn).toHaveBeenCalledWith(entityResponse({}, {}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).toHaveBeenCalled();
@@ -46,6 +47,7 @@ describe("updateEntityWoAuth", () => {
         expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).not.toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).not.toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).not.toHaveBeenCalled
         expect(props.determineAuthorityToUpdateFunction).not.toHaveBeenCalled();
@@ -74,6 +76,7 @@ describe("updateEntityWoAuth", () => {
         expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).not.toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).not.toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).not.toHaveBeenCalled();
@@ -86,6 +89,35 @@ describe("updateEntityWoAuth", () => {
         expect(postExecutionFunctionArgs.isSuccessful).toBe(false);
     });
 
+    it("should return 400 if there are headers errors", async () => {
+        // Arrange
+        const props = defaultPropMock<typeof updateEntityWoAuth>();
+        props.sanitizeHeadersFunction = jest.fn().mockReturnValue([["Error"], null]);
+
+        // Act
+        const handler = updateEntityWoAuth(props);
+        const { response, jsonFn } = mockExpressResponse();
+        await handler({params: {id: 1}} as any, response as any);
+
+        // Assert
+        expect(response.status).toHaveBeenCalledWith(400);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
+        expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
+        expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
+        expect(props.sanitizeBodyFunction).not.toHaveBeenCalled();
+        expect(props.determineAuthorityToUpdateFunction).not.toHaveBeenCalled();
+        expect(props.updateEntityFunction).not.toHaveBeenCalled();
+        expect(props.convertToFrontEndEntityFunction).not.toHaveBeenCalled();
+        expect(props.otherDataValueOrFunction).not.toHaveBeenCalled();
+        expect(props.postExecutionFunction).toHaveBeenCalled();
+        const postExecutionFunctionArgs = (props.postExecutionFunction as ReturnType<typeof jest.fn>).mock.calls[0][0];
+        expect(postExecutionFunctionArgs.status).toBe(400);
+        expect(postExecutionFunctionArgs.isSuccessful).toBe(false);
+        expect(postExecutionFunctionArgs.entity).not.toBeDefined();
+        expect(postExecutionFunctionArgs.feEntity).not.toBeDefined();
+    });
 
     it("should return 400 if there are params errors", async () => {
         // Arrange
@@ -102,6 +134,7 @@ describe("updateEntityWoAuth", () => {
         const responseContent = jsonFn.mock.calls[0][0];
         expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).not.toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).not.toHaveBeenCalled();
@@ -131,6 +164,7 @@ describe("updateEntityWoAuth", () => {
         const responseContent = jsonFn.mock.calls[0][0];
         expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).not.toHaveBeenCalled();
@@ -160,6 +194,7 @@ describe("updateEntityWoAuth", () => {
         const responseContent = jsonFn.mock.calls[0][0];
         expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).toHaveBeenCalled();
@@ -188,6 +223,7 @@ describe("updateEntityWoAuth", () => {
         expect(response.status).toHaveBeenCalledWith(404);
         // we don't return error reasons in this case: see https://github.com/egokt/exprest-server/issues/10
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).toHaveBeenCalled();
@@ -216,6 +252,7 @@ describe("updateEntityWoAuth", () => {
         expect(response.status).toHaveBeenCalledWith(204);
         expect(jsonFn).not.toHaveBeenCalled();
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).toHaveBeenCalled();
@@ -243,6 +280,7 @@ describe("updateEntityWoAuth", () => {
         expect(response.status).toHaveBeenCalledWith(200);
         expect(jsonFn).toHaveBeenCalledWith(entityResponse({}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).toHaveBeenCalled();
@@ -270,6 +308,7 @@ describe("updateEntityWithAuth", () => {
         // Assert
         expect(response.status).toHaveBeenCalledWith(401);
         expect(props.contextCreateFunction).not.toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).not.toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).not.toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).not.toHaveBeenCalled();
@@ -293,6 +332,7 @@ describe("updateEntityWithAuth", () => {
         expect(jsonFn).toHaveBeenCalledWith(entityResponse({}, {}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).toHaveBeenCalled();
         expect(props.updateEntityFunction).toHaveBeenCalled();
@@ -322,6 +362,7 @@ describe("updateEntityWithAuth", () => {
         expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).not.toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).not.toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).not.toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).not.toHaveBeenCalled();
@@ -350,6 +391,7 @@ describe("updateEntityWithAuth", () => {
         expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeIdFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).not.toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).not.toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).not.toHaveBeenCalled();
@@ -360,6 +402,36 @@ describe("updateEntityWithAuth", () => {
         const postExecutionFunctionArgs = (props.postExecutionFunction as ReturnType<typeof jest.fn>).mock.calls[0][0];
         expect(postExecutionFunctionArgs.status).toBe(404);
         expect(postExecutionFunctionArgs.isSuccessful).toBe(false);
+    });
+
+    it("should return 400 if there are headers errors", async () => {
+        // Arrange
+        const props = defaultPropMock<typeof updateEntityWithAuth>();
+        props.sanitizeHeadersFunction = jest.fn().mockReturnValue([["Error"], null]);
+
+        // Act
+        const handler = updateEntityWithAuth(props);
+        const { response, jsonFn } = mockExpressResponse();
+        await handler({user: {}, params: {id: 1}} as any, response as any);
+
+        // Assert
+        expect(response.status).toHaveBeenCalledWith(400);
+        const responseContent = jsonFn.mock.calls[0][0];
+        expect(responseContent).toHaveProperty('errors');
+        expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
+        expect(props.sanitizeParamsFunction).not.toHaveBeenCalled();
+        expect(props.sanitizeBodyFunction).not.toHaveBeenCalled();
+        expect(props.determineAuthorityToUpdateFunction).not.toHaveBeenCalled();
+        expect(props.updateEntityFunction).not.toHaveBeenCalled();
+        expect(props.convertToFrontEndEntityFunction).not.toHaveBeenCalled();
+        expect(props.otherDataValueOrFunction).not.toHaveBeenCalled();
+        expect(props.postExecutionFunction).toHaveBeenCalled();
+        const postExecutionFunctionArgs = (props.postExecutionFunction as ReturnType<typeof jest.fn>).mock.calls[0][0];
+        expect(postExecutionFunctionArgs.status).toBe(400);
+        expect(postExecutionFunctionArgs.isSuccessful).toBe(false);
+        expect(postExecutionFunctionArgs.entity).not.toBeDefined();
+        expect(postExecutionFunctionArgs.feEntity).not.toBeDefined();
     });
 
     it("should return 400 if there are params errors", async () => {
@@ -377,6 +449,7 @@ describe("updateEntityWithAuth", () => {
         const responseContent = jsonFn.mock.calls[0][0];
         expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).not.toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).not.toHaveBeenCalled();
@@ -406,6 +479,7 @@ describe("updateEntityWithAuth", () => {
         const responseContent = jsonFn.mock.calls[0][0];
         expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).not.toHaveBeenCalled();
@@ -435,6 +509,7 @@ describe("updateEntityWithAuth", () => {
         const responseContent = jsonFn.mock.calls[0][0];
         expect(responseContent).toHaveProperty('errors');
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).toHaveBeenCalled();
@@ -463,6 +538,7 @@ describe("updateEntityWithAuth", () => {
         expect(response.status).toHaveBeenCalledWith(404);
         // we don't return error reasons in this case: see https://github.com/egokt/exprest-server/issues/10
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).toHaveBeenCalled();
@@ -491,6 +567,7 @@ describe("updateEntityWithAuth", () => {
         expect(response.status).toHaveBeenCalledWith(204);
         expect(jsonFn).not.toHaveBeenCalled();
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).toHaveBeenCalled();
@@ -518,6 +595,7 @@ describe("updateEntityWithAuth", () => {
         expect(response.status).toHaveBeenCalledWith(200);
         expect(jsonFn).toHaveBeenCalledWith(entityResponse({}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
+        expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
         expect(props.sanitizeParamsFunction).toHaveBeenCalled();
         expect(props.sanitizeBodyFunction).toHaveBeenCalled();
         expect(props.determineAuthorityToUpdateFunction).toHaveBeenCalled();
@@ -538,6 +616,7 @@ function defaultPropMock<FUNC extends typeof updateEntityWoAuth | typeof updateE
         idParamName: 'id',
         sanitizeIdFunction: jest.fn().mockReturnValue([null, 1]),
         contextCreateFunction: jest.fn(),
+        sanitizeHeadersFunction: jest.fn().mockReturnValue([null, {}]),
         sanitizeParamsFunction: jest.fn().mockReturnValue([null, {}]),
         sanitizeBodyFunction: jest.fn().mockReturnValue([null, {}]),
         determineAuthorityToUpdateFunction: jest.fn().mockReturnValue([null, true]),

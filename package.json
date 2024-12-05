@@ -1,6 +1,6 @@
 {
   "name": "exprest-server",
-  "version": "0.0.7",
+  "version": "1.0.0",
   "description": "Exprest - A rest(ish) framework for node.js and express",
   "main": "./index.js",
   "types": "./index.d.ts",
@@ -8,11 +8,12 @@
   "scripts": {
     "build": "tsc",
     "build-watch": "tsc -w",
+    "build-npm": "npm run build && cp package.json LICENSE.md README.md build",
     "test": "jest",
     "test-watch": "jest --watch",
     "compile-type-tests": "tsc --project tsconfig.compile-tests.json",
     "prod-build": "tsc --sourceMap false --declarationMap false --declaration false",
-    "publish-npm": "npm run build && cp package.json LICENSE.md README.md build && cd build && npm publish && cd -"
+    "publish-npm": "npm run build-npm && cd build && npm publish && cd -"
   },
   "author": "Erek Gokturk",
   "license": "ISC",
@@ -25,6 +26,6 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
-    "exprest-shared": "^0.0.4"
+    "exprest-shared": "^1.0.0"
   }
 }

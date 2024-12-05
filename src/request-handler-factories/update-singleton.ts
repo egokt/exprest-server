@@ -15,6 +15,7 @@ export function updateSingletonWithAuth<
     USER,
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
+    SANITIZED_HEADERS extends {[key: string]: string},
     SANITIZED_PARAMS extends {[key: string]: string},
     SANITIZED_BODY,
     CONTEXT extends Object = {},
@@ -22,6 +23,7 @@ export function updateSingletonWithAuth<
 > (
     {
         contextCreateFunction,
+        sanitizeHeadersFunction,
         sanitizeParamsFunction,
         sanitizeBodyFunction,
         determineAuthorityToUpdateFunction = undefined,
@@ -30,12 +32,13 @@ export function updateSingletonWithAuth<
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
     }: UpdateSingletonWithAuthRequestHandlerFactoryProps<
-        USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA>
+        USER, ENTITY, FRONT_END_ENTITY, SANITIZED_HEADERS, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA>
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return createWithAuth<
-        USER, ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA
+        USER, ENTITY, FRONT_END_ENTITY, SANITIZED_HEADERS, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA
     >({
         contextCreateFunction,
+        sanitizeHeadersFunction,
         sanitizeParamsFunction,
         sanitizeBodyFunction,
         determineAuthorityToCreateFunction: determineAuthorityToUpdateFunction,
@@ -55,6 +58,7 @@ export function updateSingletonWithAuth<
 export function updateSingletonWoAuth<
     ENTITY extends Object,
     FRONT_END_ENTITY extends Object,
+    SANITIZED_HEADERS extends {[key: string]: string},
     SANITIZED_PARAMS extends {[key: string]: string},
     SANITIZED_BODY,
     CONTEXT extends Object = {},
@@ -62,6 +66,7 @@ export function updateSingletonWoAuth<
 > (
     {
         contextCreateFunction,
+        sanitizeHeadersFunction,
         sanitizeParamsFunction,
         sanitizeBodyFunction,
         determineAuthorityToUpdateFunction = undefined,
@@ -70,12 +75,13 @@ export function updateSingletonWoAuth<
         otherDataValueOrFunction = undefined,
         postExecutionFunction = undefined,
     }: UpdateSingletonWoAuthRequestHandlerFactoryProps<
-        ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA>
+        ENTITY, FRONT_END_ENTITY, SANITIZED_HEADERS, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA>
 ): EntityReturningRequestHandlerFunction<ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, OTHER_DATA> {
     return createWoAuth<
-        ENTITY, FRONT_END_ENTITY, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA
+        ENTITY, FRONT_END_ENTITY, SANITIZED_HEADERS, SANITIZED_PARAMS, SANITIZED_BODY, CONTEXT, OTHER_DATA
     >({
         contextCreateFunction, 
+        sanitizeHeadersFunction,
         sanitizeParamsFunction,
         sanitizeBodyFunction,
         determineAuthorityToCreateFunction: determineAuthorityToUpdateFunction,

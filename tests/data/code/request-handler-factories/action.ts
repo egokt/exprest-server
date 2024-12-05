@@ -1,8 +1,9 @@
 import { actionWoAuth } from "../../../../src/request-handler-factories/action.js";
 
 // Trying to return empty object when declared to return null
-actionWoAuth<null, {}, {}>({
+actionWoAuth<null, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     actionFunction: async () => 
@@ -11,8 +12,9 @@ actionWoAuth<null, {}, {}>({
 })
 
 // Trying to return without status code when declared to return null
-actionWoAuth<null, {}, {}>({
+actionWoAuth<null, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     actionFunction: async () => 
@@ -21,8 +23,9 @@ actionWoAuth<null, {}, {}>({
 })
 
 // Trying to return without status code when declared to return non-null
-actionWoAuth<{ hello: string, }, {}, {}>({
+actionWoAuth<{ hello: string, }, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     actionFunction: async () => 
@@ -31,8 +34,9 @@ actionWoAuth<{ hello: string, }, {}, {}>({
 })
 
 // Returning null
-actionWoAuth<null, {}, {}>({
+actionWoAuth<null, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     actionFunction: async () => 
@@ -40,8 +44,9 @@ actionWoAuth<null, {}, {}>({
 })
 
 // Declared to return null, but tries returning something else
-actionWoAuth<null, {}, {}>({
+actionWoAuth<null, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     actionFunction: async () =>
@@ -50,8 +55,9 @@ actionWoAuth<null, {}, {}>({
 });
 
 // Returning non-null value
-actionWoAuth<{hello: string}, {}, {}>({
+actionWoAuth<{hello: string}, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     actionFunction: async () => 
@@ -61,8 +67,9 @@ actionWoAuth<{hello: string}, {}, {}>({
 // Declared to return something else, but tries returning null
 // This is a valid case, because we allow returning null when isSuccessful is true, e.g. for returning 204
 // TODO: make status 204 the only case where null is allowed
-actionWoAuth<{hello: string}, {}, {}>({
+actionWoAuth<{hello: string}, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     actionFunction: async () =>
@@ -70,8 +77,9 @@ actionWoAuth<{hello: string}, {}, {}>({
 });
 
 // Return error when declared to return null
-actionWoAuth<null, {}, {}>({
+actionWoAuth<null, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     actionFunction: async () => 
@@ -79,8 +87,9 @@ actionWoAuth<null, {}, {}>({
 })
 
 // Return error when declared to return non-null
-actionWoAuth<{hello: string}, {}, {}>({
+actionWoAuth<{hello: string}, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     actionFunction: async () => 
@@ -88,8 +97,9 @@ actionWoAuth<{hello: string}, {}, {}>({
 })
 
 // Attempting to return error and value when declared to return null
-actionWoAuth<null, {}, {}>({
+actionWoAuth<null, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     actionFunction: async () => 
@@ -98,8 +108,9 @@ actionWoAuth<null, {}, {}>({
 })
 
 // Attempting to return error and value when declared to return non-null
-actionWoAuth<{hello: string}, {}, {}>({
+actionWoAuth<{hello: string}, {}, {}, {}>({
     contextCreateFunction: async () => ({}),
+    sanitizeHeadersFunction: async () => [null, {}],
     sanitizeParamsFunction: async () => [null, {}],
     sanitizeBodyFunction: async () => [null, {}],
     actionFunction: async () => 
@@ -108,8 +119,9 @@ actionWoAuth<{hello: string}, {}, {}>({
 })
 
 // Context function uses context type
-actionWoAuth<null, {}, {}>({
+actionWoAuth<null, {}, {}, {}>({
     contextCreateFunction: async () => ({ hello: "world" }),
+    sanitizeHeadersFunction: async () => [null, {}],
     // @ts-expect-error
     sanitizeParamsFunction: async ({context}) => [null, {hello: context.hello}],
     sanitizeBodyFunction: async () => [null, {}],
@@ -118,8 +130,9 @@ actionWoAuth<null, {}, {}>({
 });
 
 // Params function uses params type
-actionWoAuth<null, {not: "this"}, {}, {hello: string}>({
+actionWoAuth<null, {}, {not: "this"}, {}, {hello: string}>({
     contextCreateFunction: async () => ({ hello: "world" }),
+    sanitizeHeadersFunction: async () => [null, {}],
     // @ts-expect-error
     sanitizeParamsFunction: async ({context}) => [null, {hello: context.hello}],
     sanitizeBodyFunction: async () => [null, {}],
