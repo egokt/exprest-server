@@ -28,8 +28,9 @@ describe("actionWoAuth", () => {
             actionFunction: () => ({ status: 200, isSuccessful: true, actionResponseContent: null }),
         });
         const { response } = mockExpressResponse();
-        await handler({} as any, response as any);
-        expect(sanitizeHeadersFunction).toHaveBeenCalled();
+        const headers = {"X-Something-Something": "something"}
+        await handler({headers} as any, response as any);
+        expect(sanitizeHeadersFunction).toHaveBeenCalledWith({context: {}, unsanitizedHeaders: headers});
     });
 
     it("should call sanitizeParamsFunction", async () => {
