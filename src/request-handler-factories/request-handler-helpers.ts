@@ -1,4 +1,5 @@
-import express from 'express';
+import e from 'express';
+import expressCore from 'express-serve-static-core';
 import { errorResponse } from '../helpers/error-response.js';
 import {
     CreateContextWithAuthFunction,
@@ -18,7 +19,7 @@ import {
     SanitizeParamsWoAuthWithIdFunction,
 } from 'exprest-shared';
 
-export function getUserFromRequest<USER>(req: express.Request<any> & {user?: USER}): USER | null {
+export function getUserFromRequest<USER>(req: e.Request & {user?: USER}): USER | null {
     if (req.user) {
         return req.user;
     } else {
@@ -36,8 +37,8 @@ type RequestHandlerHelperBaseWoAuthProps<SANITIZED_HEADERS, SANITIZED_PARAMS, CO
 };
 
 type RequestHandlerBaseInnerFunctionWoAuthProps<SANITIZED_PARAMS, CONTEXT> = {
-    req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>,
-    res: express.Response,
+    req: e.Request<expressCore.ParamsDictionary, any, {[key in keyof SANITIZED_PARAMS]?: any}>,
+    res: e.Response,
     context: CONTEXT,
 };
 type RequestHandlerBaseInnerFunctionWoAuth<SANITIZED_PARAMS, CONTEXT> =
@@ -73,9 +74,9 @@ type EntityRequestHandlerInnerFunctionWithAuth<ID, USER, SANITIZED_HEADERS, SANI
         => Promise<void>;
 
 type RequestHandlerFunctionWithAuthReturnType<SANITIZED_PARAMS> =
-    (req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>, res: express.Response) => Promise<void>;
+    (req: e.Request<expressCore.ParamsDictionary, any, {[key in keyof SANITIZED_PARAMS]?: any}>, res: e.Response) => Promise<void>;
 type RequestHandlerFunctionWoAuthReturnType<SANITIZED_PARAMS> =
-    (req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>, res: express.Response) => Promise<void>;
+    (req: e.Request<expressCore.ParamsDictionary, any, {[key in keyof SANITIZED_PARAMS]?: any}>, res: e.Response) => Promise<void>;
 
 function authenticatedRequestHandlerHelperBase<
     USER,
@@ -89,7 +90,7 @@ function authenticatedRequestHandlerHelperBase<
     } : RequestHandlerHelperBaseWithAuthProps<USER, SANITIZED_HEADERS, SANITIZED_PARAMS, CONTEXT>,
     innerFunction: RequestHandlerBaseInnerFunctionWithAuth<USER, SANITIZED_PARAMS, CONTEXT>,
 ): RequestHandlerFunctionWithAuthReturnType<SANITIZED_PARAMS> {
-    return async (req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>, res: express.Response) => {
+    return async (req: e.Request<expressCore.ParamsDictionary, any, {[key in keyof SANITIZED_PARAMS]?: any}>, res: e.Response) => {
         const user = getUserFromRequest<USER>(req);
         if (!user) {
             res.status(401).send();
@@ -122,7 +123,7 @@ function unauthenticatedRequestHandlerHelperBase<
     } : RequestHandlerHelperBaseWoAuthProps<SANITIZED_HEADERS, SANITIZED_PARAMS, CONTEXT>,
     innerFunction: RequestHandlerBaseInnerFunctionWoAuth<SANITIZED_PARAMS, CONTEXT>,
 ): RequestHandlerFunctionWoAuthReturnType<SANITIZED_PARAMS> {
-    return async (req: express.Request<{[key in keyof SANITIZED_PARAMS]?: string}>, res: express.Response) => {
+    return async (req: e.Request<expressCore.ParamsDictionary, any, {[key in keyof SANITIZED_PARAMS]?: any}>, res: e.Response) => {
         const context = await contextCreateFunction({});
 
         try {
@@ -225,7 +226,7 @@ function requestHandlerHelperInnerFunctionBuilder<
             return;
         }
 
-        const [paramsErrors, params] = await sanitizeParamsFunction({unsanitizedParams: req.params, headers, context});
+        const [paramsErrors, params] = await sanitizeParamsFunction({unsanitizedParams: req.query, headers, context});
         if (paramsErrors !== null) {
             res.status(400).json(errorResponse(paramsErrors));
             postExecutionFunction && postExecutionFunction({status: 400, isSuccessful: false, headers, context});
