@@ -10,14 +10,14 @@ describe("getCollectionWoAuth", () => {
         // Act
         const handler = getCollectionWoAuth(props);
         const {response, jsonFn } = mockExpressResponse();
-        await handler({params: {}} as any, response as any);
+        await handler({query: { dummy: true, }} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(200);
         expect(jsonFn).toHaveBeenCalledWith(collectionResponse([{}], {}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
-        expect(props.sanitizeParamsFunction).toHaveBeenCalled();
+        expect(props.sanitizeParamsFunction).toHaveBeenCalledWith({ headers: {}, unsanitizedParams: { dummy: true } });
         expect(props.retrieveEntityCollectionFunction).toHaveBeenCalled();
         expect(props.convertToFrontEndEntityFunction).toHaveBeenCalled();
         expect(props.otherDataValueOrFunction).toHaveBeenCalled();
@@ -146,14 +146,14 @@ describe("getCollectionWithAuth", () => {
         // Act
         const handler = getCollectionWithAuth(props);
         const {response, jsonFn } = mockExpressResponse();
-        await handler({user: {}, params: {}} as any, response as any);
+        await handler({user: {}, query: { dummy: true, }} as any, response as any);
 
         // Assert
         expect(response.status).toHaveBeenCalledWith(200);
         expect(jsonFn).toHaveBeenCalledWith(collectionResponse([{}], {}));
         expect(props.contextCreateFunction).toHaveBeenCalled();
         expect(props.sanitizeHeadersFunction).toHaveBeenCalled();
-        expect(props.sanitizeParamsFunction).toHaveBeenCalled();
+        expect(props.sanitizeParamsFunction).toHaveBeenCalledWith({ user: {}, headers: {}, unsanitizedParams: { dummy: true } });
         expect(props.retrieveEntityCollectionFunction).toHaveBeenCalled();
         expect(props.convertToFrontEndEntityFunction).toHaveBeenCalled();
         expect(props.otherDataValueOrFunction).toHaveBeenCalled();
