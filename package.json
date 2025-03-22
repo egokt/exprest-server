@@ -1,6 +1,6 @@
 {
   "name": "exprest-server",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Exprest - A rest(ish) framework for node.js and express",
   "main": "./index.js",
   "types": "./index.d.ts",
