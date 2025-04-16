@@ -1,4 +1,4 @@
-import { GetEntityWoAuthRequestHandlerFactory, GetSingletonWithAuthRequestHandlerFactory, GetSingletonWoAuthRequestHandlerFactory } from "exprest-shared";
+import { GetSingletonWithAuthRequestHandlerFactory, GetSingletonWoAuthRequestHandlerFactory } from "exprest-shared";
 import {
     getSingletonWoAuth,
     getSingletonWithAuth,
