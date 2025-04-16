@@ -1,7 +1,20 @@
+import { DeleteEntityWithAuthRequestHandlerFactory, DeleteEntityWoAuthRequestHandlerFactory } from 'exprest-shared';
 import {
     deleteEntityWoAuth,
     deleteEntityWithAuth,
 } from '../../../../src/request-handler-factories/delete-entity.js';
+
+// unauthenticated - make sure that all types are correct
+const deleteEntityWoAuthTestFunction: DeleteEntityWoAuthRequestHandlerFactory<
+    {hello: string},
+    {feHello: string},
+    {headerField: string},
+    {paramField: string},
+    {context: string},
+    {source: string},
+    string
+> = deleteEntityWoAuth;
+deleteEntityWoAuthTestFunction;
 
 // minimum required properties
 deleteEntityWoAuth({
@@ -81,6 +94,19 @@ deleteEntityWoAuth<
     deleteEntityFunction: async ({context}) => ({hello: context.context}),
     otherDataValueOrFunction: async () => ({source: 'world'}),
 });
+
+// authenticated - make sure that all types are correct
+const deleteEntityWithAuthTestFunction: DeleteEntityWithAuthRequestHandlerFactory<
+    {userField: string},
+    {hello: string},
+    {feHello: string},
+    {headerField: string},
+    {paramField: string},
+    {context: string},
+    {source: string},
+    string
+> = deleteEntityWithAuth;
+deleteEntityWithAuthTestFunction;
 
 // minimum required properties
 deleteEntityWithAuth({

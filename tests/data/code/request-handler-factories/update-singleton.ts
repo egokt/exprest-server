@@ -1,7 +1,20 @@
+import { UpdateSingletonWithAuthRequestHandlerFactory, UpdateSingletonWoAuthRequestHandlerFactory } from "exprest-shared";
 import {
     updateSingletonWoAuth,
     updateSingletonWithAuth,
 } from "../../../../src/request-handler-factories/update-singleton.js";
+
+// unauthenticated - make sure that all types are correct
+const updateSingletonWoAuthTestFunction: UpdateSingletonWoAuthRequestHandlerFactory<
+    {hello: string},
+    {feHello: string},
+    {headerField: string},
+    {paramField: string},
+    {bodyField: string},
+    {context: string},
+    {source: string}
+> = updateSingletonWoAuth;
+updateSingletonWoAuthTestFunction;
 
 // minimum required properties
 updateSingletonWoAuth({
@@ -80,6 +93,19 @@ updateSingletonWoAuth<
     sanitizeBodyFunction: async () => [null, {}],
     updateEntityFunction: async ({context}) => ({hello: context.context}),
 });
+
+// authenticated - make sure that all types are correct
+const updateSingletonWithAuthTestFunction: UpdateSingletonWithAuthRequestHandlerFactory<
+    {userField: string},
+    {hello: string},
+    {feHello: string},
+    {headerField: string},
+    {paramField: string},
+    {bodyField: string},
+    {context: string},
+    {source: string}
+> = updateSingletonWithAuth;
+updateSingletonWithAuthTestFunction;
 
 // authenticated - minimum required properties
 updateSingletonWithAuth({

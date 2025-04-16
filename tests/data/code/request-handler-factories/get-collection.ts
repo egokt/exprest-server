@@ -1,7 +1,19 @@
+import { GetCollectionWithAuthRequestHandlerFactory, GetCollectionWoAuthRequestHandlerFactory } from "exprest-shared";
 import {
     getCollectionWoAuth,
     getCollectionWithAuth,
 } from "../../../../src/request-handler-factories/get-collection.js";
+
+// unauthenticated - make sure that all types are correct
+const getCollectionWoAuthTestFunction: GetCollectionWoAuthRequestHandlerFactory<
+    {hello: string},
+    {feHello: string},
+    {headerField: string},
+    {paramField: string},
+    {context: string},
+    {source: string}
+> = getCollectionWoAuth;
+getCollectionWoAuthTestFunction;
 
 // minimum required properties
 getCollectionWoAuth({
@@ -74,6 +86,18 @@ getCollectionWoAuth<
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
     otherDataValueOrFunction: async ({context, entities}) => ({otherStuff: [context.context, entities[0].hello]}),
 });
+
+// authenticated - make sure that all types are correct
+const getCollectionWithAuthTestFunction: GetCollectionWithAuthRequestHandlerFactory<
+    {userField: string},
+    {hello: string},
+    {feHello: string},
+    {headerField: string},
+    {paramField: string},
+    {context: string},
+    {source: string}
+> = getCollectionWithAuth;
+getCollectionWithAuthTestFunction;
 
 // authenticated with minimum required properties
 getCollectionWithAuth({

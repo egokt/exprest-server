@@ -1,7 +1,20 @@
+import { GetEntityWithAuthRequestHandlerFactory, GetEntityWoAuthRequestHandlerFactory } from "exprest-shared";
 import {
     getEntityWoAuth,
     getEntityWithAuth,
 } from "../../../../src/request-handler-factories/get-entity.js";
+
+// unauthenticated - make sure that all types are correct
+const getEntityWoAuthTestFunction: GetEntityWoAuthRequestHandlerFactory<
+    {hello: string},
+    {feHello: string},
+    {headerField: string},
+    {paramField: string},
+    {context: string},
+    {source: string},
+    string
+> = getEntityWoAuth;
+getEntityWoAuthTestFunction;
 
 // minimum required properties
 getEntityWoAuth({
@@ -81,6 +94,19 @@ getEntityWoAuth<
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
     otherDataValueOrFunction: async () => ({source: 'db'}),
 });
+
+// authenticated - make sure that all types are correct
+const getEntityWithAuthTestFunction: GetEntityWithAuthRequestHandlerFactory<
+    {userField: string},
+    {hello: string},
+    {feHello: string},
+    {headerField: string},
+    {paramField: string},
+    {context: string},
+    {source: string},
+    string
+> = getEntityWithAuth;
+getEntityWithAuthTestFunction;
 
 // authenticated minimum required properties
 getEntityWithAuth({

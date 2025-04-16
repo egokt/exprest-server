@@ -1,7 +1,21 @@
+import { UpdateEntityWithAuthRequestHandlerFactory, UpdateEntityWoAuthRequestHandlerFactory } from "exprest-shared";
 import {
     updateEntityWoAuth,
     updateEntityWithAuth,
 } from "../../../../src/request-handler-factories/update-entity.js";
+
+// unauthenticated - make sure that all types are correct
+const updateEntityWoAuthTestFunction: UpdateEntityWoAuthRequestHandlerFactory<
+    {hello: string},
+    {feHello: string},
+    {headerField: string},
+    {paramField: string},
+    {bodyField: string},
+    {context: string},
+    {source: string},
+    string
+> = updateEntityWoAuth;
+updateEntityWoAuthTestFunction;
 
 // minimum required properties
 updateEntityWoAuth({
@@ -90,6 +104,20 @@ updateEntityWoAuth<
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
 });
 
+// authenticated - make sure that all types are correct
+const updateEntityWithAuthTestFunction: UpdateEntityWithAuthRequestHandlerFactory<
+    {},
+    {hello: string},
+    {feHello: string},
+    {headerField: string},
+    {paramField: string},
+    {bodyField: string},
+    {context: string},
+    {source: string},
+    string
+> = updateEntityWithAuth;
+updateEntityWithAuthTestFunction;
+
 // authenticated - minimum required properties
 updateEntityWithAuth({
     contextCreateFunction: async () => ({}),
@@ -176,3 +204,17 @@ updateEntityWithAuth<
     updateEntityFunction: async ({context}) => ({hello: context.context}),
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
 });
+
+// authenticated - with all types
+updateEntityWithAuth<
+    {}, {hello: string}, {feHello: string}, {headerField: string}, {paramField: string}, {bodyField: string}, {context: string}, {source: string}
+>({
+    contextCreateFunction: async () => ({context: 'world'}),
+    sanitizeIdFunction: () => [null, 1],
+    sanitizeHeadersFunction: async () => [null, {headerField: 'headerValue'}],
+    sanitizeParamsFunction: async () => [null, {paramField: 'paramValue'}],
+    sanitizeBodyFunction: async () => [null, {bodyField: 'bodyValue'}],
+    updateEntityFunction: async ({context}) => ({hello: context.context}),
+    convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
+});
+

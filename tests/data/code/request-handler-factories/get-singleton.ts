@@ -1,7 +1,19 @@
+import { GetSingletonWithAuthRequestHandlerFactory, GetSingletonWoAuthRequestHandlerFactory } from "exprest-shared";
 import {
     getSingletonWoAuth,
     getSingletonWithAuth,
 } from "../../../../src/request-handler-factories/get-singleton.js";
+
+// unauthenticated - make sure that all types are correct
+const getSingletonWoAuthTestFunction: GetSingletonWoAuthRequestHandlerFactory<
+    {hello: string},
+    {feHello: string},
+    {headerField: string},
+    {paramField: string},
+    {context: string},
+    {source: string}
+> = getSingletonWoAuth;
+getSingletonWoAuthTestFunction;
 
 // minimum required properties
 getSingletonWoAuth({
@@ -74,6 +86,18 @@ getSingletonWoAuth<
     convertToFrontEndEntityFunction: async ({entity}) => ({feHello: entity.hello}),
     otherDataValueOrFunction: async () => ({other: 'data'}),
 });
+
+// authenticated - make sure that all types are correct
+const getSingletonWithAuthTestFunction: GetSingletonWithAuthRequestHandlerFactory<
+    {userField: string},
+    {hello: string},
+    {feHello: string},
+    {headerField: string},
+    {paramField: string},
+    {context: string},
+    {source: string}
+> = getSingletonWithAuth;
+getSingletonWithAuthTestFunction;
 
 // authenticated minimum required properties
 getSingletonWithAuth({
