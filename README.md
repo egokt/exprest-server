@@ -1,176 +1,400 @@
-# What is Exprest?
+# Exprest Server
 
-Exprest is a framework for client and API communication. Exprest server is built on top of [express](https://expressjs.com/), which is in turn built on top of [node.js](https://nodejs.org/en).
+Exprest is a TypeScript framework for building type-safe REST APIs and web clients. The server package provides a structured approach to creating Express.js endpoints with built-in input validation, authentication support, and standardized response formats.
 
-Exprest:
+## Design Philosophy
 
-* Uses HTTP idioms (get, put, post, delete).
-* Uses CRUD for endpoint type abstractions.
-* Provides a standard response structure for returning results, returning additional data with the results, and returning errors.
-* Uses typescript to align the schema for the data communicated between the client and the API.
-* Supports creating authenticated endpoints, by supporting express authentication middleware that sets the `user` attribute in the request parameter express provides to the request handler (such as [passport.js](https://www.passportjs.org/)).
+Exprest enforces **separation of concerns** by breaking endpoint implementation into discrete, composable functions. This approach improves code reviewability, testability, and maintainability by making each responsibility explicit.
 
-Exprest currently has three parts:
+Key principles:
 
-* exprest-server (this): The API library.
-* exprest-web-client: The web client library.
-* exprest-shared: Types shared between exprest-server and exprest-web-client.
+- **Type safety**: Full TypeScript support ensures compile-time guarantees between client and server
+- **Structured validation**: Input sanitization is mandatory and separated from business logic
+- **Standardized responses**: Consistent JSON response format across all endpoints
+- **Express compatibility**: Built on Express.js, works with existing middleware
+- **Authentication flexibility**: Optional authentication support using Express middleware patterns
 
-Exprest is mildly inspired by [RestLi](https://rest.li). Hat tip to my past colleagues. ;)
+## Package Structure
 
-## API Abstractions
+- **exprest-server** (this package): API endpoint factories and utilities
+- **exprest-web-client**: Type-safe client library for consuming exprest APIs
+- **exprest-shared**: Common types and interfaces shared between client and server
 
-### Resource
+## Core Concepts
 
-A resource is an API entity identifiable by a URI, that contains a group of related endpoints.
+### Resources and Endpoints
 
-Example: A resource that contains endpoints related to the "user" entity, with a url `example.local/users`.
+A **resource** represents an API entity accessible via URI (e.g., `/users`). Exprest supports two resource patterns:
 
-Exprest uses the following resource types:
+- **Collection Resource**: Manages multiple entities with unique identifiers (e.g., `/users/:id`)
+- **Singleton Resource**: Manages a single entity without an identifier (e.g., `/current-user`)
 
-* **Singleton Resource**: A resource that serves a single entity, which does not need an identifier. For example: `example.local/logged-in-user` (because there can be only zero or one logged in user).
-* **Collection Resource**: A resource that serves a set of entities each of which have a unique identifier. For example: `example.local/users` where each user have a unique id.
+An **endpoint** combines a resource URI, HTTP method, and request handler. Exprest provides these endpoint types:
 
-While these resource types are useful for understanding Exprest, Exprest currently doesn't define them as software artifacts (e.g. classes). Instead, it defines the endpoint types for them, such as getSingleton. Therefore, you can mix endpoints of two types to create a resource that is a mix of these resource types. Or you may create a resource that only have actions, which would neither be a singleton resource or a collection resource.
+**Collection-focused endpoints:**
 
-### Endpoint
+- `getEntity` - GET `/resource/:id` - Retrieve a specific entity
+- `getCollection` - GET `/resource` - Retrieve multiple entities
+- `updateEntity` - PUT `/resource/:id` - Update a specific entity
+- `deleteEntity` - DELETE `/resource/:id` - Remove a specific entity
 
-An endpoint is a combination of a resource URI, an HTTP idiom, and a request handler.
+**Singleton-focused endpoints:**
 
-Example: A user profile endpoint would consist of the resource URI `example.local/users`, HTTP idiom GET, and a request handler for returning the profile of the user with given id (more on ids later).
+- `getSingleton` - GET `/resource` - Retrieve the singleton entity
+- `updateSingleton` - PUT `/resource` - Update the singleton entity
+- `deleteSingleton` - DELETE `/resource` - Remove the singleton entity
 
-Exprest defines the following enpoint types:
+**Universal endpoints:**
 
-* Endpoints that are primarily for collection resources:
-  * **getEntity**: Returns a single entity with the given unique id, in the set of entities served by the collection resource.
-  * **getCollection**: Returns multiple entities served by the collection resource. It may return all entities, a subset of all entities, or an empty set.
-  * **deleteEntity**: Removes the entity with the given unique id from the collection.
-  * **updateEntity**: Changes the entity with the given unique id in the collection.
-* Endpoints that are primarily for singleton resources:
-  * **getSingleton**: Returns the singleton entity of the resource.
-  * **deleteSingleton**: Removes the singleton entity.
-  * **updateSingleton**: Changes the singleton entity.
-* Endpoints that can be used with both collection and singleton resources:
-  * **create**: Creates an entity. If the entity is in a collection, it must be assigned a unique id when created.
-  * **action**: An endpoint with flexible semantics. Actions can be used for many purposes, such as creating endpoints for modifying an entity in a particular way (e.g. a `make-admin` action).
+- `create` - POST `/resource` - Create a new entity
+- `action` - POST `/resource/action-name` - Custom operations with flexible semantics
 
-# Implementing an Endpoint Using Exprest
+### Response Format
 
-There are two steps to implementing an endpoint using Exprest:
+All endpoints return standardized JSON responses:
 
-* Create an express request handler using Exprest's request handler factories,
-* Add the request handler to the express router using Exprest's router helpers.
+**Success responses:**
 
-Each request handler factory is a generic typescript function which uses type parameters to align the necessary types for implementing an endpoint, such as the return type, query parameters type, query body type, etc.
+```typescript
+// Entity responses
+{ entity: T }
+{ entity: T, other_data: U }
 
-A request handler factory takes a series of (possibly async) functions that separates the concerns related to implementing an endpoint, such as sanitizing query parameters and the body, retrieving the entity, converting backend entity to the frontend entity type, doing some post-execution work, etc. Each endpoint type forces the developer to be explicit about how the concerns relevant to that endpoint type are addressed, thereby increasing the reviewability of the code.
+// Collection responses
+{ collection: Array<T> }
+{ collection: Array<T>, other_data: U }
 
-## GetEntity Endpoint
+// Action responses
+{ actionResult: T }
 
-A getEntity endpoint use the HTTP Get idiom, the resource URI, and an id. For example:
-
-```
-GET https://example.local/users/1
+// Error responses
+{ errors: Array<string> }
 ```
 
-In this example, http idiom is GET, the resource URI is `example.com/users` (or just `/users`), the id for the user the client is asking for is 1.
+## Quick Start
 
-There are two methods that exprest provides for creating the express request handler for a get entity endpoint:
+### Installation
 
-* getEntityWoAuth: Creates a request handler without authentication support.
-* getEntityWithAuth: Creates a request handler with authentication support. It works the same way `getEntityWoAuth` works, but also checks if the user is authenticated and returns 401 otherwise.
+```bash
+npm install exprest-server exprest-shared express
+npm install -D @types/express
+```
 
-Here is an example definition of a getEntity endpoint:
+### Basic Example
 
-```js
-type ContextType = {
-    continent: string,
-    season?: "summer" | "wet",
-};
+```typescript
+import express from "express";
+import { getEntityWoAuth, addGetEntityRoute } from "exprest-server";
 
-type QueryParamsType = {
-    onlyFourLegged: boolean,
-};
+// Define your types
+type User = { id: number; name: string; email: string };
+type UserResponse = { id: number; name: string }; // Client-facing type
 
-type BackendEntityType = {
-    id: number,
-    flies: boolean,
-};
+// Create request handler
+const getUserHandler = getEntityWoAuth<User, UserResponse, {}, {}>({
+  contextCreateFunction: () => ({}),
 
-type FrontendEntityType = {
-    id: number,
-    flies: string,
-};
+  sanitizeIdFunction: ({ idParam }) => {
+    const id = Number(idParam);
+    if (isNaN(id)) return [["Invalid user ID"], null];
+    return [null, id];
+  },
 
-const requestHandler = getEntityWoAuth<BackendEntityType, FrontendEntityType, QueryParamsType, ContextType>({
+  sanitizeHeadersFunction: () => [null, {}],
+  sanitizeParamsFunction: () => [null, {}],
 
-    contextCreateFunction: () => ({
-        continent: "North America",
-    }),
+  retrieveEntityFunction: async ({ submittedEntityId }) => {
+    // Your database query here
+    return await db.users.findById(submittedEntityId);
+  },
 
-    sanitizeIdFunction: ({idParam}) => {
-        const id = Number(idParam);
-        if (!Number.isNaN(id)) {
-            return [["Id parameter must be a number."], null];
-        }
-        return [null, id];
-    },
+  convertToFrontEndEntityFunction: ({ entity }) => ({
+    id: entity.id,
+    name: entity.name,
+    // Note: email field is excluded from response
+  }),
+});
 
-    sanitizeParamsFunction: ({
-        unsanitizedParams
-    }) => {
-        // check unsanitized params
-        // then return a new sanitized params object
-        if (unsanitizedParams["onlyFourLegged"] !== undefined
-            && !["true", "false"].includes(unsanitizedParams["onlyFourLegged"])
-        ) {
-            // unable to sanitize
-            return [["Valid values for onlyFourLegged parameter are true or false"], null];
-        }
-        const sanitizedParams = {
-            onlyFourLegged = unsanitizedParams["onlyFourLegged"] === "true",
-        };
-        return [null, sanitizedParams];
-    },
+// Add to router
+const router = express.Router();
+addGetEntityRoute("id", router, "/users", getUserHandler);
 
-    retrieveEntityFunction: async ({submittedEntityId, params, context}) => {
-        return await dataStore.find(
-            submittedEntityId, params.onlyFourLegged, context.continent);
-    },
+const app = express();
+app.use("/api", router);
+app.listen(3000);
+```
 
-    convertToFrontEndEntityFunction: ({entity}) => ({
-        id: entity.id,
-        flies: entity.flies ? "absolutely" : "nope",
-    }),
+This creates a `GET /api/users/:id` endpoint that returns `{ entity: { id: number, name: string } }`.
+
+## Request Handler Functions
+
+Each endpoint type uses a **function chain** to handle requests. Functions are called in a specific order, and errors in early functions prevent later ones from executing.
+
+### Function Execution Order
+
+For most endpoints, functions execute in this sequence:
+
+1. **`contextCreateFunction`** - Initialize request context
+2. **`sanitizeIdFunction`** - Validate entity ID (entity endpoints only)
+3. **`sanitizeHeadersFunction`** - Validate and transform headers
+4. **`sanitizeParamsFunction`** - Validate and transform query parameters
+5. **`sanitizeBodyFunction`** - Validate and transform request body (create/update endpoints)
+6. **`determineAuthorityToChangeFunction`** - Check permissions (create/update/delete endpoints)
+7. **Main function** - Core business logic (retrieve, create, update, delete, or action)
+8. **`convertToFrontEndEntityFunction`** - Transform entity for response
+9. **`otherDataValueOrFunction`** - Add additional response data
+10. **`postExecutionFunction`** - Cleanup, logging, etc.
+
+### Function Parameters
+
+**`contextCreateFunction({})`**
+
+- **Purpose**: Initialize request-scoped context object
+- **Returns**: Context object passed to subsequent functions
+
+**`sanitizeIdFunction({ idParam })`** _(entity endpoints only)_
+
+- **Purpose**: Validate and transform the entity ID from URL parameter
+- **Returns**: `[null, parsedId]` on success, `[["error message"], null]` on failure
+
+**`sanitizeHeadersFunction({ unsanitizedHeaders, context, user?, submittedEntityId? })`**
+
+- **Purpose**: Validate and transform request headers
+- **Returns**: `[null, sanitizedHeaders]` on success, `[["errors"], null]` on failure
+
+**`sanitizeParamsFunction({ unsanitizedParams, headers, context, user?, submittedEntityId? })`**
+
+- **Purpose**: Validate and transform query parameters
+- **Returns**: `[null, sanitizedParams]` on success, `[["errors"], null]` on failure
+
+**`sanitizeBodyFunction({ unsanitizedBody, headers, params, context, user?, submittedEntityId? })`** _(create/update endpoints)_
+
+- **Purpose**: Validate and transform request body
+- **Returns**: `[null, sanitizedBody]` on success, `[["errors"], null]` on failure
+
+**Main Functions:**
+
+- **`retrieveEntityFunction({ headers, params, context, user?, submittedEntityId? })`**
+  - **Returns**: Entity object or `null` if not found
+- **`createEntityFunction({ headers, params, body, context, user? })`**
+  - **Returns**: Created entity object or `null` on failure
+- **`updateEntityFunction({ headers, params, body, context, user?, submittedEntityId? })`**
+  - **Returns**: Updated entity object or `null` on failure
+- **`deleteEntityFunction({ headers, params, context, user?, submittedEntityId? })`**
+  - **Returns**: Deleted entity object or `null` on failure
+
+**`convertToFrontEndEntityFunction({ entity, headers, params, context, user?, submittedEntityId? })`**
+
+- **Purpose**: Transform backend entity to client-facing format
+- **Returns**: Frontend entity object
+
+**`otherDataValueOrFunction`** _(optional)_
+
+- **Purpose**: Provide additional data in response
+- **Can be**: Static value or function returning additional data
+
+**`postExecutionFunction({ status, isSuccessful, headers?, params?, context, ... })`** _(optional)_
+
+- **Purpose**: Cleanup, logging, analytics, etc.
+- **Returns**: `void`
+
+## Authentication Support
+
+Each endpoint type comes in two variants:
+
+- **`*WoAuth`** - No authentication required
+- **`*WithAuth`** - Authentication required, returns 401 if no user present
+
+Authentication uses Express middleware that sets `req.user`. Compatible with [Passport.js](https://www.passportjs.org/) and similar libraries.
+
+```typescript
+import { getEntityWithAuth } from "exprest-server";
+
+const handler = getEntityWithAuth<User, UserData, UserResponse, {}, {}>({
+  contextCreateFunction: ({ user }) => ({ userId: user.id }),
+  // ... other functions receive 'user' parameter
 });
 ```
 
-Once you create the request handler, you can use the `addGetEntityRoute` router helper function to add the request handler to an express router:
+## Complete Endpoint Examples
 
-```js
-addGetEntityRoute("id", router, "/animals", requestHandler);
+### Create Endpoint with Validation
+
+```typescript
+import { createWoAuth, addCreateRoute } from "exprest-server";
+
+type CreateUserRequest = { name: string; email: string };
+type User = { id: number; name: string; email: string; createdAt: Date };
+
+const createUserHandler = createWoAuth<
+  User,
+  UserResponse,
+  {},
+  {},
+  CreateUserRequest
+>({
+  contextCreateFunction: () => ({}),
+  sanitizeHeadersFunction: () => [null, {}],
+  sanitizeParamsFunction: () => [null, {}],
+
+  sanitizeBodyFunction: ({ unsanitizedBody }) => {
+    const { name, email } = unsanitizedBody;
+
+    if (!name || typeof name !== "string") {
+      return [["Name is required"], null];
+    }
+    if (!email || !email.includes("@")) {
+      return [["Valid email is required"], null];
+    }
+
+    return [null, { name: name.trim(), email: email.toLowerCase() }];
+  },
+
+  createEntityFunction: async ({ body }) => {
+    return await db.users.create({
+      name: body.name,
+      email: body.email,
+      createdAt: new Date(),
+    });
+  },
+
+  convertToFrontEndEntityFunction: ({ entity }) => ({
+    id: entity.id,
+    name: entity.name,
+  }),
+});
+
+addCreateRoute(router, "/users", createUserHandler);
 ```
 
-Here is the list of all type parameters for the `getEntityWoAuth` function:
+### Action Endpoint
 
-* ENTITY: The type for the backend (stored) entity type that will be returned from the `retrieveEntityFunction`.
-* FRONT_END_ENTITY: The type for the data returned to the client in the API response. It's also the type returned from the `convertToFrontEndEntityFunction`.
-* SANITIZED_PARAMS: The type of the object that will contain the sanitized query params. It's the type returned from the `sanitizeParamsFunction`.
-* CONTEXT: The type of the context data that is passed to each function. Each function can modify the context to pass data to other functions.
-* OTHER_DATA: The type of the data that's going to be returned to the client in addition to the entity.
+```typescript
+import { actionWoAuth, addActionRoute } from "exprest-server";
 
-The functions passed to the request handler factory are called in the following order:
+type MakeAdminResult = { success: boolean; message: string };
 
-* contextCreateFunction
-* sanitizeIdFunction
-* sanitizeParamsFunction
-* retrieveEntityFunction
-* convertToFrontEndEntityFunction
-* otherDataValueOrFunction
-* postExecutionFunction
+const makeAdminHandler = actionWoAuth<
+  MakeAdminResult,
+  {},
+  {},
+  { userId: number }
+>({
+  contextCreateFunction: () => ({}),
+  sanitizeHeadersFunction: () => [null, {}],
+  sanitizeParamsFunction: () => [null, {}],
 
-Here are the parameters available to these functions and what each function is meant to do:
+  sanitizeBodyFunction: ({ unsanitizedBody }) => {
+    const userId = Number(unsanitizedBody.userId);
+    if (isNaN(userId)) {
+      return [["Valid user ID required"], null];
+    }
+    return [null, { userId }];
+  },
 
-* **contextCreateFunction()**: This funtion takes no arguments and returns a new context object. The reason why this is a function is because the context object may have required attributes, which means the context can't be initialized simply to an empty object (`{}`);
-* **sanitizeIdFunction({ idParam })**: This function is for checking the submitted id value, and returning errors if any. If this function returns errors, other functions in the execution order are not called. The return value is either `[null, id]` where id is passed to the other functions as the `submittedEntityId` parameter, or `[[... an array of error strings ...], null]`, where the error strings are returned to the client as the value of the "errors" attribute in the API response.
-* ... TO BE CONTINUED ...
+  actionFunction: async ({ body }) => {
+    const updated = await db.users.update(body.userId, { role: "admin" });
+    if (updated) {
+      return {
+        status: 200,
+        isSuccessful: true,
+        actionResponseContent: {
+          success: true,
+          message: "User promoted to admin",
+        },
+      };
+    } else {
+      return {
+        status: 400,
+        isSuccessful: false,
+        errors: ["User not found"],
+      };
+    }
+  },
+});
+
+addActionRoute(router, "/users/make-admin", makeAdminHandler);
+```
+
+## API Reference
+
+### Request Handler Factories
+
+**Entity endpoints:**
+
+- `getEntityWoAuth<Entity, FrontendEntity, Headers, Params, Context, OtherData, ID>`
+- `getEntityWithAuth<User, Entity, FrontendEntity, Headers, Params, Context, OtherData, ID>`
+- `updateEntityWoAuth<Entity, FrontendEntity, Headers, Params, Body, Context, OtherData, ID>`
+- `updateEntityWithAuth<User, Entity, FrontendEntity, Headers, Params, Body, Context, OtherData, ID>`
+- `deleteEntityWoAuth<Entity, FrontendEntity, Headers, Params, Context, OtherData, ID>`
+- `deleteEntityWithAuth<User, Entity, FrontendEntity, Headers, Params, Context, OtherData, ID>`
+
+**Singleton endpoints:**
+
+- `getSingletonWoAuth<Entity, FrontendEntity, Headers, Params, Context, OtherData>`
+- `getSingletonWithAuth<User, Entity, FrontendEntity, Headers, Params, Context, OtherData>`
+- `updateSingletonWoAuth<Entity, FrontendEntity, Headers, Params, Body, Context, OtherData>`
+- `updateSingletonWithAuth<User, Entity, FrontendEntity, Headers, Params, Body, Context, OtherData>`
+- `deleteSingletonWoAuth<Entity, FrontendEntity, Headers, Params, Context, OtherData>`
+- `deleteSingletonWithAuth<User, Entity, FrontendEntity, Headers, Params, Body, Context, OtherData>`
+
+**Collection endpoints:**
+
+- `getCollectionWoAuth<Entity, FrontendEntity, Headers, Params, Context, OtherData>`
+- `getCollectionWithAuth<User, Entity, FrontendEntity, Headers, Params, Context, OtherData>`
+
+**Create endpoints:**
+
+- `createWoAuth<Entity, FrontendEntity, Headers, Params, Body, Context, OtherData>`
+- `createWithAuth<User, Entity, FrontendEntity, Headers, Params, Body, Context, OtherData>`
+
+**Action endpoints:**
+
+- `actionWoAuth<ActionResult, Headers, Params, Body, Context>`
+- `actionWithAuth<User, ActionResult, Headers, Params, Body, Context>`
+
+### Router Helpers
+
+- `addGetEntityRoute(idParamName, router, path, handler)`
+- `addGetCollectionRoute(router, path, handler)`
+- `addGetSingletonRoute(router, path, handler)`
+- `addCreateRoute(router, path, handler)`
+- `addUpdateEntityRoute(idParamName, router, path, handler)`
+- `addUpdateSingletonRoute(router, path, handler)`
+- `addDeleteEntityRoute(idParamName, router, path, handler)`
+- `addDeleteSingletonRoute(router, path, handler)`
+- `addActionRoute(router, path, handler)`
+
+## TypeScript Integration
+
+Exprest provides full type safety when used with the `exprest-web-client`:
+
+```typescript
+// Shared types (exprest-shared or your own module)
+export type User = { id: number; name: string; email: string };
+export type UserResponse = { id: number; name: string };
+
+// Server (this package)
+const handler = getEntityWoAuth<User, UserResponse, {}, {}>({
+  // Implementation ensures UserResponse matches convertToFrontEndEntityFunction return
+});
+
+// Client (exprest-web-client)
+const client = new GetEntityClient<UserResponse>("/api/users");
+const response = await client.fetch(123); // response.data.entity is typed as UserResponse
+```
+
+## Error Handling
+
+Exprest handles errors consistently:
+
+- **Validation errors** (400): From sanitize functions
+- **Authentication errors** (401): When user required but not present
+- **Not found errors** (404): When entity not found or invalid ID
+- **Server errors** (500): Unhandled exceptions
+
+All error responses follow the format: `{ errors: Array<string> }`
+
+## License
+
+ISC
