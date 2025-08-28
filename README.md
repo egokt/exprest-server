@@ -336,7 +336,7 @@ addActionRoute(router, "/users/make-admin", makeAdminHandler);
 - `updateSingletonWoAuth<Entity, FrontendEntity, Headers, Params, Body, Context, OtherData>`
 - `updateSingletonWithAuth<User, Entity, FrontendEntity, Headers, Params, Body, Context, OtherData>`
 - `deleteSingletonWoAuth<Entity, FrontendEntity, Headers, Params, Context, OtherData>`
-- `deleteSingletonWithAuth<User, Entity, FrontendEntity, Headers, Params, Body, Context, OtherData>`
+- `deleteSingletonWithAuth<User, Entity, FrontendEntity, Headers, Params, Context, OtherData>`
 
 **Collection endpoints:**
 
